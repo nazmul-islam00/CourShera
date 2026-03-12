@@ -1,0 +1,1999 @@
+openapi: 3.0.3
+info:
+  title: Coursera
+  description: Coursera Project B2-Group-3 CSE 326 ISD Sessional
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Main API Server
+
+security:
+  - BearerAuth: []
+
+paths:
+  # ==========================================
+  # AUTH SERVICE
+  # ==========================================
+  /auth/register:
+    post:
+      tags: [Auth Service]
+      summary: Register a new client
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  example: "2105116@ugrad.cse.buet.ac.bd"
+                password: 
+                  type: string
+                  example: "SecureP@ssw0rd!"
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  
+  /auth/login:
+    post:
+      tags: [Auth Service]
+      summary: Login a client
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  example: "2105116@ugrad.cse.buet.ac.bd"
+                password: 
+                  type: string
+                  example: "SecureP@ssw0rd!"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+          
+  /auth/verify:
+    post:
+      tags: [Auth Service]
+      summary: Verify an authentication token
+      operationId: verify
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: 
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # ==========================================
+  # COURSE SERVICE
+  # ==========================================
+  /courses/popular:
+    get:
+      tags: [Course Service]
+      summary: Get a list of popular courses
+      operationId: getPopularCourses
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/PaginatedCourseListRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /courses/recommendations:
+    get:
+      tags: [Course Service]
+      summary: Get course recommendations for a client
+      operationId: getClientRecommendationList
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/PaginatedCourseListRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /courses/me:
+    get:
+      tags: [Course Service]
+      summary: Get enrolled courses for a specific client
+      operationId: getClientCourses
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/PaginatedCourseListRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+ 
+  
+  
+  /courses/search:
+    get:
+      tags: [Course Service]
+      summary: Search searchCourses
+      operationId: searchCourses
+      parameters:
+        - name: query
+          in: query
+          description: The search keyword
+          required: true
+          schema: 
+            type: string
+            example: "Machine Learning"
+        - name: filter
+          in: query
+          description: Filter criteria (e.g., difficulty, rating)
+          schema: 
+            type: string
+            example: "difficulty=beginner"
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/PaginatedCourseListRequest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /courses/{courseId}:
+    get:
+      tags: [Course Service]
+      summary: Get details of a specific course
+      operationId: getCourse
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema: 
+            type: string
+            example: "cse_326"
+      responses:
+        '200':
+          $ref: '#/components/responses/CourseRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  
+  /courses/reviews:
+    post:
+      tags: [Reviews]
+      summary: Create a review for a course
+      operationId: createCourseReview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rating, clientId] # Making it mandatory
+              properties:
+                courseId:
+                  type: string
+                  example: "cse_326"
+                comment:
+                  type: string
+                  example: "Great course but too many presentations!"
+                rating:
+                  type: integer
+                  example: 5
+      responses:
+        '201':
+          $ref: '#/components/responses/ReviewRequest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /courses/{courseId}/reviews:
+    parameters:
+    - name: courseId
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      tags: [Reviews]
+      summary: Get reviews for a specific course
+      operationId: getCourseReviews
+      responses:
+        '200':
+          $ref: '#/components/responses/PaginatedReviewListRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  
+
+  /courses/reviews/{reviewId}:
+    put:
+      tags: [Reviews]
+      summary: Update a review
+      operationId: updateReview
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: "Great course!"
+                rating:
+                  type: integer
+                  example: 5
+      responses:
+        '200':
+          $ref: '#/components/responses/ReviewRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [Reviews]
+      summary: Delete a review
+      operationId: deleteReview
+      parameters:
+        - name: reviewId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No content
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  
+# ==========================================
+# ENROLLMENT SERVICE
+# ==========================================
+  /enrollments/verify:
+    get:
+      tags: [Enrollment Service]
+      summary: Check current enrollment status for the authenticated client
+      operationId: verifyEnrollmentStatus
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: courseId
+          in: query
+          required: true
+          description: The specific course to check status against
+          schema: 
+            type: string
+            example: "cse_326"
+      responses:
+        '200':
+          description: Returns enrollment status details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isEnrolled:
+                    type: boolean
+                    description: Indicates whether the client is enrolled in the course
+                    example: true
+                  status:
+                    type: string
+                    description: The specific enrollment status (e.g., ACTIVE, PENDING, DROPPED)
+                    example: "ACTIVE"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Unauthorized - Missing or invalid session token
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /enrollments:
+    post:
+      tags: [Enrollment Service]
+      summary: Enroll the authenticated client in a course
+      operationId: createEnrollment
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - courseId
+              properties:
+                courseId: 
+                  type: string
+                  example: "cse_326"
+      responses:
+        '201':
+          description: Enrollment created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  enrollmentId:
+                    type: string
+                    description: The unique identifier for the new enrollment record
+                    example: "enr_102104"
+                  courseId: 
+                    type: string
+                    example: "cse_326"
+                  status:
+                    type: string
+                    example: "ACTIVE"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-12T17:22:34Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Unauthorized - Missing or invalid session token
+        '409':
+          description: Conflict - Client is already enrolled in this course
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /enrollments/{enrollmentId}:
+    delete:
+      tags: [Enrollment Service]
+      summary: Cancel an enrollment
+      operationId: cancelEnrollment
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: enrollmentId
+          in: path
+          required: true
+          schema: 
+            type: string
+            example: "enr_094096"
+      responses:
+        '204':
+          description: No content
+        '401':
+          description: Unauthorized - Missing or invalid session token
+        '403':
+          description: Forbidden - Client does not have permission to modify this enrollment
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /enrollments/me:
+    get:
+      tags: [Enrollment Service]
+      summary: Get currently enrolled courses for the authenticated client
+      operationId: getMyEnrollments
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Returns a paginated list of courses the client is enrolled in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: The list of enrolled courses with details
+                    items:
+                      type: object
+                      properties:
+                        enrollmentId:
+                          type: string
+                          example: "enr_116117"
+                        courseId:
+                          type: string
+                          example: "cse_326"
+                        courseTitle:
+                          type: string
+                          example: "Advanced Database Systems"
+                        instructorName:
+                          type: string
+                          example: "Dr. Alan Turing"
+                        credits:
+                          type: integer
+                          example: 3
+                        status:
+                          type: string
+                          example: "ACTIVE"
+                        enrolledAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-12T17:22:34Z"
+                  meta:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      totalItems:
+                        type: integer
+                        example: 42
+                      itemsPerPage:
+                        type: integer
+                        example: 10
+                      totalPages:
+                        type: integer
+                        example: 5
+                      currentPage:
+                        type: integer
+                        example: 1
+        '401':
+          description: Unauthorized - Missing or invalid session token
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  
+  # ==========================================
+  # PAYMENT SERVICE
+  # ==========================================
+  /payments:
+    post:
+      tags: [Payment Service]
+      summary: Process a new payment
+      operationId: processPayment
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - courseId
+                - amount
+                - provider
+                - accountIdentifier
+              properties:
+                courseId:
+                  type: string
+                  description: The ID of the course being purchased
+                  example: "cse_326"
+                amount: 
+                  type: number
+                  format: double
+                  example: 1500.00
+                currency:
+                  type: string
+                  example: "BDT"
+                  default: "BDT"
+                provider:
+                  type: string
+                  description: The payment gateway or method used
+                  example: "BKASH"
+                  enum: [BKASH, NAGAD, SSLCOMMERZ, CREDIT_CARD]
+                accountIdentifier:
+                  type: string
+                  description: The phone number or masked account used for the transaction
+                  example: "+8801712345678"
+      responses:
+        '200':
+          description: Payment processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionId:
+                    type: string
+                    example: "trx_9x8y7z6w"
+                  status:
+                    type: string
+                    example: "COMPLETED"
+                    enum: [COMPLETED, PENDING, FAILED]
+                  processedAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-12T17:22:34Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Unauthorized - Missing or invalid session token
+        '402':
+          description: Payment Required / Transaction Failed at Gateway
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /payments/{transactionId}/refunds:
+    post:
+      tags: [Payment Service]
+      summary: Process a refund for an existing transaction
+      operationId: refundTransaction
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          description: The ID of the original payment transaction
+          schema: 
+            type: string
+            example: "trx_9x8y7z6w"
+      requestBody:
+        required: false
+        description: Optional payload for partial refunds or providing a reason
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount: 
+                  type: number
+                  format: double
+                  description: The amount to refund. If omitted, triggers a full refund.
+                  example: 1500.00
+                reason:
+                  type: string
+                  example: "Client dropped the course within the refund window."
+      responses:
+        '200':
+          description: Refund processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  refundId:
+                    type: string
+                    example: "ref_1a2b3c4d"
+                  originalTransactionId:
+                    type: string
+                    example: "trx_9x8y7z6w"
+                  amountRefunded:
+                    type: number
+                    format: double
+                    example: 1500.00
+                  status:
+                    type: string
+                    example: "REFUNDED"
+                  processedAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-14T10:15:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Unauthorized
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /payments/me:
+    get:
+      tags: [Payment Service]
+      summary: Get payment history for the authenticated client
+      operationId: getMyPaymentHistory
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Returns a paginated list of transactions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        transactionId:
+                          type: string
+                          example: "trx_9x8y7z6w"
+                        transactionType:
+                          type: string
+                          example: "PAYMENT"
+                          enum: [PAYMENT, REFUND]
+                        provider:
+                          type: string
+                          example: "BKASH"
+                        courseId:
+                          type: string
+                          example: "cse_326"
+                        courseTitle:
+                          type: string
+                          example: "Advanced Database Systems"
+                        amount:
+                          type: number
+                          format: double
+                          example: 1500.00
+                        currency:
+                          type: string
+                          example: "BDT"
+                        status:
+                          type: string
+                          example: "COMPLETED"
+                        timestamp:
+                          type: string
+                          format: date-time
+                          example: "2026-03-12T17:22:34Z"
+                  meta:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      totalItems:
+                        type: integer
+                        example: 42
+                      itemsPerPage:
+                        type: integer
+                        example: 10
+                      totalPages:
+                        type: integer
+                        example: 5
+                      currentPage:
+                        type: integer
+                        example: 1
+        '401':
+          description: Unauthorized
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+
+
+
+
+# ==========================================
+# COURSE CONTENT
+# ==========================================
+  /courses/modules/{moduleId}:
+    get:
+      tags: [Course Content]
+      summary: Get a module and its topic outline
+      operationId: getModuleById
+      security:
+        - BearerAuth: [] # Added to eventually track if the user has unlocked/completed this
+      parameters:
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "cse_326_3"
+      responses:
+        '200':
+          description: Returns a Module object with a list of its Topics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  moduleId:
+                    type: string
+                    example: "cse_326_3"
+                  courseId:
+                    type: string
+                    example: "cse_326"
+                  title:
+                    type: string
+                    description: The display name of the module
+                    example: "Week 1: Introduction to Database Systems"
+                  description:
+                    type: string
+                    example: "Learn the fundamentals of relational databases and data modeling."
+                  sequence:
+                    type: integer
+                    description: The order in which this module appears in the course
+                    example: 1
+                  estimatedDurationInMinutes:
+                    type: integer
+                    example: 120
+                  topics:
+                    type: array
+                    description: Lightweight summaries of the topics inside this module for navigation
+                    items:
+                      type: object
+                      properties:
+                        topicId:
+                          type: string
+                          example: "cse_326_3_1"
+                        title:
+                          type: string
+                          example: "The Relational Model"
+                        sequence:
+                          type: integer
+                          example: 1
+                        contentTypeSummary:
+                          type: string
+                          description: A quick glance at what this topic contains
+                          example: "2 Videos, 1 Quiz"
+        '401':
+          description: Unauthorized
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /courses/topics/{topicId}:
+    get:
+      tags: [Course Content]
+      summary: Get a topic and its playable/interactive content
+      operationId: getTopicById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "cse_326_3_1"
+      responses:
+        '200':
+          description: Returns a Topic object containing a list of playable/interactive contents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  topicId:
+                    type: string
+                    example: "cse_326_3_1"
+                  moduleId:
+                    type: string
+                    example: "cse_326_3"
+                  title:
+                    type: string
+                    example: "The Relational Model"
+                  sequence:
+                    type: integer
+                    example: 1
+                  contents:
+                    type: array
+                    description: The actual items the user will watch, read, or solve
+                    items:
+                      type: object
+                      properties:
+                        contentId:
+                          type: string
+                          example: "cnt_vid_001"
+                        title:
+                          type: string
+                          example: "Understanding Tables, Rows, and Columns"
+                        contentType:
+                          type: string
+                          enum: [VIDEO, QUIZ, READING, ASSIGNMENT]
+                          example: "VIDEO"
+                        sequence:
+                          type: integer
+                          example: 1
+                        durationInMinutes:
+                          type: integer
+                          example: 15
+                        assetUrl:
+                          type: string
+                          description: The URL to the video stream, PDF, or Quiz engine endpoint
+                          example: "https://cdn.yoursystem.com/videos/db_intro_720p.mp4"
+                        isLocked:
+                          type: boolean
+                          description: Indicates if the user needs to complete previous items before accessing this
+                          example: false
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - User is not enrolled in this course
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+# ==========================================
+# VIDEO SERVICE
+# ==========================================
+  /videos/{videoId}/stream:
+    get:
+      tags: [Video Service]
+      summary: Stream video content via byte ranges
+      operationId: getVideoStream
+      security:
+        - BearerAuth: [] # Crucial: Prevents unauthorized users from leeching your bandwidth
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          description: The internal ID of the video content (maps to the external provider URL on the backend)
+          schema: 
+            type: string
+            example: "vid_9x8y7z"
+        - name: Range
+          in: header
+          required: false
+          description: Standard HTTP header used by video players to request a specific byte range.
+          schema:
+            type: string
+            example: "bytes=0-1048575"
+      responses:
+        '206':
+          description: Partial Content - The standard response for streaming video chunks.
+          headers:
+            Content-Range:
+              description: Indicates the byte range being sent and the total file size.
+              schema:
+                type: string
+                example: "bytes 0-1048575/24567983"
+            Accept-Ranges:
+              description: Tells the client that the server supports range requests.
+              schema:
+                type: string
+                example: "bytes"
+            Content-Length:
+              description: The size of the chunk being sent.
+              schema:
+                type: integer
+                example: 1048576
+          content:
+            video/mp4: # Use the specific video MIME type rather than generic octet-stream
+              schema:
+                type: string
+                format: binary
+        '200':
+          description: OK - Returned if the client did not request a specific byte Range (downloads the whole file).
+          headers:
+            Accept-Ranges:
+              schema:
+                type: string
+                example: "bytes"
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - User is not enrolled in the course that contains this video
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '416':
+          description: Range Not Satisfiable - The requested byte range is out of bounds.
+        '500':
+          $ref: '#/components/responses/ServerError'
+        '502':
+          description: Bad Gateway - The external video provider failed to respond or returned an error.
+
+
+  # ==========================================
+  # NOTES SERVICE
+  # ==========================================
+  /courses/me/notes:
+    get:
+      tags: [Notes]
+      summary: Get all course notes for a client
+      operationId: getNotes
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Returns List<Note>
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        noteId:
+                          type: string
+                          example: "note_001"
+                        clientId:
+                          type: string
+                          example: "2105116"
+                        courseId:
+                          type: string
+                          example: "cse_326"
+                        topicId:
+                          type: string
+                          example: "cse_326_3"
+                        content:
+                          type: string
+                          example: "Remember to review the normalization rules."
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-10T14:30:00Z"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-12T09:15:00Z"
+                  meta:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      totalItems:
+                        type: integer
+                        example: 42
+                      itemsPerPage:
+                        type: integer
+                        example: 10
+                      totalPages:
+                        type: integer
+                        example: 5
+                      currentPage:
+                        type: integer
+                        example: 1
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /courses/topics/{topicId}/notes:
+    get:
+      tags: [Notes]
+      summary: Get notes attached to a specific topic
+      operationId: getTopicNotes
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Returns List<Note> for the specific topic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        noteId:
+                          type: string
+                          example: "note_002"
+                        clientId:
+                          type: string
+                          example: "2105116"
+                        topicId:
+                          type: string
+                          example: "cse_326_3"
+                        content:
+                          type: string
+                          example: "This topic requires extra attention before the quiz."
+                        createdAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-11T10:00:00Z"
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-11T10:00:00Z"
+                  meta:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      totalItems:
+                        type: integer
+                        example: 42
+                      itemsPerPage:
+                        type: integer
+                        example: 10
+                      totalPages:
+                        type: integer
+                        example: 5
+                      currentPage:
+                        type: integer
+                        example: 1
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [Notes]
+      summary: Create a note for a topic
+      operationId: createTopicNote
+      parameters:
+        - name: topicId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Note successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  noteId:
+                    type: string
+                    example: "note_003"
+                  clientId:
+                    type: string
+                    example: "2105116"
+                  topicId:
+                    type: string
+                    example: "cse_326_3"
+                  content:
+                    type: string
+                    example: "My new note regarding this lecture."
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-12T23:30:00Z"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-12T23:30:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /courses/notes/{noteId}:
+    put:
+      tags: [Notes]
+      summary: Update a note
+      operationId: updateNote
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        '200':
+          description: Note successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  noteId:
+                    type: string
+                    example: "note_003"
+                  topicId:
+                    type: string
+                    example: "cse_326_3"
+                  content:
+                    type: string
+                    example: "Updated content for this note with more details."
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-12T23:30:00Z"
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-13T08:15:00Z"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags: [Notes]
+      summary: Delete a note
+      operationId: deleteNote
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Note successfully deleted
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  
+  # ==========================================
+  # QUIZ SERVICE
+  # ==========================================
+  /quizzes:
+    post:
+      tags: [Quiz Service]
+      summary: Request a quiz for a specific topic
+      operationId: requestQuiz
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topicId:
+                  type: string
+                  example: "cse_326_3_1"
+      responses:
+        '200':
+          description: Returns a Quiz object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quizId:
+                    type: string
+                    example: "quiz_101"
+                  topicId:
+                    type: string
+                    example: "cse_326_3_1"
+                  title:
+                    type: string
+                    example: "Relational Database Design Quiz"
+                  durationMinutes:
+                    type: integer
+                    example: 30
+                  passingScorePercentage:
+                    type: integer
+                    example: 80
+                  questions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        quesId:
+                          type: string
+                          example: "qid01"
+                        questionType:
+                          type: string
+                          enum: [MULTIPLE_CHOICE, TRUE_FALSE, SHORT_ANSWER]
+                          example: "MULTIPLE_CHOICE"
+                        questionText:
+                          type: string
+                          example: "What is the primary key used for?"
+                        points:
+                          type: integer
+                          example: 5
+                        options:
+                          type: array
+                          items:
+                            type: string
+                          example: ["Unique identification", "Foreign mapping", "Data indexing", "Sorting"]
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /quizzes/{quizId}/evaluate:
+    post:
+      tags: [Quiz Service]
+      summary: Evaluate submitted quiz answers
+      operationId: evaluateQuiz
+      parameters:
+        - name: quizId
+          in: path
+          required: true
+          schema: 
+            type: string
+            example: "quiz_326"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quizId: 
+                  type: string
+                  example: "quiz_326"
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      quesId: 
+                        type: string
+                        example: "qid01"
+                      answer:
+                        type: string
+                        example: "A"
+                  example:
+                    - quesId: "qid01"
+                      answer: "Unique identification"
+                    - quesId: "qid02"
+                      answer: "Foreign mapping"
+      responses:
+        '200':
+          description: Returns the result of the quiz
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  evaluationId:
+                    type: string
+                    example: "eval_9982"
+                  scorePercentage:
+                    type: number
+                    format: double
+                    example: 85.0
+                  passed:
+                    type: boolean
+                    example: true
+                  correctAnswers:
+                    type: integer
+                    example: 17
+                  totalQuestions:
+                    type: integer
+                    example: 20
+                  submittedAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-12T23:45:00Z"
+                  detailedFeedback:
+                    type: array
+                    description: Breakdown of each submitted answer
+                    items:
+                      type: object
+                      properties:
+                        quesId:
+                          type: string
+                          example: "qid01"
+                        isCorrect:
+                          type: boolean
+                          example: true
+                        providedAnswer:
+                          type: string
+                          example: "Unique identification"
+                        correctAnswer:
+                          type: string
+                          example: "Unique identification"
+                        pointsAwarded:
+                          type: integer
+                          example: 5
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /quizzes/{quizId}/results:
+    get:
+      tags: [Quiz Service]
+      summary: Request the results of an evaluated quiz
+      operationId: getQuizResult
+      parameters:
+        - name: quizId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "quiz_326"
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Returns a paginated list of historical evaluation results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: The list of evaluation results
+                    items:
+                      type: object
+                      properties:
+                        evaluationId:
+                          type: string
+                          example: "eval_9982"
+                        quizId:
+                          type: string
+                          example: "quiz_326"
+                        scorePercentage: 
+                          type: number
+                          format: double
+                          example: 85.0
+                        passed: 
+                          type: boolean
+                          example: true
+                        correctAnswers:
+                          type: integer
+                          example: 17
+                        totalQuestions:
+                          type: integer
+                          example: 20
+                        submittedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-12T23:45:00Z"
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  
+
+  # ==========================================
+  # LEARNING PROGRESS SERVICE
+  # ==========================================
+  /progress:
+    post:
+      tags: [Learning Progress Service]
+      summary: Initialize progress tracking for a client
+      operationId: initializeCourseProgress
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [courseId]
+              properties:
+                courseId:
+                  type: string
+                  example: "cse_326"
+      responses:
+        '201':
+          description: Progress tracking initialized successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  progressId:
+                    type: string
+                    example: "prog_881"
+                  clientId:
+                    type: string
+                    example: "2105116"
+                  courseId:
+                    type: string
+                    example: "cse_326"
+                  overallStatus:
+                    type: string
+                    enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+                    example: "NOT_STARTED"
+                  completionPercentage:
+                    type: number
+                    format: double
+                    example: 0.0
+                  startedAt:
+                    type: string
+                    format: date-time
+                    example: "2026-03-12T23:50:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /progress/courses/{courseId}:
+    get:
+      tags: [Learning Progress Service]
+      summary: Get specific course progress data
+      operationId: getCourseProgressData
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema: 
+            type: string
+            example: "cse_326"
+      responses:
+        '200':
+          description: Returns a progress object along with topic-level details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  courseId:
+                    type: string
+                    example: "cse_326"
+                  overallStatus:
+                    type: string
+                    enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+                    example: "IN_PROGRESS"
+                  overallCompletionPercentage:
+                    type: number
+                    format: double
+                    example: 45.5
+                  timeSpentSeconds:
+                    type: integer
+                    example: 14400
+                  topicsProgress:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        topicId:
+                          type: string
+                          example: "cse_326_3"
+                        videos:
+                          type: array
+                          description: A list of videos and their current progress status
+                          items:
+                            type: object
+                            required: [videoId, status]
+                            properties:
+                              videoId:
+                                type: string
+                                example: "vid_9x8y7z"
+                              status:
+                                type: string
+                                enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+                                example: "COMPLETED"
+                          # This provides the multiple entries in the Swagger UI
+                          example:
+                            - videoId: "vdo_001_intro"
+                              status: "COMPLETED"
+                            - videoId: "vdo_002_setup"
+                              status: "IN_PROGRESS"
+                            - videoId: "vdo_003_advanced"
+                              status: "NOT_STARTED"
+                        quiz:
+                          type: string
+                          enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+                          example: "NOT_STARTED"
+                        status:
+                          type: string
+                          enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+                          example: "IN_PROGRESS"
+                        startedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-10T10:00:00Z"
+                        lastAccessed:
+                          type: string
+                          format: date-time
+                          example: "2026-03-12T10:00:00Z"
+                        completedAt:
+                          type: string
+                          format: date-time
+                          example: "2026-03-12T11:00:00Z"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags: [Learning Progress Service]
+      summary: Update course progress data
+      operationId: updateCourseProgressData
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "cse_326"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - topicId
+                - videoId
+                - status
+              properties:
+                topicId:
+                  type: string
+                  description: The ID of the specific module or topic being updated
+                  example: "cse_326_3"
+                videoId:
+                  type: string
+                  example: "vid_9x8y7z"
+                status:
+                  type: string
+                  enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+                  description: Current learning status of the module
+                  example: "COMPLETED"
+      responses:
+        '200':
+          description: Progress updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  topicId:
+                    type: string
+                    example: "cse_326_3"
+                  updatedTopicStatus:
+                    type: string
+                    enum: [NOT_STARTED, IN_PROGRESS, COMPLETED]
+                    example: "COMPLETED"
+                  lastAccessed:
+                    type: string
+                    format: date-time
+                    example: "2026-03-12T23:55:00Z"
+                  newOverallCompletionPercentage:
+                    type: number
+                    format: double
+                    description: The new total completion percentage for the course after this update
+                    example: 48.0
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Course:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Information System Design Sessional"
+        courseId:
+          type: string
+          example: "cse_326"
+        partnerId:
+          type: string
+          example: "ZIH"
+        instructorName:
+          type: string
+          example: "Zarif -E-Zaman Talukder"
+        description:
+          type: string
+          example: "Learn how to design information systems."
+        credits:
+          type: integer
+          example: 3
+        language:
+          type: string
+          example: "English"
+        price:
+          type: number
+          format: float
+          example: 116.99
+        attributes:
+          type: object
+          properties:
+            difficulty:
+              type: string
+              example: "Intermediate"
+            rating:
+              type: string
+              example: "5.0"
+        reviews:
+          type: array
+          items:
+            type: string
+          example: ["rev_104", "rev_116"]
+    Meta:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+          example: 100
+        itemsPerPage:
+          type: integer
+          example: 10
+        totalPages:
+          type: integer
+          example: 10
+        currentPage:
+          type: integer
+          example: 1
+    Review:
+      type: object
+      properties:
+        reviewId:
+          type: string
+          example: "rev_116"
+        clientId:
+          type: string
+          example: "2105116"
+        courseId:
+          type: string
+          example: "cse_326"
+        comment:
+          type: string
+          example: "Great course but too many presentations!"
+        rating:
+          type: integer
+          example: 5.0
+  securitySchemes:
+    BearerAuth:            
+      type: http
+      scheme: bearer
+      bearerFormat: token
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      required: false
+      schema:
+        type: integer
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of items per page
+      required: false
+      schema:
+        type: integer
+        default: 20
+          
+  responses:
+    ReviewRequest:
+      description: Single review
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              reviewId:
+                type: string
+                example: "rev_116"
+              clientId:
+                type: string
+                example: "2105116"
+              courseId:
+                type: string
+                example: "cse_326"
+              comment:
+                type: string
+                example: "Great course but too many presentations!"
+              rating:
+                type: integer
+                example: 5.0
+    ReviewListRequest:
+      description: List of reviews
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                reviewId:
+                  type: string
+                  example: "rev_116"
+                clientId:
+                  type: string
+                  example: "2105116"
+                courseId:
+                  type: string
+                  example: "cse_326"
+                rating:
+                  type: integer
+                  example: 5.0
+                comment:
+                  type: string
+                  example: "Great course but too many presentations!"
+            example:
+              - reviewId: "rev_116"
+                clientId: "2105116"
+                courseId: "cse_326"
+                comment: "Great course but too many presentations!"
+                rating: 5.0
+              - reviewId: "rev_117"
+                clientId: "2105117"
+                courseId: "cse_326"
+                comment: "Very informative, highly recommended."
+                rating: 4.0
+    PaginatedReviewListRequest:
+      description: Paginated list of reviews
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+              meta:
+                $ref: '#/components/schemas/Meta'
+            # Full Example including both data and meta
+            example:
+              data:
+                - reviewId: "rev_116"
+                  clientId: "2105116"
+                  courseId: "cse_326"
+                  rating: 5
+                  comment: "Great course but too many presentations!"
+                - reviewId: "rev_117"
+                  clientId: "2105117"
+                  courseId: "cse_326"
+                  rating: 4
+                  comment: "Very informative, highly recommended."
+              meta:
+                totalItems: 50
+                itemsPerPage: 10
+                totalPages: 5
+                currentPage: 1
+    CourseRequest:
+      description: Single course
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                example: "Information System Design Sessional"
+              courseId:
+                type: string
+                example: "cse_326"
+              partnerId:
+                type: string
+                example: "ZIH"
+              instructorName:
+                type: string
+                example: "Zarif -E-Zaman Talukder"
+              description:
+                type: string
+                example: "Learn how to design information systems."
+              credits:
+                type: integer
+                example: 3
+              language:
+                type: string
+                example: "English"
+              price:
+                type: number
+                format: float
+                example: 116.99
+              attributes:
+                type: object
+                properties:
+                  difficulty:
+                    type: string
+                    example: "Intermediate"
+                  rating:
+                    type: string
+                    example: "5"
+              reviews:
+                type: array
+                items:
+                  type: string
+                example: 
+                  - "rev_104"
+                  - "rev_116"
+                  - "rev_117"
+    CourseListRequest:
+      description: List of courses
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                title: { type: string }
+                courseId: { type: string }
+                partnerId: { type: string }
+                description: { type: string }
+                language: { type: string }
+                price: { type: number, format: float }
+                attributes:
+                  type: object
+                  properties:
+                    difficulty: { type: string }
+                    rating: { type: string }
+                reviews:
+                  type: array
+                  items: { type: string }
+            example:
+              - title: "Information System Design Sessional"
+                courseId: "cse_326"
+                partnerId: "ZIH"
+                description: "Learn how to design information systems."
+                language: "English"
+                price: 116.96
+                attributes:
+                  difficulty: "Intermediate"
+                  rating: "5.0"
+                reviews: ["rev_104", "rev_116", "rev_117"]
+              
+              - title: "Database Sessional"
+                courseId: "cse_216"
+                partnerId: "NIT"
+                description: "Deep dive into SQL."
+                language: "English"
+                price: 117.40
+                attributes:
+                  difficulty: "Advanced"
+                  rating: "4.8"
+                reviews: ["rev_94", "rev_96", "rev_102"]
+    PaginatedCourseListRequest:
+      description: Paginated list of courses
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+              meta:
+                $ref: '#/components/schemas/Meta'
+            # Full Example for the Swagger UI
+            example:
+              data:
+                - title: "Information System Design Sessional"
+                  courseId: "cse_326"
+                  partnerId: "ZIH"
+                  instructorName: "Zarif -E-Zaman Talukder"
+                  description: "Learn how to design information systems."
+                  credits: 3
+                  language: "English"
+                  price: 116.99
+                  attributes:
+                    difficulty: "Intermediate"
+                    rating: "5.0"
+                  reviews: ["rev_104", "rev_116", "rev_117"]
+                - title: "Database Sessional"
+                  courseId: "cse_216"
+                  partnerId: "NIT"
+                  instructorName: "John Doe"
+                  description: "Deep dive into SQL."
+                  credits: 3
+                  language: "English"
+                  price: 117.40
+                  attributes:
+                    difficulty: "Advanced"
+                    rating: "4.8"
+                  reviews: ["rev_94", "rev_96"]
+              meta:
+                totalItems: 120
+                itemsPerPage: 10
+                totalPages: 12
+                currentPage: 1
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid input provided."
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Authentication token is missing or invalid."
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "You do not have permission to access this resource."
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "The requested resource was not found."
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "An unexpected error occurred on the server."
