@@ -1,11 +1,8 @@
-const Pool = require('pg').Pool;
+import 'dotenv/config';
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma/client";
 
-const pool = new Pool({
-    user: "postgres",
-    password: "2105116",
-    host: "localhost",
-    port: 5432,
-    database: "coursera"
-});
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
-module.exports = pool;
+export default prisma;

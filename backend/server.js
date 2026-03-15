@@ -1,26 +1,22 @@
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const pool = require('./db');
+import express from 'express';
+import cors from 'cors';
+import prisma from './db.js';
 
 const PORT = 5000;
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.listen(PORT, () => {
-    console.log(`Server has started running on port ${PORT}`);
+  console.log(`Server has started running on port ${PORT}`);
 });
 
 
 // Eikhane route add korbi
 // module wise organize koirish
 
-// app.get('/api/courses', async (req, res) => {
-//     try {
-//         const allCourses = await pool.query("SELECT * FROM courses");
-//         res.json(allCourses.rows);
-//     } catch (err) {
-//         console.error(err.message);
-//     }
-// });
+app.get('/test-courses', async (req, res) => {
+  const courses = await prisma.courses.findMany();
+  res.json(courses);
+});
