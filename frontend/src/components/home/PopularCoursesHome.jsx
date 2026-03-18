@@ -1,0 +1,72 @@
+import { useEffect, useState } from 'react'
+import HomeHeader from './HomeHeader'
+import PopularCourseCard from './PopularCourseCard'
+
+const API_URL = 'http://localhost:5000/test-courses'
+
+function PopularCoursesHome() {
+  const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    async function fetchCourses() {
+      try {
+        setLoading(true)
+        setError('')
+        const response = await fetch(API_URL, { signal: controller.signal })
+
+        if (!response.ok) {
+          throw new Error(`Could not load courses (${response.status})`)
+        }
+
+        const data = await response.json()
+        setCourses(Array.isArray(data) ? data : [])
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          setError(err.message || 'Failed to fetch course list')
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCourses()
+    return () => controller.abort()
+  }, [])
+
+  return (
+    <div className="home-root">
+      <HomeHeader />
+
+      <section className="results-title-wrap">
+        <div className="container">
+          <h1>Popular Courses</h1>
+          <p>Showing all courses from backend endpoint: {API_URL}</p>
+        </div>
+      </section>
+
+      <main className="container cards-section">
+        {loading && <p className="home-status">Loading popular courses...</p>}
+
+        {!loading && error && <p className="home-status home-status-error">{error}</p>}
+
+        {!loading && !error && courses.length === 0 && (
+          <p className="home-status">No courses available yet.</p>
+        )}
+
+        {!loading && !error && courses.length > 0 && (
+          <div className="popular-grid">
+            {courses.map((course, index) => (
+              <PopularCourseCard key={course.course_id || index} course={course} index={index} />
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
+
+export default PopularCoursesHome

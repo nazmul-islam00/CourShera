@@ -1,0 +1,20 @@
+:root {
+  --font-size: 16px;
+  --background: #ffffff;
+  --foreground: #0f1728;
+  --card: #ffffff;
+  --card-foreground: #0f1728;
+  --primary: #0056d2;
+  --primary-foreground: #ffffff;
+  --secondary: #eaf0f8;
+  --secondary-foreground: #1f2f44;
+  --muted: #eef2f7;
+  --muted-foreground: #617186;
+  --accent: #e9ebef;
+  --accent-foreground: #1f2f44;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --ring: #9cb5da;
+  --radius: 0.625rem;
+}
