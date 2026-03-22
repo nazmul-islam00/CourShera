@@ -1,4 +1,5 @@
 import { AuthButtons } from "./AuthButtons";
+import { UserDropdown } from "./UserDropdown";
 
 function HomeHeader({ user, isLoading }) {
   return (
@@ -46,19 +47,7 @@ function HomeHeader({ user, isLoading }) {
                 style={{ backgroundColor: "#e0e0e0", color: "transparent" }}
               ></div>
             ) : user ? (
-              user.photos && user.photos.length > 0 ? (
-                <img
-                  src={user.photos[0].value}
-                  alt="User Avatar"
-                  className="avatar-image"
-                />
-              ) : (
-                <div className="avatar">
-                  {user.displayName
-                    ? user.displayName.charAt(0).toUpperCase()
-                    : "U"}
-                </div>
-              )
+              <UserDropdown user={user} />
             ) : (
               <AuthButtons />
             )}

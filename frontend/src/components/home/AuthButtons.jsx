@@ -1,5 +1,5 @@
 export const AuthButtons = () => {
-  const backendAuthUrl = `${import.meta.env.VITE_API_URL}/auth/google`
+  const backendAuthUrl = `${import.meta.env.VITE_API_URL}/auth/google`;
 
   return (
     <div className="auth-buttons">
