@@ -25,6 +25,7 @@ app.use(
     name: "courshera_session",
     keys: [process.env.SESSION_SECRET],
     maxAge: 7 * 24 * 60 * 50 * 1000,
+    secure: false,
   }),
 );
 

@@ -1,43 +1,43 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-const API_URL = 'http://localhost:5000/test-courses'
+const API_URL = "http://localhost:5000/test-courses";
 
 function CoursesFromBackend() {
-  const [courses, setCourses] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const controller = new AbortController()
+    const controller = new AbortController();
 
     async function loadCourses() {
       try {
-        setLoading(true)
-        setError('')
+        setLoading(true);
+        setError("");
 
         const response = await fetch(API_URL, {
           signal: controller.signal,
-        })
+        });
 
         if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`)
+          throw new Error(`Request failed with status ${response.status}`);
         }
 
-        const data = await response.json()
-        setCourses(Array.isArray(data) ? data : [])
+        const data = await response.json();
+        setCourses(Array.isArray(data) ? data : []);
       } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err.message || 'Failed to load courses')
+        if (err.name !== "AbortError") {
+          setError(err.message || "Failed to load courses");
         }
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    loadCourses()
+    loadCourses();
 
-    return () => controller.abort()
-  }, [])
+    return () => controller.abort();
+  }, []);
 
   return (
     <section className="courses-panel">
@@ -48,7 +48,9 @@ function CoursesFromBackend() {
 
       {loading && <p className="status-msg">Loading courses...</p>}
 
-      {!loading && error && <p className="status-msg error-msg">Error: {error}</p>}
+      {!loading && error && (
+        <p className="status-msg error-msg">Error: {error}</p>
+      )}
 
       {!loading && !error && courses.length === 0 && (
         <p className="status-msg">No courses returned yet.</p>
@@ -72,12 +74,12 @@ function CoursesFromBackend() {
               {courses.map((course) => (
                 <tr key={course.course_id}>
                   <td>{course.course_id}</td>
-                  <td>{course.title || '-'}</td>
-                  <td>{course.partner_id || '-'}</td>
-                  <td>{course.instructor_name || '-'}</td>
-                  <td>{course.language || '-'}</td>
-                  <td>{course.price ?? '-'}</td>
-                  <td>{course.avg_rating ?? '-'}</td>
+                  <td>{course.title || "-"}</td>
+                  <td>{course.partner_id || "-"}</td>
+                  <td>{course.instructor_name || "-"}</td>
+                  <td>{course.language || "-"}</td>
+                  <td>{course.price ?? "-"}</td>
+                  <td>{course.avg_rating ?? "-"}</td>
                 </tr>
               ))}
             </tbody>
@@ -85,7 +87,7 @@ function CoursesFromBackend() {
         </div>
       )}
     </section>
-  )
+  );
 }
 
-export default CoursesFromBackend
+export default CoursesFromBackend;
