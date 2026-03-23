@@ -79,16 +79,16 @@ app.get("/test-courses", async (req, res) => {
 //      }
 // 5. 
 
-app.post("/sms-webhook", (req, res) => {
+app.post("/sms-webhook", async (req, res) => {
   const { sender, body, timestamp } = req.body;
- 
+
   const parsed = parseSms(sender, body);
- 
+
   const time = timestamp
     ? new Date(timestamp).toLocaleString()
     : new Date().toLocaleString();
- 
-  console.log("─".repeat(50));
+
+  console.log("-".repeat(50));
   console.log(`   Payment received via ${parsed.service} at ${time}`);
   console.log(`   Amount  : Tk ${parsed.amount}`);
   console.log(`   Fee     : Tk ${parsed.fee}`);
@@ -96,7 +96,62 @@ app.post("/sms-webhook", (req, res) => {
   console.log(`   From    : ${parsed.from}`);
   console.log(`   TrxID   : ${parsed.trxId}`);
   console.log(`   Date    : ${parsed.datetime}`);
-  console.log("─".repeat(50));
- 
-  res.status(200).json({ success: true, parsed });
+  console.log("-".repeat(50));
+
+  try {
+    const payment = await savePayment(parsed);
+    if (payment._isDuplicate) {
+      console.log(`Duplicate TrxID — already in DB`);
+    } else {
+      console.log(`Saved to DB with transaction_id: ${payment.transaction_id}`);
+    }
+    res.status(200).json({ success: true, parsed, payment });
+  } catch (err) {
+    console.error(`Failed to save payment: ${err.message}`);
+    if (!res.headersSent) {
+      res.status(200).json({ success: false, error: err.message, parsed });
+    }
+  }
 });
+
+async function savePayment(parsed) {
+  if (parsed.trxId) {
+    const existing = await prisma.payments.findUnique({
+      where: { provider_transaction_id: parsed.trxId },
+    });
+    if (existing) {
+      console.log(`Duplicate TrxID ${parsed.trxId} — skipping insert`);
+      return { _isDuplicate: true };
+    }
+  }
+
+  const internalId = `trx_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+
+  return await prisma.payments.create({
+    data: {
+      transaction_id:          internalId,
+      provider_transaction_id: parsed.trxId ?? null,
+      client_id:               2105094,
+      course_id:               "cse_101",
+      amount:                  parsed.amount,
+      fee:                     parsed.fee    ?? 0.00,
+      currency:                "BDT",
+      provider:                parsed.service.toUpperCase(),
+      account_identifier:      parsed.from   ?? "unknown",
+      status:                  "COMPLETED",
+      transaction_type:        "PAYMENT",
+      processed_at:            parseSmsDatetime(parsed.datetime),
+    },
+  });
+}
+
+function parseSmsDatetime(datetimeStr) {
+  if (!datetimeStr) return new Date();
+  try {
+    const [datePart, timePart] = datetimeStr.split(" ");
+    const [dd, mm, yyyy]       = datePart.split("/");
+    return new Date(`${yyyy}-${mm}-${dd}T${timePart}:00`);
+  } catch {
+    return new Date();
+  }
+}

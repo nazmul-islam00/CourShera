@@ -107,23 +107,26 @@ model partners {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model payments {
-  transaction_id     String           @id @db.VarChar(50)
-  client_id          Int
-  course_id          String           @db.VarChar(50)
-  amount             Decimal          @db.Decimal(12, 2)
-  currency           String           @default("BDT") @db.VarChar(10)
-  provider           payment_provider
-  account_identifier String           @db.VarChar(100)
-  status             payment_status   @default(PENDING)
-  transaction_type   transaction_type @default(PAYMENT)
-  processed_at       DateTime         @default(now()) @db.Timestamptz(6)
-  clients            clients          @relation(fields: [client_id], references: [client_id], onUpdate: NoAction)
-  courses            courses          @relation(fields: [course_id], references: [course_id], onUpdate: NoAction)
-  refunds            refunds[]
+  transaction_id          String           @id @db.VarChar(50)
+  provider_transaction_id String?          @unique @db.VarChar(100)
+  client_id               Int
+  course_id               String           @db.VarChar(50)
+  amount                  Decimal          @db.Decimal(12, 2)
+  fee                     Decimal          @default(0.00) @db.Decimal(10, 2)
+  currency                String           @default("BDT") @db.VarChar(10)
+  provider                payment_provider
+  account_identifier      String           @db.VarChar(100)
+  status                  payment_status   @default(PENDING)
+  transaction_type        transaction_type @default(PAYMENT)
+  processed_at            DateTime         @default(now()) @db.Timestamptz(6)
+  clients                 clients          @relation(fields: [client_id], references: [client_id], onUpdate: NoAction)
+  courses                 courses          @relation(fields: [course_id], references: [course_id], onUpdate: NoAction)
+  refunds                 refunds[]
 
   @@index([client_id], map: "idx_payments_client_id")
   @@index([course_id], map: "idx_payments_course_id")
   @@index([status], map: "idx_payments_status")
+  @@index([provider_transaction_id], map: "idx_payments_providertrxid")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
