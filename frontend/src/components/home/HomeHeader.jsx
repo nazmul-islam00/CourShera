@@ -1,4 +1,7 @@
-function HomeHeader() {
+import { AuthButtons } from "./AuthButtons";
+import { UserDropdown } from "./UserDropdown";
+
+function HomeHeader({ user, isLoading }) {
   return (
     <>
       <div className="top-strip">
@@ -21,20 +24,38 @@ function HomeHeader() {
             </nav>
           </div>
 
-          <div className="header-search" role="search" aria-label="Search courses">
+          <div
+            className="header-search"
+            role="search"
+            aria-label="Search courses"
+          >
             <input type="text" placeholder="Search" aria-label="Search" />
             <button type="button">Search</button>
           </div>
 
           <div className="header-actions">
-            <button type="button" aria-label="Language">EN</button>
-            <button type="button" aria-label="Notifications">1</button>
-            <div className="avatar">D</div>
+            <button type="button" aria-label="Language">
+              EN
+            </button>
+            <button type="button" aria-label="Notifications">
+              1
+            </button>
+
+            {isLoading ? (
+              <div
+                className="avatar skeleton-loader"
+                style={{ backgroundColor: "#e0e0e0", color: "transparent" }}
+              ></div>
+            ) : user ? (
+              <UserDropdown user={user} />
+            ) : (
+              <AuthButtons />
+            )}
           </div>
         </div>
       </header>
     </>
-  )
+  );
 }
 
-export default HomeHeader
+export default HomeHeader;
