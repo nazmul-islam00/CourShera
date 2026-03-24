@@ -40,8 +40,6 @@ function PopularCoursesHome({ user, isLoading }) {
 
   return (
     <div className="home-root">
-      <HomeHeader user={user} isLoading={isLoading} />
-
       <section className="results-title-wrap">
         <div className="container">
           <h1>Popular Courses</h1>

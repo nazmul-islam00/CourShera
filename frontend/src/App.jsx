@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import PopularCoursesHome from "./components/home/PopularCoursesHome";
+import HomeHeader from "./components/home/HomeHeader";
 import "./App.css";
 
 function App() {
@@ -39,7 +40,12 @@ function App() {
     getUser();
   }, []);
 
-  return <PopularCoursesHome user={user} isLoading={isLoading} />;
+  return (
+    <div>
+      <HomeHeader user={user} isLoading={isLoading} />
+      <PopularCoursesHome user={user} isLoading={isLoading} />
+    </div>
+  );
 }
 
 export default App;
