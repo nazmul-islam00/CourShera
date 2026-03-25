@@ -1,7 +1,10 @@
+import { useAuth } from "../../context/auth/AuthContext";
 import { AuthButtons } from "./AuthButtons";
 import { UserDropdown } from "./UserDropdown";
 
-function HomeHeader({ user, isLoading }) {
+const HomeHeader = () => {
+  const { user, isLoading } = useAuth();
+
   return (
     <>
       <div className="top-strip">
@@ -42,12 +45,9 @@ function HomeHeader({ user, isLoading }) {
             </button>
 
             {isLoading ? (
-              <div
-                className="avatar skeleton-loader"
-                style={{ backgroundColor: "#e0e0e0", color: "transparent" }}
-              ></div>
+              <div className="avatar skeleton-loader"></div>
             ) : user ? (
-              <UserDropdown user={user} />
+              <UserDropdown />
             ) : (
               <AuthButtons />
             )}
@@ -56,6 +56,6 @@ function HomeHeader({ user, isLoading }) {
       </header>
     </>
   );
-}
+};
 
 export default HomeHeader;

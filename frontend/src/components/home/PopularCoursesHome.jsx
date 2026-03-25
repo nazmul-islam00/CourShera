@@ -5,7 +5,7 @@ import PopularCourseCard from "./PopularCourseCard";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/test-courses`;
 
-function PopularCoursesHome({ user, isLoading }) {
+const PopularCoursesHome = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

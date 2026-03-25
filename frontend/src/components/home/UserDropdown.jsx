@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from "react";
+import { useAuth } from "../../context/auth/AuthContext";
 
-export const UserDropdown = ({ user }) => {
+export const UserDropdown = () => {
+  const { user } = useAuth();
+
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
