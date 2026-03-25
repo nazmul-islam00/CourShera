@@ -1,6 +1,6 @@
 import { CareerCertificates } from "../components/home/CareerCertificates";
 import { DegreeSection } from "../components/home/DegreeSection";
-import { HeroSection } from "../components/home/HeroSection";
+import { HeroSection } from "../components/home/HeroSection/HeroSection";
 import { InProgressCourse } from "../components/home/InProgressCourse";
 import { PartnerLogos } from "../components/home/PartnerLogos";
 import PopularCoursesHome from "../components/home/PopularCoursesHome";

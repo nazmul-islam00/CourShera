@@ -1,14 +1,14 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faFacebookF,
-  faLinkedinIn,
-  faXTwitter,
-  faYoutube,
-  faInstagram,
-  faTiktok,
-  faGooglePlay,
-  faApple,
-} from "@fortawesome/free-brands-svg-icons";
+  FaFacebookF,
+  FaLinkedinIn,
+  FaYoutube,
+  FaInstagram,
+  FaTwitter,
+  FaTiktok,
+  FaGooglePlay,
+  FaApple,
+} from "react-icons/fa";
+
 
 import "./Footer.css";
 
@@ -24,7 +24,9 @@ export const Footer = () => {
                 <a href="https://www.coursera.org/about">About</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/about/how-coursera-works/">What We Offer</a>
+                <a href="https://www.coursera.org/about/how-coursera-works/">
+                  What We Offer
+                </a>
               </li>
               <li>
                 <a href="https://blog.coursera.org/leadership/">Leadership</a>
@@ -36,28 +38,42 @@ export const Footer = () => {
                 <a href="#">Catalog</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/courseraplus">Coursera Plus</a>
+                <a href="https://www.coursera.org/courseraplus">
+                  Coursera Plus
+                </a>
               </li>
               <li>
-                <a href="https://www.coursera.org/professional-certificates">Professional Certificates</a>
+                <a href="https://www.coursera.org/professional-certificates">
+                  Professional Certificates
+                </a>
               </li>
               <li>
-                <a href="https://www.coursera.org/mastertrack">MasterTrack® Certificates</a>
+                <a href="https://www.coursera.org/mastertrack">
+                  MasterTrack® Certificates
+                </a>
               </li>
               <li>
                 <a href="https://www.coursera.org/degrees">Degrees</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/business?utm_campaign=website&utm_content=corp-to-home-footer-for-enterprise&utm_medium=coursera&utm_source=enterprise">For Enterprise</a>
+                <a href="https://www.coursera.org/business?utm_campaign=website&utm_content=corp-to-home-footer-for-enterprise&utm_medium=coursera&utm_source=enterprise">
+                  For Enterprise
+                </a>
               </li>
               <li>
-                <a href="https://www.coursera.org/government?utm_campaign=website&utm_content=corp-to-home-footer-for-government&utm_medium=coursera&utm_source=enterprise">For Government</a>
+                <a href="https://www.coursera.org/government?utm_campaign=website&utm_content=corp-to-home-footer-for-government&utm_medium=coursera&utm_source=enterprise">
+                  For Government
+                </a>
               </li>
               <li>
-                <a href="https://www.coursera.org/campus?utm_campaign=website&utm_content=corp-to-home-footer-for-campus&utm_medium=coursera&utm_source=enterprise">For Campus</a>
+                <a href="https://www.coursera.org/campus?utm_campaign=website&utm_content=corp-to-home-footer-for-campus&utm_medium=coursera&utm_source=enterprise">
+                  For Campus
+                </a>
               </li>
               <li>
-                <a href="https://www.coursera.org/partnerships?utm_medium=coursera&utm_source=partnerships&utm_campaign=website&utm_content=corp-to-home-footer-become-a-partner">Become a Partner</a>
+                <a href="https://www.coursera.org/partnerships?utm_medium=coursera&utm_source=partnerships&utm_campaign=website&utm_content=corp-to-home-footer-become-a-partner">
+                  Become a Partner
+                </a>
               </li>
             </ul>
           </div>
@@ -66,13 +82,17 @@ export const Footer = () => {
             <h2>Community</h2>
             <ul>
               <li>
-                <a href="https://www.coursera.support/s/community?language=en_US">Learners</a>
+                <a href="https://www.coursera.support/s/community?language=en_US">
+                  Learners
+                </a>
               </li>
               <li>
                 <a href="https://www.coursera.org/partners">Partners</a>
               </li>
               <li>
-                <a href="https://www.coursera.support/s/article/learner-000001137?language=en_US">Beta Testers</a>
+                <a href="https://www.coursera.support/s/article/learner-000001137?language=en_US">
+                  Beta Testers
+                </a>
               </li>
               <li>
                 <a href="https://blog.coursera.org">Blog</a>
@@ -90,7 +110,9 @@ export const Footer = () => {
                 <a href="https://www.coursera.org/about/press">Press</a>
               </li>
               <li>
-                <a href="https://investor.coursera.com/overview/default.aspx">Investors</a>
+                <a href="https://investor.coursera.com/overview/default.aspx">
+                  Investors
+                </a>
               </li>
               <li>
                 <a href="https://www.coursera.org/about/terms">Terms</a>
@@ -99,10 +121,14 @@ export const Footer = () => {
                 <a href="https://www.coursera.org/about/privacy">Privacy</a>
               </li>
               <li>
-                <a href="https://www.coursera.support/s/learner-help-center?language=en_US">Help</a>
+                <a href="https://www.coursera.support/s/learner-help-center?language=en_US">
+                  Help
+                </a>
               </li>
               <li>
-                <a href="https://www.coursera.support/s/article/learner-000001052?language=en_US">Accessibility</a>
+                <a href="https://www.coursera.support/s/article/learner-000001052?language=en_US">
+                  Accessibility
+                </a>
               </li>
               <li>
                 <a href="https://www.coursera.org/about/contact">Contact</a>
@@ -114,7 +140,9 @@ export const Footer = () => {
                 <a href="https://www.coursera.org/directory">Directory</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/about/affiliates">Affiliates</a>
+                <a href="https://www.coursera.org/about/affiliates">
+                  Affiliates
+                </a>
               </li>
             </ul>
           </div>
@@ -122,15 +150,21 @@ export const Footer = () => {
           <div className="footer-column mobile-app-col">
             <h2>Learn Anywhere</h2>
             <div className="app-badges">
-              <a href="https://apps.apple.com/us/app/coursera-grow-your-career/id736535961" className="store-badge">
-                <FontAwesomeIcon icon={faApple} className="store-icon" />
+              <a
+                href="https://apps.apple.com/us/app/coursera-grow-your-career/id736535961"
+                className="store-badge"
+              >
+                <FaApple className="store-icon" />
                 <div className="store-text">
                   <span className="store-sub">Download on the</span>
                   <span className="store-title">App Store</span>
                 </div>
               </a>
-              <a href="https://play.google.com/store/apps/details?id=org.coursera.android" className="store-badge">
-                <FontAwesomeIcon icon={faGooglePlay} className="store-icon" />
+              <a
+                href="https://play.google.com/store/apps/details?id=org.coursera.android"
+                className="store-badge"
+              >
+                <FaGooglePlay className="store-icon" />
                 <div className="store-text">
                   <span className="store-sub">GET IT ON</span>
                   <span className="store-title">Google Play</span>
@@ -147,23 +181,53 @@ export const Footer = () => {
         <div className="footer-bottom">
           <p className="copyright">© 2026 Coursera Inc. All rights reserved.</p>
           <div className="social-links">
-            <a href="https://www.facebook.com/Coursera" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-              <FontAwesomeIcon icon={faFacebookF} />
+            <a
+              href="https://www.facebook.com/Coursera"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              <FaFacebookF />
             </a>
-            <a href="https://www.linkedin.com/company/coursera" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-              <FontAwesomeIcon icon={faLinkedinIn} />
+            <a
+              href="https://www.linkedin.com/company/coursera"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedinIn />
             </a>
-            <a href="https://x.com/coursera" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-              <FontAwesomeIcon icon={faXTwitter} />
+            <a
+              href="https://x.com/coursera"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+            >
+              <FaTwitter />
             </a>
-            <a href="https://www.youtube.com/user/coursera" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-              <FontAwesomeIcon icon={faYoutube} />
+            <a
+              href="https://www.youtube.com/user/coursera"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+            >
+              <FaYoutube />
             </a>
-            <a href="https://www.instagram.com/coursera/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <FontAwesomeIcon icon={faInstagram} />
+            <a
+              href="https://www.instagram.com/coursera/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <FaInstagram />
             </a>
-            <a href="https://www.tiktok.com/@coursera" target="_blank" rel="noopener noreferrer" aria-label="Tiktok">
-              <FontAwesomeIcon icon={faTiktok} />
+            <a
+              href="https://www.tiktok.com/@coursera"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Tiktok"
+            >
+              <FaTiktok />
             </a>
           </div>
         </div>
