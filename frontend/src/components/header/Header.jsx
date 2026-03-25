@@ -2,7 +2,7 @@ import { useAuth } from "../../context/auth/AuthContext";
 import { AuthButtons } from "./AuthButtons";
 import { UserDropdown } from "./UserDropdown";
 
-const HomeHeader = () => {
+const Header = () => {
   const { user, isLoading } = useAuth();
 
   return (
@@ -58,4 +58,4 @@ const HomeHeader = () => {
   );
 };
 
-export default HomeHeader;
+export default Header;
