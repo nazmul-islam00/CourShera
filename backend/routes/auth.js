@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 const router = Router();
 
 router.get("/login/success", (req, res) => {
+  res.set("Cache-Control", "no-store");
+
   if (req.user) {
     res.status(200).json({
       success: true,
@@ -39,6 +41,7 @@ router.get(
   "/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
+    prompt: "select_account",
   }),
 );
 
