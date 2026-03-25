@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import HomeHeader from "./HomeHeader";
+import HomeHeader from "../header/Header";
 import PopularCourseCard from "./PopularCourseCard";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/test-courses`;

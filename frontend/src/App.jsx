@@ -1,12 +1,18 @@
-import PopularCoursesHome from "./components/home/PopularCoursesHome";
-import HomeHeader from "./components/home/HomeHeader";
+import { Routes, Route } from "react-router-dom";
+
 import "./App.css";
+import { HomePage } from "./pages/HomePage";
+import Header from "./components/header/Header";
+import { Footer } from "./components/footer/Footer";
 
 function App() {
   return (
-    <div>
-      <HomeHeader />
-      <PopularCoursesHome />
+    <div className="app-container">
+      <Header />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+      <Footer />
     </div>
   );
 }
