@@ -85,7 +85,11 @@ const Checkout = () => {
     }
   };
 
+  
   if (status === STATUS.SUCCESS) {
+    // if (status === STATUS.SUCCESS && responseData) {
+      console.log("Response Data:", responseData);
+    // }
     return (
       <div className="checkout-root">
         <div className="checkout-success-card">
@@ -94,7 +98,7 @@ const Checkout = () => {
           <p className="success-course">{title}</p>
           <div className="success-details">
             <div className="success-row"><span>Transaction ID</span><span>{responseData?.transactionId}</span></div>
-            <div className="success-row"><span>Amount Paid</span><span>৳{price}</span></div>
+            <div className="success-row"><span>Amount Paid</span><span>৳{responseData?.paid}</span></div>
             <div className="success-row"><span>Status</span><span className="status-badge completed">{responseData?.status}</span></div>
             <div className="success-row"><span>Processed At</span><span>{new Date(responseData?.processedAt).toLocaleString()}</span></div>
           </div>

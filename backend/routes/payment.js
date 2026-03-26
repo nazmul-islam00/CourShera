@@ -46,8 +46,17 @@ router.post("/", async (req, res) => {
   }
 
   // Find the payment record by the transaction ID the user entered
-  const payment = await prisma.payments.findUnique({
-    where: { provider_transaction_id: transaction_id },
+
+  /*
+    transactions which have null client id and null course ids can be used to map new users to courses
+    because otherwise, same transaction_id can be used again and again without making payment
+  */
+  const payment = await prisma.payments.findFirst({
+    where: {
+      provider_transaction_id: transaction_id,
+      client_id: null,
+      course_id: null,
+    },
   });
 
   if (!payment) {
@@ -76,7 +85,7 @@ router.post("/", async (req, res) => {
 
   // atp: payment.status === "COMPLETED"
 
-  // Check if already enrolled
+  // Check if already enrolled (this check should not be here, but frontend should check first, whether enrolled or not, will fix later) <--------------------
   const existingEnrollment = await prisma.enrollments.findUnique({
     where: {
       client_id_course_id: {
@@ -87,12 +96,23 @@ router.post("/", async (req, res) => {
   });
 
   if (existingEnrollment) {
+    await prisma.payments.update({
+      where: { provider_transaction_id: transaction_id },
+      data: {
+        client_id: client.client_id,
+        course_id: courseId,
+      },
+    });
+
     return res.status(200).json({
       status: "COMPLETED",
       transactionId: payment.provider_transaction_id,
       processedAt: payment.processed_at,
+      paid: payment.amount
     });
   }
+  // <---------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
   // Link the payment to this user + course, then enroll them
   await prisma.payments.update({
@@ -115,9 +135,10 @@ router.post("/", async (req, res) => {
   });
 
   return res.status(200).json({
-    status:        "COMPLETED",
+    status: "COMPLETED",
     transactionId: payment.provider_transaction_id,
-    processedAt:   payment.processed_at,
+    processedAt: payment.processed_at,
+    paid: payment.amount
   });
 });
 
