@@ -57,6 +57,13 @@ app.listen(process.env.PORT, () => {
 // Eikhane route add korbi
 // module wise organize koirish
 
+
+app.post('/payment', (req, res) => {
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+  res.send('ok');
+});
+
 app.get("/test-courses", async (req, res) => {
   const courses = await prisma.courses.findMany();
   res.json(courses);

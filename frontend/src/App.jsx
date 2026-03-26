@@ -1,13 +1,23 @@
-import PopularCoursesHome from "./components/home/PopularCoursesHome";
+import { Routes, Route } from "react-router-dom";
 import HomeHeader from "./components/home/HomeHeader";
+import PopularCoursesHome from "./components/home/PopularCoursesHome";
+import Checkout from "./components/checkout/Checkout";
 import "./App.css";
 
 function App() {
   return (
-    <div>
-      <HomeHeader />
-      <PopularCoursesHome />
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <div>
+            <HomeHeader />
+            <PopularCoursesHome />
+          </div>
+        }
+      />
+      <Route path="/checkout" element={<Checkout />} />
+    </Routes>
   );
 }
 
