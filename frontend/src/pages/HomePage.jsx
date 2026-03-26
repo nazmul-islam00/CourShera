@@ -5,7 +5,7 @@ import { InProgressCourse } from "../components/home/InProgressCourse";
 import { PartnerLogos } from "../components/home/PartnerLogos/PartnerLogos";
 import PopularCoursesHome from "../components/home/PopularCoursesHome";
 import { RecommendedCourses } from "../components/home/RecommendedCourses";
-import { WelcomeBanner } from "../components/home/WelcomeBanner";
+import { WelcomeBanner } from "../components/home/WelcomeBanner/WelcomeBanner";
 import { ExploreRoles } from "../components/home/ExploreRoles";
 import { useAuth } from "../context/auth/AuthContext";
 
@@ -16,11 +16,13 @@ export const HomePage = () => {
     <div className="home-page">
       <main className="main-content">
         {user && (
-          <section className="authenticated-view container">
+          <>
             <WelcomeBanner />
-            <InProgressCourse />
-            <RecommendedCourses />
-          </section>
+            <section className="authenticated-view container">
+              <InProgressCourse />
+              <RecommendedCourses />
+            </section>
+          </>
         )}
         <section className="guest-view">
           <HeroSection />

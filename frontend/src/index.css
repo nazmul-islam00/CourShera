@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap");
+
 * {
   box-sizing: border-box;
 }
@@ -8,7 +10,9 @@ html {
 
 body {
   margin: 0;
-  font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    "Source Sans 3", "Source Sans Pro", "Segoe UI", "Helvetica Neue", Arial,
+    sans-serif;
   color: var(--foreground);
   background: var(--background);
   text-rendering: optimizeLegibility;
