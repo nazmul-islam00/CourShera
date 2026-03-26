@@ -1,6 +1,7 @@
 import passport from "passport";
 import dotenv from "dotenv";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import prisma from "./db.js";
 
 passport.use(
   new GoogleStrategy(
@@ -9,8 +10,22 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:5000/auth/google/callback",
     },
-    function (accessToken, refreshToken, profile, done) {
-      done(null, profile);
+    async function (accessToken, refreshToken, profile, done) {
+      try {
+        const email = profile.emails?.[0]?.value;
+
+        if (email) {
+          await prisma.clients.upsert({
+            where:  { email },
+            create: { email, name: profile.displayName ?? null, password: "" },
+            update: {},
+          });
+        }
+
+        done(null, profile);
+      } catch (err) {
+        done(err, null);
+      }
     },
   ),
 );

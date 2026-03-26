@@ -7,6 +7,7 @@ import passport from "passport";
 import "./passport.js";
 import authRoute from "./routes/auth.js";
 import coursesRoute from "./routes/courses.js"
+import paymentRoute from "./routes/payment.js";
 import prisma from "./db.js";
 
 import { parseSms } from "./smsParser.js";
@@ -51,6 +52,7 @@ app.use(passport.session());
 
 app.use("/auth", authRoute);
 app.use("/courses", coursesRoute);
+app.use("/payment", paymentRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server has started running on port ${process.env.PORT}`);
@@ -59,9 +61,32 @@ app.listen(process.env.PORT, () => {
 // Eikhane route add korbi
 // module wise organize koirish
 
+
+// app.post('/payment', (req, res) => {
+//   console.log('Headers:', req.headers);
+//   console.log('Body:', req.body);
+//   res.send('ok');
+// });
+
 app.get("/test-courses", async (req, res) => {
   const courses = await prisma.courses.findMany();
   res.json(courses);
+});
+
+app.get("/courses/:courseId", async (req, res) => {
+  try {
+    const course = await prisma.courses.findUnique({
+      where: { course_id: req.params.courseId },
+    });
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    res.json(course);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // ekhon, sms webhook runs with ngrok tunneling. runs only on rubaiyat's machine. when deployed, we'll change the webhook with a publishable address. 
@@ -133,8 +158,8 @@ async function savePayment(parsed) {
     data: {
       transaction_id:          internalId,
       provider_transaction_id: parsed.trxId ?? null,
-      client_id:               2105094,
-      course_id:               "cse_101",
+      // client_id:               2105094,
+      // course_id:               "cse_101",
       amount:                  parsed.amount,
       fee:                     parsed.fee    ?? 0.00,
       currency:                "BDT",
