@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
           {
             method: "GET",
             credentials: "include",
+            cache: "no-store",
             headers: {
               Accept: "application/json",
               "Content-Type": "application/json",

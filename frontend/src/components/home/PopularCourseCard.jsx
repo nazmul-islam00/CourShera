@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../../context/checkout/CheckoutContext";
 import { fallbackCourseImages } from "../../utils/fallbackCourseImages";
+import { Link } from "react-router-dom";
 
 function PopularCourseCard({ course, index }) {
   const image = fallbackCourseImages[index % fallbackCourseImages.length];
@@ -36,7 +37,9 @@ function PopularCourseCard({ course, index }) {
           <span>{course.partner_id || "Coursera Partner"}</span>
         </div>
 
-        <h3>{course.title || "Untitled Course"}</h3>
+        <Link to={`/course/${course.course_id}`}>
+          <h3>{course.title || "Untitled Course"}</h3>
+        </Link>
 
         <p className="description-clamp">
           {course.description || "No course description available yet."}

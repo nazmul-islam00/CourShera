@@ -1,14 +1,20 @@
+import { useState } from "react";
+
+import { AuthModal } from "./AuthModal";
+
 export const AuthButtons = () => {
-  const backendAuthUrl = `${import.meta.env.VITE_API_URL}/auth/google`;
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="auth-buttons">
-      <a href={backendAuthUrl} className="login-link">
+      <button onClick={() => setIsModalOpen(true)} className="login-link">
         Log In
-      </a>
-      <a href={backendAuthUrl} className="join-button">
+      </button>
+      <button onClick={() => setIsModalOpen(true)} className="join-button">
         Join for Free
-      </a>
+      </button>
+
+      {isModalOpen && <AuthModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
 };
