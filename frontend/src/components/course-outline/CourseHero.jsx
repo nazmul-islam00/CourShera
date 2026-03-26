@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { Clock, Globe, Star, Users } from "lucide-react";
+import { useCheckout } from "../../context/checkout/CheckoutContext";
 
 const formatStudents = (count) => {
   if (!count || count < 1) {
@@ -16,6 +18,19 @@ const formatStudents = (count) => {
 const formatNumber = (value) => value.toLocaleString("en-US");
 
 function CourseHero({ outline }) {
+  const navigate = useNavigate();
+  const { setCourseForCheckout } = useCheckout();
+
+  const handleEnroll = () => {
+    setCourseForCheckout({
+      courseId: outline.courseId,
+      title: outline.title || "Untitled Course",
+      price: outline.price ?? 0,
+      currency: "BDT",
+    });
+    navigate("/checkout");
+  };
+
   return (
     <section className="outline-hero">
       <div className="container outline-hero-inner">
@@ -43,7 +58,7 @@ function CourseHero({ outline }) {
         </div>
 
         <div className="outline-cta-row">
-          <button type="button" className="outline-btn-primary">
+          <button type="button" className="outline-btn-primary" onClick={handleEnroll}>
             Enroll for Free
           </button>
           <button type="button" className="outline-btn-secondary">
