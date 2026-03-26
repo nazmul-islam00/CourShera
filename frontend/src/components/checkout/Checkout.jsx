@@ -71,10 +71,10 @@ const Checkout = () => {
         }
       } else if (response.status === 402) {
         setStatus(STATUS.FAILED);
-        setErrorMessage("Transaction not found or amount mismatch. Please double-check and try again.");
+        setErrorMessage(data?.message || "Transaction failed. Please double-check and try again.");
       } else if (response.status === 401) {
         setStatus(STATUS.ERROR);
-        setErrorMessage("You must be logged in to complete a purchase.");
+        setErrorMessage(data?.message || "You must be logged in to complete a purchase.");
       } else {
         setStatus(STATUS.ERROR);
         setErrorMessage(data?.message || "Something went wrong. Please try again.");

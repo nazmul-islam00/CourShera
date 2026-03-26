@@ -9,7 +9,7 @@ const API_URL = `${import.meta.env.VITE_API_URL}/test-courses`;
 const CSE_101 = {
   courseId: "cse_101",
   title: "Introduction to Computer Science",
-  price: 1500,
+  price: 1,
   currency: "BDT",
 };
 

@@ -6,6 +6,7 @@ import passport from "passport";
 
 import "./passport.js";
 import authRoute from "./routes/auth.js";
+import paymentRoute from "./routes/payment.js";
 import prisma from "./db.js";
 
 import { parseSms } from "./smsParser.js";
@@ -49,6 +50,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRoute);
+app.use("/payment", paymentRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server has started running on port ${process.env.PORT}`);
@@ -58,11 +60,11 @@ app.listen(process.env.PORT, () => {
 // module wise organize koirish
 
 
-app.post('/payment', (req, res) => {
-  console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
-  res.send('ok');
-});
+// app.post('/payment', (req, res) => {
+//   console.log('Headers:', req.headers);
+//   console.log('Body:', req.body);
+//   res.send('ok');
+// });
 
 app.get("/test-courses", async (req, res) => {
   const courses = await prisma.courses.findMany();
@@ -138,8 +140,8 @@ async function savePayment(parsed) {
     data: {
       transaction_id:          internalId,
       provider_transaction_id: parsed.trxId ?? null,
-      client_id:               2105094,
-      course_id:               "cse_101",
+      // client_id:               2105094,
+      // course_id:               "cse_101",
       amount:                  parsed.amount,
       fee:                     parsed.fee    ?? 0.00,
       currency:                "BDT",
