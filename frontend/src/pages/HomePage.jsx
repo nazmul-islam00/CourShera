@@ -3,10 +3,10 @@ import { DegreeSection } from "../components/home/DegreeSection/DegreeSection";
 import { HeroSection } from "../components/home/HeroSection/HeroSection";
 import { InProgressCourses } from "../components/home/InProgressCourses/InProgressCourses";
 import { PartnerLogos } from "../components/home/PartnerLogos/PartnerLogos";
-import PopularCoursesHome from "../components/home/PopularCoursesHome";
+import PopularCoursesHome from "../components/home/PopularCourses/PopularCoursesHome";
 import { RecommendedCourses } from "../components/home/RecommendedCourses/RecommendedCourses";
 import { WelcomeBanner } from "../components/home/WelcomeBanner/WelcomeBanner";
-import { ExploreRoles } from "../components/home/ExploreRoles";
+import { ExploreRoles } from "../components/home/ExploreRoles/ExploreRoles";
 import { useAuth } from "../context/auth/AuthContext";
 
 export const HomePage = () => {

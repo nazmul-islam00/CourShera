@@ -116,11 +116,27 @@ router.get("/recommendations", async (req, res) => {
     }));
 
     res.status(200).json(formattedRecommendations);
-    
   } catch (error) {
     console.error("Error fetching recommendations:", error);
     res.status(500).json({
       error: "Failed to fetch recommended courses",
+    });
+  }
+});
+
+router.get("/popular", async (req, res) => {
+  try {
+    const popularCourses = await prisma.courses.findMany({
+      include: { partners: true },
+      orderBy: [{ enrolment_count: "desc" }, { avg_rating: "desc" }],
+      take: 12,
+    });
+
+    res.status(200).json(popularCourses);
+  } catch (error) {
+    console.error("Error fetching popular courses:", error);
+    res.status(500).json({
+      error: "Failed to fetch popular courses",
     });
   }
 });

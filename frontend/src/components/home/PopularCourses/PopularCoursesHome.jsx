@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-import HomeHeader from "../header/Header";
 import PopularCourseCard from "./PopularCourseCard";
+import "./PopularCourses.css";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/test-courses`;
+const API_URL = `${import.meta.env.VITE_API_URL}/courses/popular`;
 
 const PopularCoursesHome = () => {
   const [courses, setCourses] = useState([]);
@@ -42,8 +42,7 @@ const PopularCoursesHome = () => {
     <div className="home-root">
       <section className="results-title-wrap">
         <div className="container">
-          <h1>Popular Courses</h1>
-          <p>Showing all courses from backend endpoint: {API_URL}</p>
+          <h2 className="section-title">Popular Courses</h2>
         </div>
       </section>
 
@@ -72,6 +71,6 @@ const PopularCoursesHome = () => {
       </main>
     </div>
   );
-}
+};
 
 export default PopularCoursesHome;

@@ -1,4 +1,4 @@
-import { fallbackCourseImages } from "../../utils/fallbackCourseImages";
+import { fallbackCourseImages } from "../../../utils/fallbackCourseImages";
 
 function PopularCourseCard({ course, index }) {
   const image = fallbackCourseImages[index % fallbackCourseImages.length];
