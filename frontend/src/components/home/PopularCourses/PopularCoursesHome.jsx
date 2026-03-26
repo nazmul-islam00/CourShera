@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../../../context/checkout/CheckoutContext";
-import HomeHeader from "./HomeHeader";
 import PopularCourseCard from "./PopularCourseCard";
 import "./PopularCourses.css";
 
