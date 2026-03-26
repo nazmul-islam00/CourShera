@@ -1,8 +1,22 @@
+import { useNavigate } from "react-router-dom";
+import { useCheckout } from "../../context/checkout/CheckoutContext";
 import { fallbackCourseImages } from "../../utils/fallbackCourseImages";
 import { Link } from "react-router-dom";
 
 function PopularCourseCard({ course, index }) {
   const image = fallbackCourseImages[index % fallbackCourseImages.length];
+  const navigate = useNavigate();
+  const { setCourseForCheckout } = useCheckout();
+
+  const handleEnroll = () => {
+    setCourseForCheckout({
+      courseId: course.course_id,
+      title: course.title || "Untitled Course",
+      price: course.price ?? 0,
+      currency: "BDT",
+    });
+    navigate("/checkout");
+  };
 
   return (
     <article className="popular-card">
@@ -41,7 +55,10 @@ function PopularCourseCard({ course, index }) {
           {course.difficulty || "Beginner"} · {course.language || "English"} ·{" "}
           {course.price ?? "Free"}
         </p>
-        
+
+        <button className="enroll-btn" onClick={handleEnroll}>
+          Enroll Now
+        </button>
       </div>
     </article>
   );

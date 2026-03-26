@@ -1,13 +1,24 @@
 import { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { useCheckout } from "../../context/checkout/CheckoutContext";
+import HomeHeader from "./HomeHeader";
 import PopularCourseCard from "./PopularCourseCard";
 
 const API_URL = `${import.meta.env.VITE_API_URL}/test-courses`;
+
+const CSE_101 = {
+  courseId: "cse_101",
+  title: "Introduction to Computer Science",
+  price: 1,
+  currency: "BDT",
+};
 
 const PopularCoursesHome = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { setCourseForCheckout } = useCheckout();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -37,8 +48,27 @@ const PopularCoursesHome = () => {
     return () => controller.abort();
   }, []);
 
+  const handleBuyCse101 = () => {
+    setCourseForCheckout(CSE_101);
+    navigate("/checkout");
+  };
+
   return (
+    /*debug purposes*/
     <div className="home-root">
+      <section className="featured-course-banner">
+        <div className="container featured-inner">
+          <div className="featured-text">
+            <span className="featured-label">Featured Course</span>
+            <h2>{CSE_101.title}</h2>
+            <p>Start your journey into Computer Science. Beginner-friendly · English · {CSE_101.price}</p>
+          </div>
+          <button className="featured-buy-btn" onClick={handleBuyCse101}>
+            Buy Now — {CSE_101.price}
+          </button>
+        </div>
+      </section>
+
       <section className="results-title-wrap">
         <div className="container">
           <h1>Popular Courses</h1>
