@@ -1,0 +1,148 @@
+.explore-roles-section {
+  padding: 48px 0;
+  margin: 0 auto;
+}
+
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin: 0;
+}
+
+.courses-track-wrapper {
+  position: relative;
+}
+
+.courses-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding-bottom: 16px; 
+  scrollbar-width: none; 
+  -ms-overflow-style: none; 
+  scroll-snap-type: x mandatory;
+}
+
+.courses-track::-webkit-scrollbar {
+  display: none;
+}
+
+.course-fade {
+  position: absolute;
+  top: 0;
+  bottom: 16px;
+  width: 60px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.course-fade.visible {
+  opacity: 1;
+}
+
+.fade-left {
+  left: 0;
+  background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.fade-right {
+  right: 0;
+  background: linear-gradient(to left, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.role-card {
+  flex: 0 0 280px; 
+  scroll-snap-align: start;
+  background: #ffffff;
+  border: 1px solid #e5e7f0;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.role-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.role-image-container {
+  height: 120px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.role-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.role-card:hover .role-image {
+  transform: scale(1.05);
+}
+
+.role-content {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.role-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f1f1f;
+  margin: 0 0 16px 0;
+}
+
+.role-card:hover .role-title {
+  color: #0056d2;
+}
+
+.role-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #636363;
+}
+
+.stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.role-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7f0;
+}
+
+.explore-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0056d2;
+}
