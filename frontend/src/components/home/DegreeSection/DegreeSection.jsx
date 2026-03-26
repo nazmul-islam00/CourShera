@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 
-import { careerCertificatesData } from "./CareerCertificatesData";
-import "./CareerCertificates.css";
+import { degreeSectionData } from "./DegreeSectionData";
+import "./DegreeSection.css";
 
-export const CareerCertificates = () => {
+export const DegreeSection = () => {
   const trackRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -27,11 +27,9 @@ export const CareerCertificates = () => {
   }, []);
 
   return (
-    <div className="courses-section-container">
+    <div className="courses-section-container container">
       <div className="section-header">
-        <h2 className="section-title">
-          Launch your new career with a Professional Certificate
-        </h2>
+        <h2 className="section-title">Earn a Degree</h2>
         <a href="" className="see-all-link">
           See all
         </a>
@@ -43,39 +41,32 @@ export const CareerCertificates = () => {
         ></div>
 
         <div className="courses-track" ref={trackRef} onScroll={checkScroll}>
-          {careerCertificatesData.map((cert) => (
+          {degreeSectionData.map((degree) => (
             <div
-              key={cert.id}
+              key={degree.id}
               className="course-card"
               onClick={() => {
-                if (cert.url) {
-                  window.open(cert.url, "_blank");
+                if (degree.url) {
+                  window.open(degree.url, "_blank");
                 }
               }}
             >
               <div className="card-image-container">
                 <img
-                  src={cert.imageUrl}
-                  alt={cert.title}
+                  src={degree.imageUrl}
+                  alt={degree.title}
                   className="card-image"
                 />
-                <div className="partner-logo-mini">{cert.partnerLogo}</div>
+                <div className="partner-logo-mini">{degree.partnerLogo}</div>
               </div>
 
               <div className="card-content">
-                <div className="partner-name">{cert.partner}</div>
-                <h3 className="course-title">{cert.title}</h3>
-                <div className="course-type">{cert.type}</div>
+                <div className="partner-name">{degree.partner}</div>
+                <h3 className="course-title">{degree.title}</h3>
+                <div className="course-type degree-type">{degree.type}</div>
 
-                <div className="course-meta">
-                  <div className="rating-container">
-                    <span className="star-icon">★</span>
-                    <span className="rating-score">{cert.rating}</span>
-                    <span className="review-count">
-                      ({cert.reviews} reviews)
-                    </span>
-                  </div>
-                  <div className="time-to-complete">{cert.timeToComplete}</div>
+                <div className="degree-meta">
+                  <span className="degree-cta">Earn your degree</span>
                 </div>
               </div>
             </div>

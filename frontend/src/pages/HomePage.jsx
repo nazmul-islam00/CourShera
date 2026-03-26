@@ -1,5 +1,5 @@
 import { CareerCertificates } from "../components/home/CareerCertificates/CareerCertificates";
-import { DegreeSection } from "../components/home/DegreeSection";
+import { DegreeSection } from "../components/home/DegreeSection/DegreeSection";
 import { HeroSection } from "../components/home/HeroSection/HeroSection";
 import { InProgressCourses } from "../components/home/InProgressCourses/InProgressCourses";
 import { PartnerLogos } from "../components/home/PartnerLogos/PartnerLogos";
