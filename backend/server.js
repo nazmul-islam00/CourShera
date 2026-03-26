@@ -62,6 +62,22 @@ app.get("/test-courses", async (req, res) => {
   res.json(courses);
 });
 
+app.get("/courses/:courseId", async (req, res) => {
+  try {
+    const course = await prisma.courses.findUnique({
+      where: { course_id: req.params.courseId },
+    });
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    res.json(course);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ekhon, sms webhook runs with ngrok tunneling. runs only on rubaiyat's machine. when deployed, we'll change the webhook with a publishable address. 
 // steps : 
 // 1. terminal : ngrok http 5000
