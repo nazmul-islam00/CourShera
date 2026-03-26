@@ -56,37 +56,37 @@ model course_progress {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model courses {
-  course_id       String            @id @db.VarChar(50)
-  title           String            @db.VarChar(255)
-  partner_id      String            @db.VarChar(50)
-  instructor_name String            @db.VarChar(255)
-  description     String?
-  course_tagline  String?           @db.VarChar(255)
-  credits         Int               @default(0) @db.SmallInt
-  language        String            @default("English") @db.VarChar(50)
-  price           Decimal           @default(0.00) @db.Decimal(10, 2)
-  difficulty      difficulty_level  @default(Beginner)
-  avg_rating      Decimal           @default(0.00) @db.Decimal(3, 2)
-  review_count    Int?              @default(0)
-  course_duration_hours Decimal?    @db.Decimal(5, 2)
-  enrolment_count Int               @default(0)
-  instructor_image_url      String? @db.VarChar(255)
-  instructor_title          String? @db.VarChar(255)
-  instructor_organization   String? @db.VarChar(255)
-  instructor_bio            String?
-  instructor_rating         Decimal? @db.Decimal(3, 2)
-  instructor_review_count   Int?    @default(0)
-  instructor_student_count  Int?    @default(0)
-  instructor_course_count   Int?    @default(0)
-  skills           Json?
-  learning_outcomes Json?
-  curriculum       Json?
-  created_at      DateTime          @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime          @default(now()) @db.Timestamptz(6)
-  course_progress course_progress[]
-  partners        partners          @relation(fields: [partner_id], references: [partner_id], onUpdate: NoAction)
-  enrollments     enrollments[]
-  payments        payments[]
+  course_id                String            @id @db.VarChar(50)
+  title                    String            @db.VarChar(255)
+  partner_id               String            @db.VarChar(50)
+  instructor_name          String            @db.VarChar(255)
+  description              String?
+  credits                  Int               @default(0) @db.SmallInt
+  language                 String            @default("English") @db.VarChar(50)
+  price                    Decimal           @default(0.00) @db.Decimal(10, 2)
+  difficulty               difficulty_level  @default(Beginner)
+  avg_rating               Decimal           @default(0.00) @db.Decimal(3, 2)
+  enrolment_count          Int               @default(0)
+  created_at               DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime          @default(now()) @db.Timestamptz(6)
+  course_tagline           String?           @db.VarChar(255)
+  review_count             Int?              @default(0)
+  course_duration_hours    Decimal?          @db.Decimal(5, 2)
+  instructor_image_url     String?           @db.VarChar(255)
+  instructor_title         String?           @db.VarChar(255)
+  instructor_organization  String?           @db.VarChar(255)
+  instructor_bio           String?
+  instructor_rating        Decimal?          @db.Decimal(3, 2)
+  instructor_review_count  Int?              @default(0)
+  instructor_student_count Int?              @default(0)
+  instructor_course_count  Int?              @default(0)
+  skills                   Json?             @default("[]")
+  learning_outcomes        Json?             @default("[]")
+  curriculum               Json?             @default("[]")
+  course_progress          course_progress[]
+  partners                 partners          @relation(fields: [partner_id], references: [partner_id], onUpdate: NoAction)
+  enrollments              enrollments[]
+  payments                 payments[]
 
   @@index([avg_rating(sort: Desc)], map: "idx_courses_avg_rating")
   @@index([description(ops: raw("gin_trgm_ops"))], map: "idx_courses_description_trgm", type: Gin)
@@ -123,8 +123,8 @@ model partners {
 model payments {
   transaction_id          String           @id @db.VarChar(50)
   provider_transaction_id String?          @unique @db.VarChar(100)
-  client_id               Int
-  course_id               String           @db.VarChar(50)
+  client_id               Int?
+  course_id               String?          @db.VarChar(50)
   amount                  Decimal          @db.Decimal(12, 2)
   fee                     Decimal          @default(0.00) @db.Decimal(10, 2)
   currency                String           @default("BDT") @db.VarChar(10)
@@ -133,8 +133,8 @@ model payments {
   status                  payment_status   @default(PENDING)
   transaction_type        transaction_type @default(PAYMENT)
   processed_at            DateTime         @default(now()) @db.Timestamptz(6)
-  clients                 clients          @relation(fields: [client_id], references: [client_id], onUpdate: NoAction)
-  courses                 courses          @relation(fields: [course_id], references: [course_id], onUpdate: NoAction)
+  clients                 clients?         @relation(fields: [client_id], references: [client_id], onDelete: Restrict, onUpdate: NoAction)
+  courses                 courses?         @relation(fields: [course_id], references: [course_id], onDelete: Restrict, onUpdate: NoAction)
   refunds                 refunds[]
 
   @@index([client_id], map: "idx_payments_client_id")
