@@ -13,8 +13,10 @@ import { useState } from "react";
 import { PlusBg, BusinessBg, StartBg } from "./HeroSectionImages";
 import { AuthModal } from "../../header/AuthModal";
 import "./HeroSection.css";
+import { useAuth } from "../../../context/auth/AuthContext";
 
 export const HeroSection = () => {
+  const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -71,22 +73,26 @@ export const HeroSection = () => {
             <BusinessBg />
           </div>
         </div>
-        <div id="banner-start" className="hero-banner banner-light">
-          <div className="banner-content">
-            <h1>Start, switch, or advance your career</h1>
-            <p>Grow with courses from top organizations</p>
-            <button
-              className="btn-primary"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Join for Free <FaArrowRight />
-            </button>
-            {isModalOpen && <AuthModal onClose={() => setIsModalOpen(false)} />}
+        {!user && (
+          <div id="banner-start" className="hero-banner banner-light">
+            <div className="banner-content">
+              <h1>Start, switch, or advance your career</h1>
+              <p>Grow with courses from top organizations</p>
+              <button
+                className="btn-primary"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Join for Free <FaArrowRight />
+              </button>
+              {isModalOpen && (
+                <AuthModal onClose={() => setIsModalOpen(false)} />
+              )}
+            </div>
+            <div className="banner-visual">
+              <StartBg />
+            </div>
           </div>
-          <div className="banner-visual">
-            <StartBg />
-          </div>
-        </div>
+        )}
       </div>
 
       <div className="hero-quick-links">
