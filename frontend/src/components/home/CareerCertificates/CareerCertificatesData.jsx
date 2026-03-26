@@ -1,0 +1,67 @@
+export const careerCertificatesData = [
+  {
+    id: "cert_1",
+    partner: "Google",
+    title: "Google Data Analytics",
+    type: "Professional Certificate",
+    rating: 4.8,
+    reviews: "135K",
+    timeToComplete: "6 months",
+    imageUrl:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=300&q=80",
+    partnerLogo: "G",
+    url: "https://www.coursera.org/professional-certificates/google-data-analytics",
+  },
+  {
+    id: "cert_2",
+    partner: "Meta",
+    title: "Meta Front-End Developer",
+    type: "Professional Certificate",
+    rating: 4.7,
+    reviews: "18K",
+    timeToComplete: "7 months",
+    imageUrl:
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=300&q=80",
+    partnerLogo: "M",
+    url: "https://www.coursera.org/professional-certificates/meta-front-end-developer",
+  },
+  {
+    id: "cert_3",
+    partner: "Google",
+    title: "Google Project Management:",
+    type: "Professional Certificate",
+    rating: 4.9,
+    reviews: "95K",
+    timeToComplete: "6 months",
+    imageUrl:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=300&q=80",
+    partnerLogo: "G",
+    url: "https://www.coursera.org/professional-certificates/google-project-management",
+  },
+  {
+    id: "cert_4",
+    partner: "IBM",
+    title: "IBM Cybersecurity Analyst",
+    type: "Professional Certificate",
+    rating: 4.6,
+    reviews: "22K",
+    timeToComplete: "8 months",
+    imageUrl:
+      "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=300&q=80",
+    partnerLogo: "I",
+    url: "https://www.coursera.org/professional-certificates/ibm-cybersecurity-analyst",
+  },
+  {
+    id: "cert_5",
+    partner: "Google",
+    title: "Google UX Design",
+    type: "Professional Certificate",
+    rating: 4.8,
+    reviews: "74K",
+    timeToComplete: "6 months",
+    imageUrl:
+      "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=300&q=80",
+    partnerLogo: "G",
+    url: "https://www.coursera.org/professional-certificates/google-ux-design",
+  },
+];

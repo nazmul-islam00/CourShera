@@ -101,7 +101,7 @@ export const InProgressCourses = () => {
 
   if (isLoading) {
     return (
-      <div className="courses-section-container">
+      <div className="courses-section-container container">
         <h2 className="section-title">In Progress</h2>
         <p>Loading your courses...</p>
       </div>
@@ -113,7 +113,7 @@ export const InProgressCourses = () => {
   }
 
   return (
-    <div className="courses-section-container">
+    <div className="courses-section-container container">
       <h2 className="section-title">In Progress</h2>
 
       <div className="courses-track-wrapper">

@@ -1,4 +1,4 @@
-import { CareerCertificates } from "../components/home/CareerCertificates";
+import { CareerCertificates } from "../components/home/CareerCertificates/CareerCertificates";
 import { DegreeSection } from "../components/home/DegreeSection";
 import { HeroSection } from "../components/home/HeroSection/HeroSection";
 import { InProgressCourses } from "../components/home/InProgressCourses/InProgressCourses";
