@@ -1,6 +1,5 @@
 import { Router } from "express";
 import passport from "passport";
-import dotenv from "dotenv";
 
 const router = Router();
 

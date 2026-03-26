@@ -3,10 +3,6 @@ import {
   FaCertificate,
   FaBriefcase,
   FaGraduationCap,
-  FaGoogle,
-  FaMicrosoft,
-  FaApple,
-  FaFacebookF,
 } from "react-icons/fa";
 import { useState } from "react";
 

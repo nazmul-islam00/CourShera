@@ -11,9 +11,7 @@ export const PartnerLogos = () => {
   const handleScroll = () => {
     if (trackRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
-
       setShowLeftArrow(scrollLeft > 0);
-
       setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 1);
     }
   };
@@ -36,7 +34,7 @@ export const PartnerLogos = () => {
 
   return (
     <section className="partner-logos-section">
-      <div className="partner-logos-container">
+      <div className="partner-logos container">
         <h2 className="partner-heading">
           Learn from 350+ leading universities and companies
         </h2>

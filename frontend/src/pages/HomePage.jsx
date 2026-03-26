@@ -1,10 +1,10 @@
 import { CareerCertificates } from "../components/home/CareerCertificates";
 import { DegreeSection } from "../components/home/DegreeSection";
 import { HeroSection } from "../components/home/HeroSection/HeroSection";
-import { InProgressCourse } from "../components/home/InProgressCourse";
+import { InProgressCourses } from "../components/home/InProgressCourses/InProgressCourses";
 import { PartnerLogos } from "../components/home/PartnerLogos/PartnerLogos";
 import PopularCoursesHome from "../components/home/PopularCoursesHome";
-import { RecommendedCourses } from "../components/home/RecommendedCourses";
+import { RecommendedCourses } from "../components/home/RecommendedCourses/RecommendedCourses";
 import { WelcomeBanner } from "../components/home/WelcomeBanner/WelcomeBanner";
 import { ExploreRoles } from "../components/home/ExploreRoles";
 import { useAuth } from "../context/auth/AuthContext";
@@ -19,7 +19,7 @@ export const HomePage = () => {
           <>
             <WelcomeBanner />
             <section className="authenticated-view container">
-              <InProgressCourse />
+              <InProgressCourses />
               <RecommendedCourses />
             </section>
           </>

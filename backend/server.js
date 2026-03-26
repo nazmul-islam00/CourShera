@@ -6,6 +6,7 @@ import passport from "passport";
 
 import "./passport.js";
 import authRoute from "./routes/auth.js";
+import coursesRoute from "./routes/courses.js"
 import prisma from "./db.js";
 
 import { parseSms } from "./smsParser.js";
@@ -49,6 +50,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRoute);
+app.use("/courses", coursesRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server has started running on port ${process.env.PORT}`);
