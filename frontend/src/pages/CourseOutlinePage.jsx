@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import HomeHeader from "../components/home/HomeHeader";
 import CourseHero from "../components/course-outline/CourseHero";
 import WhatYouWillLearn from "../components/course-outline/WhatYouWillLearn";
 import CourseSyllabus from "../components/course-outline/CourseSyllabus";
@@ -82,7 +81,6 @@ function CourseOutlinePage() {
 
   return (
     <div className="outline-page-root">
-      <HomeHeader />
 
       {loading && (
         <main className="container outline-status-wrap">

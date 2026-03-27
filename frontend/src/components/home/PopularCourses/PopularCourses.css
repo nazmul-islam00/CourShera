@@ -1,0 +1,66 @@
+.home-root {
+  background-color: #ffffff;
+  min-height: 50vh;
+}
+
+.results-title-wrap {
+  padding: 0 0 0 0;
+  border-bottom: none;
+}
+
+.results-title-wrap h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f1f1f;
+  margin: 0;
+}
+
+.cards-section {
+  border-top: none;
+  padding-top: 0;
+  padding-bottom: 64px;
+  margin-top: 0;
+}
+
+.results-title-wrap p {
+  font-size: 14px;
+  color: #636363;
+  margin: 0;
+}
+
+.home-status {
+  font-size: 16px;
+  color: #636363;
+  text-align: center;
+  padding: 48px 0;
+  background-color: #f5f7f8;
+  border-radius: 8px;
+  border: 1px dashed #cdd4da;
+}
+
+.home-status-error {
+  color: #b32d0f;
+  background-color: #fceceb;
+  border-color: #f0c3bd;
+}
+
+.popular-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .results-title-wrap {
+    padding: 0 0 16px 0;
+  }
+
+  .results-title-wrap h1 {
+    font-size: 24px;
+  }
+
+  .popular-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+}

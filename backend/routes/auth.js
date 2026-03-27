@@ -1,6 +1,5 @@
 import { Router } from "express";
 import passport from "passport";
-import dotenv from "dotenv";
 
 const router = Router();
 
@@ -49,7 +48,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     successRedirect: process.env.CLIENT_URL,
-    failureRedirect: "/login/failed",
+    failureRedirect: process.env.CLIENT_URL,
   }),
 );
 

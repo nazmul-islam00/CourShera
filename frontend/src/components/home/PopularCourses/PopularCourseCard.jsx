@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useCheckout } from "../../context/checkout/CheckoutContext";
-import { fallbackCourseImages } from "../../utils/fallbackCourseImages";
+import { useCheckout } from "../../../context/checkout/CheckoutContext";
+import { fallbackCourseImages } from "../../../utils/fallbackCourseImages";
 import { Link } from "react-router-dom";
 
 function PopularCourseCard({ course, index }) {
