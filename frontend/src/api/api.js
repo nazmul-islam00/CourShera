@@ -2,7 +2,7 @@ const API_BASE = import.meta.env?.VITE_API_URL || "http://localhost:5000";
 
 // Google Auth: Fetch google auth
 export async function fetchLoginSuccess() {
-  const response = await fetch(`${API_BASE}/regauth/login/success`, {
+  const response = await fetch(`${API_BASE}/auth/login/success`, {
     method: "GET",
     credentials: "include",
     cache: "no-store",
