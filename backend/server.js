@@ -29,8 +29,10 @@ app.use(
   cookieSession({
     name: "courshera_session",
     keys: [process.env.SESSION_SECRET],
-    maxAge: 7 * 24 * 60 * 50 * 1000,
-    secure: false,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    secure: true,
+    sameSite: "none",
+    httpOnly: true,
   }),
 );
 
