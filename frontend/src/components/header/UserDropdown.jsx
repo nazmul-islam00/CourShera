@@ -10,7 +10,7 @@ export const UserDropdown = () => {
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleLogout = () => {
-    window.open(`${import.meta.env.VITE_API_URL}/auth/logout`, "_self");
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/logout`;
   };
 
   useEffect(() => {

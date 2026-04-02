@@ -25,6 +25,7 @@ router.get("/logout", (req, res, next) => {
     if (err) {
       return next(err);
     }
+    req.session = null;
     res.redirect(process.env.CLIENT_URL);
   });
 });
