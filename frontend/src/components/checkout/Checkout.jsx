@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../../context/checkout/CheckoutContext";
+import { postPayment } from "../../api/api";
 import "./Checkout.css";
 
 const PAYMENT_PROVIDERS = [
@@ -49,15 +50,7 @@ const Checkout = () => {
     };
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/payment`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
+      const { response, data } = await postPayment(payload);
       if (response.ok) {
         if (data.status === "COMPLETED") {
           setStatus(STATUS.SUCCESS);

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-
-const API_URL = "http://localhost:5000/test-courses";
+import { fetchTestCourses } from "../api/api";
 
 function CoursesFromBackend() {
   const [courses, setCourses] = useState([]);
@@ -10,20 +9,12 @@ function CoursesFromBackend() {
   useEffect(() => {
     const controller = new AbortController();
 
+
     async function loadCourses() {
       try {
         setLoading(true);
         setError("");
-
-        const response = await fetch(API_URL, {
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await fetchTestCourses(controller.signal);
         setCourses(Array.isArray(data) ? data : []);
       } catch (err) {
         if (err.name !== "AbortError") {
@@ -43,7 +34,7 @@ function CoursesFromBackend() {
     <section className="courses-panel">
       <header className="courses-header">
         <h1>Backend Course Feed</h1>
-        <p>Source: {API_URL}</p>
+        <p>Source: Backend API</p>
       </header>
 
       {loading && <p className="status-msg">Loading courses...</p>}
