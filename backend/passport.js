@@ -9,6 +9,7 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      proxy: true,
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
@@ -16,7 +17,7 @@ passport.use(
 
         if (email) {
           await prisma.clients.upsert({
-            where:  { email },
+            where: { email },
             create: { email, name: profile.displayName ?? null, password: "" },
             update: {},
           });
