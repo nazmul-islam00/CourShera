@@ -6,7 +6,7 @@ import passport from "passport";
 
 import "./passport.js";
 import authRoute from "./routes/auth.js";
-import coursesRoute from "./routes/courses.js"
+import coursesRoute from "./routes/courses.js";
 import paymentRoute from "./routes/payment.js";
 import regularAuthRoute from "./routes/regular_auth.js";
 import prisma from "./db.js";
@@ -14,6 +14,7 @@ import prisma from "./db.js";
 import { parseSms } from "./smsParser.js";
 
 const app = express();
+app.enable("trust proxy");
 
 app.use(
   cors({
@@ -29,8 +30,10 @@ app.use(
   cookieSession({
     name: "courshera_session",
     keys: [process.env.SESSION_SECRET],
-    maxAge: 7 * 24 * 60 * 50 * 1000,
-    secure: false,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    secure: true,
+    sameSite: "none",
+    httpOnly: true,
   }),
 );
 
@@ -62,7 +65,6 @@ app.listen(process.env.PORT, () => {
 // Eikhane route add korbi
 // module wise organize koirish
 
-
 // app.post('/payment', (req, res) => {
 //   console.log('Headers:', req.headers);
 //   console.log('Body:', req.body);
@@ -90,8 +92,8 @@ app.get("/courses/:courseId", async (req, res) => {
   }
 });
 
-// ekhon, sms webhook runs with ngrok tunneling. runs only on rubaiyat's machine. when deployed, we'll change the webhook with a publishable address. 
-// steps : 
+// ekhon, sms webhook runs with ngrok tunneling. runs only on rubaiyat's machine. when deployed, we'll change the webhook with a publishable address.
+// steps :
 // 1. terminal : ngrok http 5000
 // 2. terminal will show : "xyz" -> localhost:5000
 // 3. on phone app, add the url : "xyz/sms-webhook"
@@ -105,7 +107,7 @@ app.get("/courses/:courseId", async (req, res) => {
 //      "body": "You have received Tk 1.00 from 01700000000. Fee Tk 0.00. Balance Tk 100.00. TrxID ABCDEFGHIJ at 23/03/2026 21:25",
 //      "timestamp": 1742723400000
 //      }
-// 5. 
+// 5.
 
 app.post("/sms-webhook", async (req, res) => {
   const { sender, body, timestamp } = req.body;
@@ -157,18 +159,18 @@ async function savePayment(parsed) {
 
   return await prisma.payments.create({
     data: {
-      transaction_id:          internalId,
+      transaction_id: internalId,
       provider_transaction_id: parsed.trxId ?? null,
       // client_id:               2105094,
       // course_id:               "cse_101",
-      amount:                  parsed.amount,
-      fee:                     parsed.fee    ?? 0.00,
-      currency:                "BDT",
-      provider:                parsed.service.toUpperCase(),
-      account_identifier:      parsed.from   ?? "unknown",
-      status:                  "COMPLETED",
-      transaction_type:        "PAYMENT",
-      processed_at:            parseSmsDatetime(parsed.datetime),
+      amount: parsed.amount,
+      fee: parsed.fee ?? 0.0,
+      currency: "BDT",
+      provider: parsed.service.toUpperCase(),
+      account_identifier: parsed.from ?? "unknown",
+      status: "COMPLETED",
+      transaction_type: "PAYMENT",
+      processed_at: parseSmsDatetime(parsed.datetime),
     },
   });
 }
@@ -177,7 +179,7 @@ function parseSmsDatetime(datetimeStr) {
   if (!datetimeStr) return new Date();
   try {
     const [datePart, timePart] = datetimeStr.split(" ");
-    const [dd, mm, yyyy]       = datePart.split("/");
+    const [dd, mm, yyyy] = datePart.split("/");
     return new Date(`${yyyy}-${mm}-${dd}T${timePart}:00`);
   } catch {
     return new Date();
