@@ -10,3 +10,7 @@ To run frontend:
 
 docker build -t frontend .
 docker run -d -p 3000:80 --env-file .env --name CourShera frontend
+
+To run whole application:
+
+docker-compose up --build
