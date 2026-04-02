@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
+import { fetchLoginSuccess } from "../../api/api";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -8,19 +9,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/auth/login/success`,
-          {
-            method: "GET",
-            credentials: "include",
-            cache: "no-store",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-          },
-        );
-
+        const response = await fetchLoginSuccess();
         if (response.status === 200) {
           const responseObject = await response.json();
           setUser(responseObject.user);
@@ -34,7 +23,6 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
       }
     };
-
     getUser();
   }, []);
 
