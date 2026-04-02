@@ -24,6 +24,8 @@ app.use(
   }),
 );
 
+const isProduction = process.env.NODE_ENV === "production";
+
 app.use(express.json());
 
 app.use(
@@ -31,8 +33,8 @@ app.use(
     name: "courshera_session",
     keys: [process.env.SESSION_SECRET],
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     httpOnly: true,
   }),
 );
