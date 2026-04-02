@@ -1,9 +1,11 @@
 import { useAuth } from "../../context/auth/AuthContext";
 import { AuthButtons } from "./AuthButtons";
 import { UserDropdown } from "./UserDropdown";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -19,7 +21,14 @@ const Header = () => {
       <header className="main-header">
         <div className="container header-inner">
           <div className="brand-block">
-            <span className="brand">coursera</span>
+                <span
+                  className="brand"
+                  aria-label="Home"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate("/")}
+                >
+                  coursera
+                </span>
             <nav className="header-nav" aria-label="Main navigation">
               <button type="button">Explore</button>
               <button type="button">My Learning</button>

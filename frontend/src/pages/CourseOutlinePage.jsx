@@ -1,46 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
 import CourseHero from "../components/course-outline/CourseHero";
 import WhatYouWillLearn from "../components/course-outline/WhatYouWillLearn";
 import CourseSyllabus from "../components/course-outline/CourseSyllabus";
 import SkillsYouWillGain from "../components/course-outline/SkillsYouWillGain";
 import Instructors from "../components/course-outline/Instructors";
 import { buildOutlineModel } from "../utils/courseOutlineFallback";
-
-const API_BASE = import.meta.env.VITE_API_URL;
-
-async function fetchCourseFromFallbackList(courseId, signal) {
-  const response = await fetch(`${API_BASE}/test-courses`, { signal });
-  if (!response.ok) {
-    throw new Error(`Could not load courses (${response.status})`);
-  }
-
-  const list = await response.json();
-  if (!Array.isArray(list) || list.length === 0) {
-    return null;
-  }
-
-  return list.find((course) => String(course.course_id) === String(courseId)) || list[0];
-}
-
-async function fetchCourseDetail(courseId, signal) {
-  try {
-    const response = await fetch(`${API_BASE}/courses/${courseId}`, { signal });
-    if (response.ok) {
-      return await response.json();
-    }
-    if (response.status !== 404) {
-      throw new Error(`Could not load course details (${response.status})`);
-    }
-  } catch (error) {
-    if (error.name === "AbortError") {
-      throw error;
-    }
-  }
-
-  return fetchCourseFromFallbackList(courseId, signal);
-}
+import { fetchCourseDetail } from "../api/api";
 
 function CourseOutlinePage() {
   const { courseId } = useParams();

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { fetchInProgressCourses } from "../../../api/api";
 import "./InProgressCourses.css";
 
 const fallbackCourses = [
@@ -50,35 +51,22 @@ export const InProgressCourses = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchInProgressCourses = async () => {
+    const controller = new AbortController();
+    const loadCourses = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/courses/in-progress`,
-          {
-            credentials: "include",
-          },
-        );
-
-        if (!response.ok) {
-          if (response.status == 401) {
-            throw new Error("Please log in to view your courses.");
-          }
-          throw new Error("Failed to fetch courses.");
-        }
-
-        const data = await response.json();
-        setCourses(data);
+        // Uncomment below to use backend, fallback for demo only
+        // const data = await fetchInProgressCourses(controller.signal);
+        // setCourses(data);
+        setCourses(fallbackCourses);
       } catch (err) {
         setError(err.message);
       } finally {
         setIsLoading(false);
       }
     };
-
-    // fetchInProgressCourses();
-    setCourses(fallbackCourses);
-    setIsLoading(false);
+    loadCourses();
+    return () => controller.abort();
   }, []);
 
   const checkScroll = () => {

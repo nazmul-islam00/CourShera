@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../../../context/checkout/CheckoutContext";
+import { fetchPopularCourses } from "../../../api/api";
 import PopularCourseCard from "./PopularCourseCard";
 import "./PopularCourses.css";
-
-const API_URL = `${import.meta.env.VITE_API_URL}/courses/popular`;
 
 const CSE_101 = {
   courseId: "cse_101",
@@ -20,20 +19,14 @@ const PopularCoursesHome = () => {
   const navigate = useNavigate();
   const { setCourseForCheckout } = useCheckout();
 
+
   useEffect(() => {
     const controller = new AbortController();
-
-    async function fetchCourses() {
+    async function loadCourses() {
       try {
         setLoading(true);
         setError("");
-        const response = await fetch(API_URL, { signal: controller.signal });
-
-        if (!response.ok) {
-          throw new Error(`Could not load courses (${response.status})`);
-        }
-
-        const data = await response.json();
+        const data = await fetchPopularCourses(controller.signal);
         setCourses(Array.isArray(data) ? data : []);
       } catch (err) {
         if (err.name !== "AbortError") {
@@ -43,8 +36,7 @@ const PopularCoursesHome = () => {
         setLoading(false);
       }
     }
-
-    fetchCourses();
+    loadCourses();
     return () => controller.abort();
   }, []);
 
