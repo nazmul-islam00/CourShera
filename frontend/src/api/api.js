@@ -1,4 +1,18 @@
-const API_BASE = import.meta.env?.VITE_API_URL || "http://backend:5000";
+const API_BASE = import.meta.env?.VITE_API_URL || "http://localhost:5000";
+
+// Google Auth: Fetch google auth
+export async function fetchLoginSuccess() {
+  const response = await fetch(`${API_BASE}/regauth/login/success`, {
+    method: "GET",
+    credentials: "include",
+    cache: "no-store",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  return response;
+}
 
 // CoursesFromBackend fetch
 export async function fetchTestCourses(signal) {
