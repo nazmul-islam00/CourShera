@@ -33,6 +33,7 @@ app.use(
     secure: true,
     sameSite: "none",
     httpOnly: true,
+    partitioned: true,
   }),
 );
 
