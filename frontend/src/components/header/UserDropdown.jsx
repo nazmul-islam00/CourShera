@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../context/auth/AuthContext";
+import { Link } from "react-router-dom";
 
 export const UserDropdown = () => {
   const { user } = useAuth();
@@ -44,11 +45,18 @@ export const UserDropdown = () => {
       {isOpen && (
         <div className="dropdown-menu">
           <div className="dropdown-header">
-            {/* Use database columns */}
             <strong>{displayName}</strong>
             <span className="user-email">{user?.email}</span>
           </div>
           <hr className="dropdown-divider" />
+          <Link
+            to="/me"
+            className="dropdown-item profile-btn"
+            onClick={() => setIsOpen(false)}
+            style={{ textDecoration: "none", display: "block" }}
+          >
+            Profile
+          </Link>
           <button className="dropdown-item logout-btn" onClick={handleLogout}>
             Log Out
           </button>
