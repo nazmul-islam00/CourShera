@@ -8,6 +8,7 @@ import "./passport.js";
 import authRoute from "./routes/auth.js";
 import coursesRoute from "./routes/courses.js";
 import paymentRoute from "./routes/payment.js";
+import meRoute from "./routes/me.js";
 import prisma from "./db.js";
 
 import { parseSms } from "./smsParser.js";
@@ -58,7 +59,7 @@ app.use(passport.session());
 app.use("/auth", authRoute);
 app.use("/courses", coursesRoute);
 app.use("/payment", paymentRoute);
-// app.use("/regauth", regularAuthRoute);
+app.use("/me", meRoute);
 app.listen(process.env.PORT, () => {
   console.log(`Server has started running on port ${process.env.PORT}`);
 });
