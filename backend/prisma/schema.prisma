@@ -74,6 +74,7 @@ model courses {
   skills                Json?             @default("[]")
   learning_outcomes     Json?             @default("[]")
   curriculum            Json?             @default("[]")
+  image_url             String?           @db.VarChar
   course_progress       course_progress[]
   partners              partners          @relation(fields: [partner_id], references: [partner_id], onUpdate: NoAction)
   enrollments           enrollments[]

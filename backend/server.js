@@ -8,7 +8,6 @@ import "./passport.js";
 import authRoute from "./routes/auth.js";
 import coursesRoute from "./routes/courses.js";
 import paymentRoute from "./routes/payment.js";
-// import regularAuthRoute from "./routes/regular_auth.js";
 import prisma from "./db.js";
 
 import { parseSms } from "./smsParser.js";

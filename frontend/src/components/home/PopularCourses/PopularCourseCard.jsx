@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../../../context/checkout/CheckoutContext";
-import { fallbackCourseImages } from "../../../utils/fallbackCourseImages";
 import { Link } from "react-router-dom";
 
-function PopularCourseCard({ course, index }) {
-  const image = fallbackCourseImages[index % fallbackCourseImages.length];
+function PopularCourseCard({ course
+  
+ }) {
+  const image = course.image_url;
   const navigate = useNavigate();
   const { setCourseForCheckout } = useCheckout();
 
