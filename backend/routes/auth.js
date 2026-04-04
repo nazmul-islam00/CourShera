@@ -70,7 +70,13 @@ router.post("/login", (req, res, next) => {
 
 router.post("/register", async (req, res, next) => {
   const { email, password, name } = req.body;
-
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ 
+      success: false, 
+      message: "Password must be at least 8 characters long and contain at least one letter and one number." 
+    });
+  }
   try {
     const existingUser = await prisma.clients.findUnique({ where: { email } });
     if (existingUser) {
