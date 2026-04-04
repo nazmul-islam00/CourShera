@@ -125,18 +125,44 @@ router.get("/recommendations", async (req, res) => {
 
 router.get("/popular", async (req, res) => {
   try {
-    const popularCourses = await prisma.courses.findMany({
-      include: { partners: true },
-      orderBy: [{ enrolment_count: "desc" }, { avg_rating: "desc" }],
-      take: 12,
+    const courses = await prisma.courses.findMany({
+      include: {
+        partners: true,
+        _count: {
+          select: { enrollments: true } 
+        },
+        reviews: {
+          select: { rating: true } 
+        }
+      },
+      take: 50, 
     });
+
+    const popularCourses = courses
+      .map(course => {
+        const totalReviews = course.reviews.length;
+        const avgRating = totalReviews > 0 
+          ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) / totalReviews 
+          : 0;
+
+        return {
+          ...course,
+          enrolment_count: course._count.enrollments,
+          avg_rating: avgRating.toFixed(2)
+        };
+      })
+      .sort((a, b) => {
+        if (b.enrolment_count !== a.enrolment_count) {
+          return b.enrolment_count - a.enrolment_count;
+        }
+        return b.avg_rating - a.avg_rating;
+      })
+      .slice(0, 12);
 
     res.status(200).json(popularCourses);
   } catch (error) {
     console.error("Error fetching popular courses:", error);
-    res.status(500).json({
-      error: "Failed to fetch popular courses",
-    });
+    res.status(500).json({ error: "Failed to fetch popular courses" });
   }
 });
 

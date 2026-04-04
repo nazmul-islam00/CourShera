@@ -28,10 +28,13 @@ model clients {
   country         String?           @db.VarChar(100)
   created_at      DateTime          @default(now()) @db.Timestamptz(6)
   updated_at      DateTime          @default(now()) @db.Timestamptz(6)
+  image_url       String?           @db.VarChar
+  auth_provider   String?           @default("'LOCAL'") @db.VarChar
   card_infos      card_infos[]
   course_progress course_progress[]
   enrollments     enrollments[]
   payments        payments[]
+  reviews         reviews[]
 
   @@index([email], map: "idx_clients_email")
 }
@@ -56,42 +59,29 @@ model course_progress {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model courses {
-  course_id                String            @id @db.VarChar(50)
-  title                    String            @db.VarChar(255)
-  partner_id               String            @db.VarChar(50)
-  instructor_name          String            @db.VarChar(255)
-  description              String?
-  credits                  Int               @default(0) @db.SmallInt
-  language                 String            @default("English") @db.VarChar(50)
-  price                    Decimal           @default(0.00) @db.Decimal(10, 2)
-  difficulty               difficulty_level  @default(Beginner)
-  avg_rating               Decimal           @default(0.00) @db.Decimal(3, 2)
-  enrolment_count          Int               @default(0)
-  created_at               DateTime          @default(now()) @db.Timestamptz(6)
-  updated_at               DateTime          @default(now()) @db.Timestamptz(6)
-  course_tagline           String?           @db.VarChar(255)
-  review_count             Int?              @default(0)
-  course_duration_hours    Decimal?          @db.Decimal(5, 2)
-  instructor_image_url     String?           @db.VarChar(255)
-  instructor_title         String?           @db.VarChar(255)
-  instructor_organization  String?           @db.VarChar(255)
-  instructor_bio           String?
-  instructor_rating        Decimal?          @db.Decimal(3, 2)
-  instructor_review_count  Int?              @default(0)
-  instructor_student_count Int?              @default(0)
-  instructor_course_count  Int?              @default(0)
-  skills                   Json?             @default("[]")
-  learning_outcomes        Json?             @default("[]")
-  curriculum               Json?             @default("[]")
-  course_progress          course_progress[]
-  partners                 partners          @relation(fields: [partner_id], references: [partner_id], onUpdate: NoAction)
-  enrollments              enrollments[]
-  payments                 payments[]
+  course_id             String            @id @db.VarChar(50)
+  title                 String            @db.VarChar(255)
+  partner_id            String            @db.VarChar(50)
+  description           String?
+  credits               Int               @default(0) @db.SmallInt
+  language              String            @default("English") @db.VarChar(50)
+  price                 Decimal           @default(0.00) @db.Decimal(10, 2)
+  difficulty            difficulty_level  @default(Beginner)
+  created_at            DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime          @default(now()) @db.Timestamptz(6)
+  course_tagline        String?           @db.VarChar(255)
+  course_duration_hours Decimal?          @db.Decimal(5, 2)
+  skills                Json?             @default("[]")
+  learning_outcomes     Json?             @default("[]")
+  curriculum            Json?             @default("[]")
+  course_progress       course_progress[]
+  partners              partners          @relation(fields: [partner_id], references: [partner_id], onUpdate: NoAction)
+  enrollments           enrollments[]
+  payments              payments[]
+  reviews               reviews[]
 
-  @@index([avg_rating(sort: Desc)], map: "idx_courses_avg_rating")
   @@index([description(ops: raw("gin_trgm_ops"))], map: "idx_courses_description_trgm", type: Gin)
   @@index([difficulty], map: "idx_courses_difficulty")
-  @@index([enrolment_count(sort: Desc)], map: "idx_courses_enrolment_count")
   @@index([title(ops: raw("gin_trgm_ops"))], map: "idx_courses_title_trgm", type: Gin)
 }
 
@@ -116,6 +106,9 @@ model partners {
   institute             String?   @db.VarChar(255)
   digital_signature_url String?
   created_at            DateTime  @default(now()) @db.Timestamptz(6)
+  instructor_title      String?   @db.VarChar(255)
+  instructor_image_url  String?
+  instructor_bio        String?
   courses               courses[]
 }
 
@@ -154,6 +147,18 @@ model refunds {
   payments                payments @relation(fields: [original_transaction_id], references: [transaction_id], onUpdate: NoAction)
 
   @@index([original_transaction_id], map: "idx_refunds_transaction_id")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model reviews {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  rating     Decimal  @db.Decimal
+  comment    String
+  client_id  Int
+  course_id  String   @db.VarChar
+  clients    clients  @relation(fields: [client_id], references: [client_id], onDelete: NoAction, onUpdate: NoAction)
+  courses    courses  @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum difficulty_level {

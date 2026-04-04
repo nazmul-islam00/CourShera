@@ -69,7 +69,10 @@ export async function fetchCourseFromFallbackList(courseId, signal) {
   if (!Array.isArray(list) || list.length === 0) {
     return null;
   }
-  return list.find((course) => String(course.course_id) === String(courseId)) || list[0];
+  return (
+    list.find((course) => String(course.course_id) === String(courseId)) ||
+    list[0]
+  );
 }
 
 export async function fetchCourseDetail(courseId, signal) {
@@ -85,4 +88,26 @@ export async function fetchCourseDetail(courseId, signal) {
     if (error.name === "AbortError") throw error;
   }
   return fetchCourseFromFallbackList(courseId, signal);
+}
+
+export async function loginLocal(payload) {
+  const response = await fetch(`${API_BASE}/auth/login`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  return { response, data };
+}
+
+export async function registerLocal(payload) {
+  const response = await fetch(`${API_BASE}/auth/register`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  return { response, data };
 }

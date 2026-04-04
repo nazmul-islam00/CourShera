@@ -23,28 +23,30 @@ export const UserDropdown = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const displayName = user?.name || "User";
+  const initial = displayName.charAt(0).toUpperCase();
+
   return (
     <div className="user-dropdown-container" ref={dropdownRef}>
       <div className="avatar-trigger" onClick={toggleDropdown}>
-        {user.photos && user.photos.length > 0 ? (
+        {user?.image_url ? (
           <img
-            src={user.photos[0].value}
+            src={user.image_url}
             alt="User Avatar"
             className="avatar-image"
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="avatar">
-            {user.displayName ? user.displayName.charAt(0).toUpperCase() : "U"}
-          </div>
+          <div className="avatar">{initial}</div>
         )}
       </div>
 
       {isOpen && (
         <div className="dropdown-menu">
           <div className="dropdown-header">
-            <strong>{user.displayName}</strong>
-            <span className="user-email">{user.emails?.[0]?.value}</span>
+            {/* Use database columns */}
+            <strong>{displayName}</strong>
+            <span className="user-email">{user?.email}</span>
           </div>
           <hr className="dropdown-divider" />
           <button className="dropdown-item logout-btn" onClick={handleLogout}>
