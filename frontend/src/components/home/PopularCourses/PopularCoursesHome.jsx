@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../../../context/checkout/CheckoutContext";
 import { fetchPopularCourses } from "../../../api/api";
@@ -19,6 +19,7 @@ const PopularCoursesHome = () => {
   const navigate = useNavigate();
   const { setCourseForCheckout } = useCheckout();
 
+  const carouselRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -45,8 +46,24 @@ const PopularCoursesHome = () => {
     navigate("/checkout");
   };
 
+  const scroll = (direction) => {
+    if (carouselRef.current) {
+      
+      const slide = carouselRef.current.querySelector('.carousel-slide');
+      
+      if (slide) {
+        
+        const scrollAmount = slide.offsetWidth + 24; 
+        
+        carouselRef.current.scrollBy({
+          left: direction === "left" ? -scrollAmount : scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
+
   return (
-    /*debug purposes*/
     <div className="home-root">
       <section className="featured-course-banner">
         <div className="container featured-inner">
@@ -79,14 +96,33 @@ const PopularCoursesHome = () => {
         )}
 
         {!loading && !error && courses.length > 0 && (
-          <div className="popular-grid">
-            {courses.map((course, index) => (
-              <PopularCourseCard
-                key={course.course_id || index}
-                course={course}
-                index={index}
-              />
-            ))}
+          <div className="carousel-wrapper">
+            <button 
+              className="carousel-btn left" 
+              onClick={() => scroll("left")}
+              aria-label="Scroll left"
+            >
+              &#8249;
+            </button>
+            
+            <div className="carousel-track" ref={carouselRef}>
+              {courses.map((course, index) => (
+                <div className="carousel-slide" key={course.course_id || index}>
+                  <PopularCourseCard
+                    course={course}
+                    index={index}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <button 
+              className="carousel-btn right" 
+              onClick={() => scroll("right")}
+              aria-label="Scroll right"
+            >
+              &#8250;
+            </button>
           </div>
         )}
       </main>
