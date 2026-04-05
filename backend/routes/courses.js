@@ -3,6 +3,13 @@ import prisma from "../db.js";
 
 const router = Router();
 
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return next();
+  }
+  return res.status(401).json({ success: false, message: "Unauthorized" });
+};
+
 router.get("/categories", async (req, res) => {
   try {
     const categories = await prisma.categories.findMany({
@@ -27,9 +34,9 @@ router.get("/categories", async (req, res) => {
   }
 });
 
-router.get("/in-progress", async (req, res) => {
+router.get("/in-progress", isAuthenticated, async (req, res) => {
   try {
-    const clientId = req.user?.id;
+    const clientId = req.user?.client_id || req.user?.id;
     if (!clientId) {
       return res.status(401).json({
         error: "Unauthorized: No user session found",
@@ -39,23 +46,24 @@ router.get("/in-progress", async (req, res) => {
     const progressRecords = await prisma.course_progress.findMany({
       where: {
         client_id: parseInt(clientId, 10),
-        overall_status: "IN_PROGRESS",
+        overall_status: { in: ["IN_PROGRESS", "NOT_STARTED"] },
       },
       include: { courses: { include: { partners: true } } },
       orderBy: { started_at: "desc" },
     });
 
     const courses = progressRecords.map((record) => {
-      const course = record.course;
-      const partner = course.partners;
+      const courseDetails = record.courses;
+      const partner = courseDetails?.partners;
 
       return {
         id: record.course_id,
         partner: partner ? partner.name : "Coursera Partner",
-        title: course.title,
+        title: courseDetails?.title || "Unknown Course",
         type: "Course",
         progress: Number(record.completion_percentage),
         imageUrl:
+          courseDetails?.image_url ||
           "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
         partnerLogo: partner ? partner.name.charAt(0).toUpperCase() : "C",
       };
@@ -153,26 +161,28 @@ router.get("/popular", async (req, res) => {
       include: {
         partners: true,
         _count: {
-          select: { enrollments: true } 
+          select: { enrollments: true },
         },
         reviews: {
-          select: { rating: true } 
-        }
+          select: { rating: true },
+        },
       },
-      take: 50, 
+      take: 50,
     });
 
     const popularCourses = courses
-      .map(course => {
+      .map((course) => {
         const totalReviews = course.reviews.length;
-        const avgRating = totalReviews > 0 
-          ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) / totalReviews 
-          : 0;
+        const avgRating =
+          totalReviews > 0
+            ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) /
+              totalReviews
+            : 0;
 
         return {
           ...course,
           enrolment_count: course._count.enrollments,
-          avg_rating: avgRating.toFixed(2)
+          avg_rating: avgRating.toFixed(2),
         };
       })
       .sort((a, b) => {

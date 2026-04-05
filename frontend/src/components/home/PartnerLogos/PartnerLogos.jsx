@@ -63,15 +63,7 @@ export const PartnerLogos = () => {
 
           <div className="logos-track" ref={trackRef} onScroll={handleScroll}>
             {Object.entries(partnerImages).map(([name, partnerData]) => (
-              <div
-                key={name}
-                className="logo-pill"
-                onClick={() => {
-                  if (partnerData.url) {
-                    window.open(partnerData.url, "_blank");
-                  }
-                }}
-              >
+              <div key={name} className="logo-pill">
                 <div className="logo-img-wrapper">
                   {partnerData.logoElement}
                 </div>
