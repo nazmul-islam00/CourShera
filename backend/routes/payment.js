@@ -225,7 +225,7 @@ router.post("/init", async (req, res) => {
 
   const initData = {
     total_amount:     Number(course.price),
-    store_id:         process.env.STORE_ID,
+    store_id:         STORE_ID,
     currency:         "BDT",
     tran_id,
     success_url:      `${BACKEND_URL}/payment/success`,
