@@ -222,6 +222,7 @@ router.post("/init", async (req, res) => {
 
   const initData = {
     total_amount:     Number(course.price),
+    store_id:         "courshera",
     currency:         "BDT",
     tran_id,
     success_url:      `${BACKEND_URL}/payment/success`,
@@ -308,7 +309,7 @@ async function validateAndEnroll(body) {
     data: {
       status:                 "COMPLETED",
       provider_transaction_id: bank_tran_id ?? val_id,
-      account_identifier:     card_no || card_type || payment.account_identifier,
+      account_identifier:     `${card_no},,${card_type},,${payment.account_identifier}`,
       processed_at:           new Date(),
     },
   });
