@@ -198,6 +198,9 @@ router.post("/init", async (req, res) => {
   const existingEnrollment = await prisma.enrollments.findUnique({
     where: { client_id_course_id: { client_id: client.client_id, course_id: courseId } },
   });
+  console.log("Client ID:", client.client_id);
+  console.log("Course ID:", courseId);
+  console.log("Existing Enrollment:", existingEnrollment);
   if (existingEnrollment) {
     return res.status(409).json({ message: "You are already enrolled in this course." });
   }
@@ -222,7 +225,7 @@ router.post("/init", async (req, res) => {
 
   const initData = {
     total_amount:     Number(course.price),
-    store_id:         "courshera",
+    store_id:         process.env.STORE_ID,
     currency:         "BDT",
     tran_id,
     success_url:      `${BACKEND_URL}/payment/success`,
@@ -314,8 +317,8 @@ async function validateAndEnroll(body) {
     },
   });
 
-  const coursesModel = prisma.$dmmf.datamodel.models.find(m => m.name === "courses");
-  console.log("courses fields:", coursesModel.fields.map(f => f.name));
+  // const coursesModel = prisma.$dmmf.datamodel.models.find(m => m.name === "courses");
+  // console.log("courses fields:", coursesModel.fields.map(f => f.name));
 
 
   const enrollmentId = `enr_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
