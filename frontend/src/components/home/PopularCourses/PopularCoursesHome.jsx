@@ -49,13 +49,11 @@ const PopularCoursesHome = () => {
 
   const scroll = (direction) => {
     if (carouselRef.current) {
-      
-      const slide = carouselRef.current.querySelector('.carousel-slide');
-      
+      const slide = carouselRef.current.querySelector(".carousel-slide");
+
       if (slide) {
-        
-        const scrollAmount = slide.offsetWidth + 24; 
-        
+        const scrollAmount = slide.offsetWidth + 24;
+
         carouselRef.current.scrollBy({
           left: direction === "left" ? -scrollAmount : scrollAmount,
           behavior: "smooth",
@@ -69,9 +67,14 @@ const PopularCoursesHome = () => {
       <section className="featured-course-banner">
         <div className="container featured-inner">
           <div className="featured-text">
-            <span className="featured-label">Featured {CSE_101.category} Course</span>
+            <span className="featured-label">
+              Featured {CSE_101.category} Course
+            </span>
             <h2>{CSE_101.title}</h2>
-            <p>Start your journey into Computer Science. Beginner-friendly · English · {CSE_101.price}</p>
+            <p>
+              Start your journey into Computer Science. Beginner-friendly ·
+              English · {CSE_101.price}
+            </p>
           </div>
           <button className="featured-buy-btn" onClick={handleBuyCse101}>
             Buy Now — {CSE_101.price}
@@ -98,27 +101,31 @@ const PopularCoursesHome = () => {
 
         {!loading && !error && courses.length > 0 && (
           <div className="carousel-wrapper">
-            <button 
-              className="carousel-btn left" 
+            <button
+              className="carousel-btn left"
               onClick={() => scroll("left")}
               aria-label="Scroll left"
             >
               &#8249;
             </button>
-            
+
             <div className="carousel-track" ref={carouselRef}>
-              {courses.map((course, index) => (
-                <div className="carousel-slide" key={course.course_id || index}>
-                  <PopularCourseCard
-                    course={course}
-                    index={index}
-                  />
-                </div>
-              ))}
+              {loading ? (
+                <p className="home-status">Loading...</p>
+              ) : (
+                courses.map((course, index) => (
+                  <div
+                    className="carousel-slide"
+                    key={course.course_id || index}
+                  >
+                    <PopularCourseCard course={course} index={index} />
+                  </div>
+                ))
+              )}
             </div>
 
-            <button 
-              className="carousel-btn right" 
+            <button
+              className="carousel-btn right"
               onClick={() => scroll("right")}
               aria-label="Scroll right"
             >
