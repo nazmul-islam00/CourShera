@@ -216,3 +216,38 @@ export async function fetchSearchCourses(query, signal) {
   }
   return await response.json();
 }
+
+export async function fetchCourseEnrollmentStatus(courseId, signal) {
+  const response = await fetch(`${API_BASE}/courses/${courseId}/enrollment-status`, {
+    credentials: "include",
+    signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Could not check enrollment status (${response.status})`);
+  }
+
+  return await response.json();
+}
+
+export async function fetchEnrolledCourseContent(courseId, signal) {
+  const response = await fetch(`${API_BASE}/courses/${courseId}/content`, {
+    credentials: "include",
+    signal,
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Please log in to access this course.");
+    }
+    if (response.status === 403) {
+      throw new Error("You are not enrolled in this course.");
+    }
+    if (response.status === 404) {
+      throw new Error("Course not found.");
+    }
+    throw new Error(`Could not load course content (${response.status})`);
+  }
+
+  return await response.json();
+}

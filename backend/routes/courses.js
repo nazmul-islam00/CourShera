@@ -10,6 +10,154 @@ const isAuthenticated = (req, res, next) => {
   return res.status(401).json({ success: false, message: "Unauthorized" });
 };
 
+const getClientIdFromRequest = (req) => {
+  const candidate = req.user?.client_id || req.user?.id;
+  const parsed = Number.parseInt(candidate, 10);
+  return Number.isInteger(parsed) ? parsed : null;
+};
+
+const normalizeCourseModules = (course) => {
+  const moduleEntries = Array.isArray(course?.course_module) ? course.course_module : [];
+
+  return moduleEntries
+    .map((entry) => entry.modules)
+    .filter(Boolean)
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .map((module) => {
+      const topicEntries = Array.isArray(module.module_topic) ? module.module_topic : [];
+
+      const topics = topicEntries
+        .map((entry) => entry.topics)
+        .filter(Boolean)
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .map((topic) => {
+          const contentEntries = Array.isArray(topic.topic_content) ? topic.topic_content : [];
+
+          const contents = contentEntries
+            .map((entry) => entry.content_table)
+            .filter(Boolean)
+            .sort((a, b) => (a.content_id || "").localeCompare(b.content_id || ""))
+            .map((content) => ({
+              content_id: content.content_id,
+              content_url: content.content_url,
+              transcript: content.transcript,
+            }));
+
+          return {
+            topic_id: topic.topic_id,
+            title: topic.title,
+            contents,
+          };
+        });
+
+      return {
+        module_id: module.module_id,
+        title: module.title,
+        description: module.description,
+        topics,
+      };
+    });
+};
+
+router.get("/:courseId/enrollment-status", async (req, res) => {
+  try {
+    const clientId = getClientIdFromRequest(req);
+    if (!clientId) {
+      return res.status(200).json({ enrolled: false });
+    }
+
+    const enrollment = await prisma.enrollments.findUnique({
+      where: {
+        client_id_course_id: {
+          client_id: clientId,
+          course_id: req.params.courseId,
+        },
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    return res.status(200).json({
+      enrolled: enrollment?.status === "ACTIVE",
+    });
+  } catch (error) {
+    console.error("Error checking enrollment status:", error);
+    return res.status(500).json({ error: "Failed to check enrollment status" });
+  }
+});
+
+router.get("/:courseId/content", isAuthenticated, async (req, res) => {
+  try {
+    const clientId = getClientIdFromRequest(req);
+    if (!clientId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const enrollment = await prisma.enrollments.findUnique({
+      where: {
+        client_id_course_id: {
+          client_id: clientId,
+          course_id: req.params.courseId,
+        },
+      },
+      select: {
+        status: true,
+      },
+    });
+
+    if (!enrollment || enrollment.status !== "ACTIVE") {
+      return res.status(403).json({ error: "You are not enrolled in this course" });
+    }
+
+    const course = await prisma.courses.findUnique({
+      where: {
+        course_id: req.params.courseId,
+      },
+      select: {
+        course_id: true,
+        title: true,
+        course_module: {
+          include: {
+            modules: {
+              include: {
+                module_topic: {
+                  include: {
+                    topics: {
+                      include: {
+                        topic_content: {
+                          include: {
+                            content_table: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    const modules = normalizeCourseModules(course);
+
+    return res.status(200).json({
+      course_id: course.course_id,
+      title: course.title,
+      modules,
+    });
+  } catch (error) {
+    console.error("Error fetching enrolled course content:", error);
+    return res.status(500).json({ error: "Failed to fetch course content" });
+  }
+});
+
 router.get("/categories", async (req, res) => {
   try {
     const categories = await prisma.categories.findMany({
