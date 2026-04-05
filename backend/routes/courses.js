@@ -34,6 +34,130 @@ router.get("/categories", async (req, res) => {
   }
 });
 
+router.get("/category/:categoryId", async (req, res) => {
+  const categoryId = Number(req.params.categoryId);
+
+  if (!Number.isInteger(categoryId)) {
+    return res.status(400).json({ error: "Invalid category id" });
+  }
+
+  try {
+    const category = await prisma.categories.findUnique({
+      where: {
+        category_id: categoryId,
+      },
+      select: {
+        category_id: true,
+        name: true,
+      },
+    });
+
+    if (!category) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+
+    const courses = await prisma.courses.findMany({
+      where: {
+        category_id: categoryId,
+      },
+      include: {
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    const normalizedCourses = courses.map((course) => {
+      const totalReviews = course.reviews.length;
+      const avgRating =
+        totalReviews > 0
+          ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) /
+            totalReviews
+          : 0;
+
+      return {
+        ...course,
+        avg_rating: avgRating.toFixed(2),
+      };
+    });
+
+    res.status(200).json({
+      category,
+      courses: normalizedCourses,
+    });
+  } catch (error) {
+    console.error("Error fetching category courses:", error);
+    res.status(500).json({ error: "Failed to fetch category courses" });
+  }
+});
+
+router.get("/category/:categoryId", async (req, res) => {
+  const categoryId = Number(req.params.categoryId);
+
+  if (!Number.isInteger(categoryId)) {
+    return res.status(400).json({ error: "Invalid category id" });
+  }
+
+  try {
+    const category = await prisma.categories.findUnique({
+      where: {
+        category_id: categoryId,
+      },
+      select: {
+        category_id: true,
+        name: true,
+      },
+    });
+
+    if (!category) {
+      return res.status(404).json({ error: "Category not found" });
+    }
+
+    const courses = await prisma.courses.findMany({
+      where: {
+        category_id: categoryId,
+      },
+      include: {
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    const normalizedCourses = courses.map((course) => {
+      const totalReviews = course.reviews.length;
+      const avgRating =
+        totalReviews > 0
+          ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) /
+            totalReviews
+          : 0;
+
+      return {
+        ...course,
+        avg_rating: avgRating.toFixed(2),
+      };
+    });
+
+    res.status(200).json({
+      category,
+      courses: normalizedCourses,
+    });
+  } catch (error) {
+    console.error("Error fetching category courses:", error);
+    res.status(500).json({ error: "Failed to fetch category courses" });
+  }
+});
+
 router.get("/in-progress", isAuthenticated, async (req, res) => {
   try {
     const clientId = req.user?.client_id || req.user?.id;
