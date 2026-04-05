@@ -8,9 +8,9 @@ RUN npm install
 
 COPY . .
 
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
-
+# ARG DATABASE_URL
+# ENV DATABASE_URL=$DATABASE_URL
+RUN npx prisma db pull
 RUN npx prisma generate
 
 CMD ["node", "server.js"]
