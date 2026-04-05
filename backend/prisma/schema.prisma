@@ -75,7 +75,9 @@ model courses {
   learning_outcomes     Json?             @default("[]")
   curriculum            Json?             @default("[]")
   image_url             String?           @db.VarChar
+  category_id           BigInt?
   course_progress       course_progress[]
+  categories            categories?       @relation(fields: [category_id], references: [category_id], onUpdate: NoAction)
   partners              partners          @relation(fields: [partner_id], references: [partner_id], onUpdate: NoAction)
   enrollments           enrollments[]
   payments              payments[]
@@ -160,6 +162,13 @@ model reviews {
   course_id  String   @db.VarChar
   clients    clients  @relation(fields: [client_id], references: [client_id], onDelete: NoAction, onUpdate: NoAction)
   courses    courses  @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model categories {
+  category_id BigInt    @id @default(autoincrement())
+  name        String?   @unique @db.VarChar
+  courses     courses[]
 }
 
 enum difficulty_level {

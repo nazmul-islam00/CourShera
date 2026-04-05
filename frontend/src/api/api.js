@@ -59,6 +59,14 @@ export async function fetchPopularCourses(signal) {
   return await response.json();
 }
 
+export async function fetchCategories(signal) {
+  const response = await fetch(`${API_BASE}/courses/categories`, { signal });
+  if (!response.ok) {
+    throw new Error(`Could not load categories (${response.status})`);
+  }
+  return await response.json();
+}
+
 // CourseOutlinePage fetches
 export async function fetchCourseFromFallbackList(courseId, signal) {
   const response = await fetch(`${API_BASE}/test-courses`, { signal });
@@ -132,5 +140,33 @@ export const updateUserProfile = async (submitData) => {
 
   if (!response.ok) throw new Error("Failed to update profile.");
 
+  return response.json();
+};
+
+export const fetchSavedCards = async () => {
+  const response = await fetch(`${API_BASE}/me/saved-cards`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to fetch cards.");
+  return response.json();
+};
+
+export const addSavedCard = async (payload) => {
+  const response = await fetch(`${API_BASE}/me/saved-cards`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error("Failed to add card.");
+  return response.json();
+};
+
+export const deleteSavedCard = async (cardId) => {
+  const response = await fetch(`${API_BASE}/me/saved-cards/${cardId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to delete card.");
   return response.json();
 };

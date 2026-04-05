@@ -13,6 +13,10 @@ import prisma from "./db.js";
 
 import { parseSms } from "./smsParser.js";
 
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 const app = express();
 app.enable("trust proxy");
 
