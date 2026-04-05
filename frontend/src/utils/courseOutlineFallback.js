@@ -191,6 +191,18 @@ export function buildOutlineModel(course) {
     return null;
   }
 
+  const rawCurriculum = Array.isArray(course.curriculum)
+    ? course.curriculum
+    : [];
+
+  const normalizedModules = rawCurriculum.map((module) => ({
+    id: module.id,
+    title: module.title || "Untitled Module",
+    items: Array.isArray(module.items) ? module.items : [],
+    duration: module.duration || "",
+    description: module.description || "",
+  }));
+
   return {
     courseId: course.course_id,
     title: course.title || "Untitled Course",
@@ -210,7 +222,8 @@ export function buildOutlineModel(course) {
     language: course.language || "English",
     price: course.price ?? "Free",
     learningOutcomes:
-      Array.isArray(course.learning_outcomes) && course.learning_outcomes.length > 0
+      Array.isArray(course.learning_outcomes) &&
+      course.learning_outcomes.length > 0
         ? course.learning_outcomes
         : FALLBACK_OUTLINE.learningOutcomes,
     skills:
@@ -218,8 +231,8 @@ export function buildOutlineModel(course) {
         ? course.skills
         : FALLBACK_OUTLINE.skills,
     modules:
-      Array.isArray(course.curriculum) && course.curriculum.length > 0
-        ? course.curriculum
+      normalizedModules.length > 0
+        ? normalizedModules
         : FALLBACK_OUTLINE.modules,
     instructor: {
       name: course.instructor_name || "Course Instructor",
@@ -227,7 +240,8 @@ export function buildOutlineModel(course) {
         course.instructor_image_url || FALLBACK_OUTLINE.instructor.imageUrl,
       title: course.instructor_title || FALLBACK_OUTLINE.instructor.title,
       organization:
-        course.instructor_organization || FALLBACK_OUTLINE.instructor.organization,
+        course.instructor_organization ||
+        FALLBACK_OUTLINE.instructor.organization,
       bio: course.instructor_bio || FALLBACK_OUTLINE.instructor.bio,
       rating: toNumber(
         course.instructor_rating,

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { CheckCircle, ChevronDown, ChevronUp, FileText, PlayCircle } from "lucide-react";
+import { CheckCircle, ChevronDown, ChevronUp, FileText, PlayCircle, HelpCircle } from "lucide-react";
 
 function CourseSyllabus({ modules }) {
-  const firstId = modules[0]?.id ?? 1;
+  const safeModules = Array.isArray(modules) ? modules : [];
+  const firstId = safeModules[0]?.id ?? 1;
   const [expandedModules, setExpandedModules] = useState(new Set([firstId]));
 
   const toggleModule = (id) => {
@@ -19,7 +20,7 @@ function CourseSyllabus({ modules }) {
     if (type === "video") return <PlayCircle size={16} />;
     if (type === "reading") return <FileText size={16} />;
     if (type === "quiz") return <CheckCircle size={16} />;
-    return <PlayCircle size={16} />;
+    return <HelpCircle size={16} />;
   };
 
   return (
@@ -27,8 +28,9 @@ function CourseSyllabus({ modules }) {
       <h2 className="outline-block-title">Syllabus</h2>
 
       <div className="outline-module-list">
-        {modules.map((module) => {
+        {safeModules.map((module) => {
           const isExpanded = expandedModules.has(module.id);
+          const hasItems = Array.isArray(module.items) && module.items.length > 0;
 
           return (
             <article key={module.id} className="outline-module-card">
@@ -40,11 +42,15 @@ function CourseSyllabus({ modules }) {
                 <div className="outline-module-head-main">
                   <div className="outline-module-week">
                     <span>Week {module.id}</span>
-                    <span>•</span>
-                    <span>{module.duration} to complete</span>
+                    {module.duration && (
+                      <>
+                        <span>•</span>
+                        <span>{module.duration} to complete</span>
+                      </>
+                    )}
                   </div>
                   <h3>{module.title}</h3>
-                  {!isExpanded && <p>{module.description}</p>}
+                  {!isExpanded && module.description && <p>{module.description}</p>}
                 </div>
                 <span className="outline-module-chevron" aria-hidden="true">
                   {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -53,17 +59,28 @@ function CourseSyllabus({ modules }) {
 
               {isExpanded && (
                 <div className="outline-module-body">
-                  <p>{module.description}</p>
+                  {module.description && <p>{module.description}</p>}
+                  
                   <div className="outline-item-list">
-                    {module.items.map((item, idx) => (
-                      <div className="outline-item-row" key={`${module.id}-${idx}-${item.title}`}>
-                        <div className="outline-item-main">
-                          {getIcon(item.type)}
-                          <span>{item.title}</span>
+                    {hasItems ? (
+                      module.items.map((item, idx) => (
+                        <div className="outline-item-row" key={`${module.id}-${idx}-${item.title}`}>
+                          <div className="outline-item-main">
+                            {getIcon(item.type)}
+                            <span>{item.title}</span>
+                          </div>
+                          {item.duration && (
+                            <span className="outline-item-duration">{item.duration}</span>
+                          )}
                         </div>
-                        <span className="outline-item-duration">{item.duration}</span>
+                      ))
+                    ) : (
+                      <div className="outline-item-row no-items">
+                        <span className="outline-no-content-text">
+                          Module content and resources are currently being updated.
+                        </span>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
               )}
