@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { fetchUserProfile, updateUserProfile } from "./../api/api";
+import { getNames } from "country-list";
 import "./../styles/ProfilePage.css";
+
+const COUNTRIES = getNames();
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -13,36 +17,30 @@ export default function ProfilePage() {
     institute: "",
     country: "",
     date_of_birth: "",
-    image_url: "",
     email: "",
   });
 
-  const apiUrl = import.meta.env.VITE_API_URL;
+  const [dbImageUrl, setDbImageUrl] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`${apiUrl}/me`, {
-          credentials: "include",
-        });
+        const data = await fetchUserProfile();
 
-        if (response.status === 401) {
-          return navigate("/");
-        }
-
-        const data = await response.json();
         if (data.success && data.user) {
           setFormData({
             name: data.user.name || "",
             institute: data.user.institute || "",
             country: data.user.country || "",
-
             date_of_birth: data.user.date_of_birth
               ? data.user.date_of_birth.split("T")[0]
               : "",
-            image_url: data.user.image_url || "",
             email: data.user.email || "",
           });
+          setDbImageUrl(data.user.image_url);
         }
       } catch (error) {
         setMessage({ type: "error", text: "Failed to load profile data." });
@@ -52,10 +50,18 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, [apiUrl, navigate]);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -64,25 +70,25 @@ export default function ProfilePage() {
     setMessage({ type: "", text: "" });
 
     try {
-      const response = await fetch(`${apiUrl}/me`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          name: formData.name,
-          institute: formData.institute,
-          country: formData.country,
-          date_of_birth: formData.date_of_birth || null,
-          image_url: formData.image_url,
-        }),
-      });
+      const submitData = new FormData();
+      submitData.append("name", formData.name);
+      submitData.append("institute", formData.institute);
+      submitData.append("country", formData.country);
+      if (formData.date_of_birth)
+        submitData.append("date_of_birth", formData.date_of_birth);
+      if (imageFile) submitData.append("image", imageFile);
 
-      const data = await response.json();
+      const data = await updateUserProfile(submitData);
 
       if (data.success) {
         setMessage({ type: "success", text: "Profile updated successfully!" });
+        setDbImageUrl(data.user.image_url);
+        setImageFile(null);
+        setPreviewUrl("");
+
+        window.dispatchEvent(
+          new CustomEvent("profileUpdated", { detail: data.user }),
+        );
       } else {
         setMessage({
           type: "error",
@@ -100,113 +106,216 @@ export default function ProfilePage() {
     return <div className="profile-loading">Loading profile...</div>;
   }
 
+  const displayName = formData.name || "User";
+  const initial = displayName.charAt(0).toUpperCase();
+
   return (
     <div className="profile-container">
-      <div className="profile-card">
-        <h1>Personal Information</h1>
-        <p className="profile-subtitle">
-          Update your profile details and public information.
-        </p>
+      <div className="profile-layout">
+        <div className="profile-sidebar">
+          <div className="profile-card profile-card-sidebar">
+            <h3 className="sidebar-title">Personal details</h3>
 
-        {message.text && (
-          <div className={`profile-message ${message.type}`}>
-            {message.text}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="profile-form">
-          <div className="profile-avatar-section">
-            <img
-              src={
-                formData.image_url || "https://placehold.co/150x150?text=Avatar"
-              }
-              alt="User Avatar"
-              className="profile-avatar"
-            />
-            <div className="input-group">
-              <label htmlFor="image_url">Profile Image URL</label>
-              <input
-                type="url"
-                id="image_url"
-                name="image_url"
-                value={formData.image_url}
-                onChange={handleChange}
-                placeholder="https://example.com/your-image.jpg"
-              />
-            </div>
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="email">Email (Read-only)</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              readOnly
-              className="readonly-input"
-            />
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="name">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="e.g. Jane Doe"
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="input-group">
-              <label htmlFor="institute">Institute / Organization</label>
-              <input
-                type="text"
-                id="institute"
-                name="institute"
-                value={formData.institute}
-                onChange={handleChange}
-                placeholder="e.g. University of Science"
-              />
-            </div>
-
-            <div className="input-group">
-              <label htmlFor="country">Country</label>
-              <input
-                type="text"
-                id="country"
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                placeholder="e.g. Bangladesh"
-              />
-            </div>
-          </div>
-
-          <div className="input-group">
-            <label htmlFor="date_of_birth">Date of Birth</label>
-            <input
-              type="date"
-              id="date_of_birth"
-              name="date_of_birth"
-              value={formData.date_of_birth}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="profile-actions">
-            <button
-              type="submit"
-              className="profile-save-btn"
-              disabled={saving}
+            <div
+              className="avatar-wrapper"
+              onClick={() => fileInputRef.current.click()}
+              style={{
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                position: "relative",
+              }}
             >
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
+              {imageFile ? (
+                <img
+                  src={previewUrl}
+                  alt="Avatar Preview"
+                  className="profile-avatar"
+                />
+              ) : dbImageUrl ? (
+                <img
+                  src={dbImageUrl}
+                  alt="User Avatar"
+                  className="profile-avatar"
+                />
+              ) : (
+                <div
+                  className="fallback-avatar-circle"
+                  style={{
+                    backgroundColor: "#e65100",
+                    color: "white",
+                    fontSize: "40px",
+                    width: "100px",
+                    height: "100px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "50%",
+                  }}
+                >
+                  {initial}
+                </div>
+              )}
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "#0056d2",
+                  marginTop: "12px",
+                  fontWeight: "600",
+                }}
+              >
+                Change photo
+              </div>
+            </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              accept="image/png, image/jpeg, image/webp"
+              style={{ display: "none" }}
+            />
+
+            <h2
+              className="sidebar-name"
+              style={{
+                textAlign: "center",
+                marginTop: "16px",
+                marginBottom: "20px",
+              }}
+            >
+              {displayName}
+            </h2>
           </div>
-        </form>
+        </div>
+
+        <div className="profile-main-content">
+          {message.text && (
+            <div className={`profile-message ${message.type}`}>
+              {message.text}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="profile-form">
+            <div className="profile-form-card profile-card">
+              <h2 className="section-header">Account Details</h2>
+              <div className="input-group">
+                <label htmlFor="email">Email (Read-only)</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  readOnly
+                  className="readonly-input"
+                  style={{ backgroundColor: "#f5f5f5", cursor: "not-allowed" }}
+                />
+              </div>
+            </div>
+
+            <div className="profile-form-card profile-card">
+              <h2 className="section-header">Basic Information</h2>
+              <div className="input-group">
+                <label htmlFor="name">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="e.g. Jane Doe"
+                />
+              </div>
+
+              <div
+                className="form-row"
+                style={{ display: "flex", gap: "20px" }}
+              >
+                <div className="input-group" style={{ flex: 1 }}>
+                  <label htmlFor="institute">Institute / Organization</label>
+                  <input
+                    type="text"
+                    id="institute"
+                    name="institute"
+                    value={formData.institute}
+                    onChange={handleChange}
+                    placeholder="e.g. University of Science"
+                  />
+                </div>
+
+                <div className="input-group" style={{ flex: 1 }}>
+                  <label htmlFor="country">Country</label>
+                  <select
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    style={{
+                      padding: "10px 12px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      fontSize: "15px",
+                      backgroundColor: "white",
+                      cursor: "pointer",
+                      width: "100%",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    <option value="" disabled>
+                      Select a country
+                    </option>
+                    {COUNTRIES.map((countryName) => (
+                      <option key={countryName} value={countryName}>
+                        {countryName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-form-card profile-card">
+              <h2 className="section-header">Additional Details</h2>
+              <div className="input-group">
+                <label htmlFor="date_of_birth">Date of Birth</label>
+                <input
+                  type="date"
+                  id="date_of_birth"
+                  name="date_of_birth"
+                  value={formData.date_of_birth}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div
+              className="profile-actions"
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "20px",
+              }}
+            >
+              <button
+                type="submit"
+                className="profile-save-btn primary-btn"
+                disabled={saving}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#0056d2",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                }}
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

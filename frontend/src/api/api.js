@@ -111,3 +111,26 @@ export async function registerLocal(payload) {
   const data = await response.json();
   return { response, data };
 }
+
+export const fetchUserProfile = async () => {
+  const response = await fetch(`${API_BASE}/me`, {
+    credentials: "include",
+  });
+
+  if (response.status === 401) throw new Error("Unauthorized");
+  if (!response.ok) throw new Error("Failed to fetch profile data.");
+
+  return response.json();
+};
+
+export const updateUserProfile = async (submitData) => {
+  const response = await fetch(`${API_BASE}/me`, {
+    method: "POST",
+    credentials: "include",
+    body: submitData,
+  });
+
+  if (!response.ok) throw new Error("Failed to update profile.");
+
+  return response.json();
+};
