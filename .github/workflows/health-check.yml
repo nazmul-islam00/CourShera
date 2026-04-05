@@ -27,6 +27,7 @@ jobs:
         run: node server.js & 
         env: 
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PORT: 5000
 
       - name: Wait for server to start
         run: sleep 5
