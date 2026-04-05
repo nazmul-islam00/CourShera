@@ -44,7 +44,7 @@ function PopularCourseCard({ course }) {
         </div>
 
         <Link to={`/course/${course.course_id}`}>
-          <h3 style={{ marginTop: "4px" }}>{course.title || "Untitled Course"}</h3>
+          <h3>{course.title || "Untitled Course"}</h3>
         </Link>
 
         <p className="description-clamp">
@@ -54,7 +54,7 @@ function PopularCourseCard({ course }) {
         <div className="rating-row">
           <span className="rating-star">★</span>
           <span className="rating-value">{course.avg_rating ?? "0.0"}</span>
-          <span className="rating-count">({course.enrolment_count || 0} enrolled)</span>
+          <span className="rating-count">({course.enrollment_count || 0} enrolled)</span>
         </div>
 
         <p className="meta-row">
@@ -62,9 +62,9 @@ function PopularCourseCard({ course }) {
           {course.price ? `৳${course.price}` : "Free"}
         </p>
 
-        <button className="enroll-btn" onClick={handleEnroll}>
+        {/* <button className="enroll-btn" onClick={handleEnroll}>
           Enroll Now
-        </button>
+        </button> */}
       </div>
     </article>
   );

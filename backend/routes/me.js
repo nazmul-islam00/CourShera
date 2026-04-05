@@ -169,4 +169,53 @@ router.delete("/saved-cards/:id", isAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/my-learning", isAuthenticated, async (req, res) => {
+  try {
+    const clientId = req.user?.client_id || req.user?.id;
+    if (!clientId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const userProgress = await prisma.course_progress.findMany({
+      where: {
+        client_id: parseInt(clientId, 10),
+      },
+      include: {
+        courses: {
+          include: {
+            partners: true,
+            categories: true,
+          },
+        },
+      },
+      orderBy: {
+        started_at: "desc",
+      },
+    });
+
+    const formattedLearning = userProgress.map((progress) => {
+      const course = progress.courses;
+      return {
+        courseId: course.course_id,
+        title: course.title,
+        partner: course.partners ? course.partners.name : "Coursera Partner",
+        partnerLogo: course.partners
+          ? course.partners.name.charAt(0).toUpperCase()
+          : "C",
+        imageUrl:
+          course.image_url ||
+          "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
+        progressPercentage: Number(progress.completion_percentage || 0),
+        status: progress.overall_status,
+        currentTopic: "Week 1",
+      };
+    });
+
+    res.status(200).json(formattedLearning);
+  } catch (error) {
+    console.error("Error fetching my learning:", error);
+    res.status(500).json({ error: "Failed to fetch learning data" });
+  }
+});
+
 export default router;

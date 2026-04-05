@@ -325,14 +325,14 @@ router.get("/popular", async (req, res) => {
 
         return {
           ...course,
-          enrolment_count: course._count.enrollments,
+          enrollment_count: course._count.enrollments,
           avg_rating: avgRating.toFixed(2),
           category: course.categories ? course.categories.name : "General",
         };
       })
       .sort((a, b) => {
-        if (b.enrolment_count !== a.enrolment_count) {
-          return b.enrolment_count - a.enrolment_count;
+        if (b.enrollment_count !== a.enrollment_count) {
+          return b.enrollment_count - a.enrollment_count;
         }
         return b.avg_rating - a.avg_rating;
       })
@@ -346,3 +346,6 @@ router.get("/popular", async (req, res) => {
 });
 
 export default router;
+
+
+

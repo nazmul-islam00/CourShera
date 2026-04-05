@@ -14,6 +14,7 @@ import QuizHomePage from "./pages/QuizHomePage";
 import QuizTakePage from "./pages/QuizTakePage";
 import QuizCertificatePage from "./pages/QuizCertificatePage";
 import PastQuizzesPage from "./pages/PastQuizzesPage";
+import MyLearning from "./pages/MyLearning";
 
 function App() {
   const location = useLocation();
@@ -35,6 +36,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/my-learning"
+          element={
+            <ProtectedRoute>
+              <MyLearning />
             </ProtectedRoute>
           }
         />
