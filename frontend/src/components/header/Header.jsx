@@ -30,8 +30,19 @@ const Header = () => {
                   coursera
                 </span>
             <nav className="header-nav" aria-label="Main navigation">
-              <button type="button">Explore</button>
-              <button type="button">My Learning</button>
+            <button
+              type="button"
+              onClick={() => navigate("/quiz-center")}
+            >
+              Explore
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate("/quiz-center")}
+            >
+              My Learning
+            </button>
               <button type="button">Degrees</button>
             </nav>
           </div>
