@@ -33,6 +33,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
+  overflow: visible;
 }
 
 .header-inner {
@@ -46,7 +47,7 @@
 .brand-block {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
 }
 
 .brand {
@@ -58,7 +59,8 @@
 
 .header-nav {
   display: flex;
-  gap: 14px;
+  align-items: center;
+  gap: 18px;
 }
 
 .header-nav button {
@@ -67,6 +69,134 @@
   color: #2b3f58;
   cursor: pointer;
   font-size: 0.95rem;
+  padding: 0;
+}
+
+.header-nav button:hover {
+  text-decoration: underline;
+}
+
+.explore-wrapper {
+  position: static;
+  display: flex;
+  align-items: center;
+}
+
+.explore-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.explore-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.explore-wrapper:hover .explore-btn svg {
+  transform: rotate(180deg);
+}
+
+.mega-menu-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #ffffff;
+  border-top: 1px solid #e5eaf1;
+  box-shadow: 0 12px 30px rgba(13, 34, 61, 0.08);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+  cursor: default;
+}
+
+.explore-wrapper:hover .mega-menu-overlay {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.mega-menu-content {
+  padding: 32px 0 22px;
+}
+
+.mega-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 48px;
+}
+
+.mega-menu-section h3 {
+  margin: 0 0 16px;
+  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.mega-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mega-menu-list a {
+  color: #1f2937;
+  text-decoration: none;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.mega-menu-list a:hover {
+  text-decoration: underline;
+}
+
+.view-all-link {
+  text-decoration: underline !important;
+  color: #1f2937 !important;
+}
+
+.split-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.mt-4 {
+  margin-top: 32px;
+}
+
+.mega-menu-divider {
+  height: 1px;
+  background: #e5eaf1;
+  margin: 30px 0 22px;
+}
+
+.mega-menu-footer {
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.mega-menu-footer a {
+  color: #1f2937;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.mega-menu-footer a:hover {
+  color: #0056d2;
+}
+
+.coursera-plus {
+  color: #0056d2;
+  font-weight: 500;
+}
+
+.coursera-plus strong {
+  font-weight: 800;
 }
 
 .header-search {
