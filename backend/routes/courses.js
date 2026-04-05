@@ -300,6 +300,7 @@ router.get("/recommendations", isAuthenticated, async (req, res) => {
 
 router.get("/popular", async (req, res) => {
   try {
+    console.log("Redirecting to client URL:", `${process.env.CLIENT_URL}/payment/result?status=success&tran_id=`);
     const courses = await prisma.courses.findMany({
       include: {
         partners: true,
