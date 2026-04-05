@@ -62,7 +62,9 @@ const ExploreDropdown = () => {
               ) : categories.length > 0 ? (
                 categories.slice(0, 11).map((category) => (
                   <li key={String(category.category_id)}>
-                    <Link to="#">{category.name}</Link>
+                    <Link to={`/browse/category/${category.category_id}`}>
+                      {category.name}
+                    </Link>
                   </li>
                 ))
               ) : (

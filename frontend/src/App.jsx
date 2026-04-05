@@ -8,6 +8,7 @@ import Header from "./components/header/Header";
 import { Footer } from "./components/footer/Footer";
 import ProfilePage from "./pages/ProfilePage";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import CategoryPage from "./pages/CategoryPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/browse/category/:categoryId" element={<CategoryPage />} />
         <Route path="/course/:courseId" element={<CourseOutlinePage />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route
