@@ -25,12 +25,13 @@ jobs:
       - name: Generate Prisma Client
         working-directory: ./backend
         run: npx prisma generate
+        env: 
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Start Backend Server
         working-directory: ./backend
         run: node server.js & 
         env: 
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           PORT: 5000
 
       - name: Wait for server to start
