@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@supabase/supabase-js": "^2.101.1",
-    "country-list": "^2.4.1",
-    "multer": "^2.1.1"
-  }
-}
