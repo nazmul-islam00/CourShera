@@ -15,6 +15,7 @@ import QuizHomePage from "./pages/QuizHomePage";
 import QuizTakePage from "./pages/QuizTakePage";
 import QuizCertificatePage from "./pages/QuizCertificatePage";
 import PastQuizzesPage from "./pages/PastQuizzesPage";
+import MyLearning from "./pages/MyLearning";
 import SearchPage from "./pages/SearchPage";
 
 function App() {
@@ -42,6 +43,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/my-learning"
+          element={
+            <ProtectedRoute>
+              <MyLearning />
             </ProtectedRoute>
           }
         />

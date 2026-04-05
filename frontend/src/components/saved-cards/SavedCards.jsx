@@ -104,7 +104,6 @@ export default function SavedCards() {
             borderRadius: "8px",
           }}
         >
-          {/* ... Your exact same Add Card Form inputs ... */}
           <div className="input-group">
             <label>Card Number</label>
             <input
@@ -192,7 +191,6 @@ export default function SavedCards() {
         )}
       </div>
 
-      {/* ✨ Custom Confirmation Modal Overlay ✨ */}
       {cardToDelete && (
         <div
           className="modal-overlay"

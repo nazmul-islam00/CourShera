@@ -1007,7 +1007,6 @@
   }
 }
 
-/* ── Enroll button on course cards ── */
 .enroll-btn {
   margin-top: 12px;
   width: 100%;
@@ -1023,7 +1022,6 @@
 }
 .enroll-btn:hover { background: #0046b0; }
 
-/* ── Featured cse_101 banner ── */
 .featured-course-banner {
   background: linear-gradient(100deg, #0056d2 0%, #1a7ae2 100%);
   color: #ffffff;

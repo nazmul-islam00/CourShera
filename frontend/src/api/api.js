@@ -198,6 +198,14 @@ export const fetchRecommendedCourses = async (signal) => {
   return response.json();
 };
 
+export const fetchMyLearning = async signal => {
+  const response = await fetch(`${API_BASE}/me/my-learning`, {
+    signal,
+    credentials: "include"
+  })
+  if (!response.ok) throw new Error("Failed to fettch my learning data");
+  return response.json();
+}
 
 // Search courses by title substring
 export async function fetchSearchCourses(query, signal) {

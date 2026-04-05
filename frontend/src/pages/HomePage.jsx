@@ -30,9 +30,6 @@ export const HomePage = () => {
         </section>
         <div className="shared-sections container">
           <PopularCoursesHome />
-          {/* <CareerCertificates /> */}
-          {/* <DegreeSection /> */}
-          {/* <ExploreRoles /> */}
         </div>
       </main>
     </div>
