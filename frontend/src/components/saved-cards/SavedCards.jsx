@@ -15,6 +15,10 @@ export default function SavedCards() {
     cvc: "",
   });
 
+  // ✨ New state for the custom confirmation modal
+  const [cardToDelete, setCardToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false); // To show a loading state while deleting
+
   const loadCards = () => {
     fetchSavedCards()
       .then((data) => {
@@ -39,14 +43,29 @@ export default function SavedCards() {
     }
   };
 
-  const handleDelete = async (cardId) => {
-    if (!window.confirm("Are you sure you want to remove this card?")) return;
+  // ✨ Step 1: Just open the modal and set the target ID
+  const initiateDelete = (cardId) => {
+    setCardToDelete(cardId);
+  };
+
+  // ✨ Step 2: Actually execute the deletion when "Confirm" is clicked
+  const confirmDelete = async () => {
+    if (!cardToDelete) return;
+    setIsDeleting(true);
     try {
-      await deleteSavedCard(cardId);
+      await deleteSavedCard(cardToDelete);
+      setCardToDelete(null); // Close modal on success
       loadCards();
     } catch (error) {
       alert("Failed to delete card");
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  // ✨ Step 3: Cancel deletion
+  const cancelDelete = () => {
+    setCardToDelete(null);
   };
 
   if (loading) return <p>Loading cards...</p>;
@@ -85,6 +104,7 @@ export default function SavedCards() {
             borderRadius: "8px",
           }}
         >
+          {/* ... Your exact same Add Card Form inputs ... */}
           <div className="input-group">
             <label>Card Number</label>
             <input
@@ -139,7 +159,7 @@ export default function SavedCards() {
           cards.map((card) => (
             <div key={card.card_info_id} className="payment-card-item">
               <button
-                onClick={() => handleDelete(card.card_info_id)}
+                onClick={() => initiateDelete(card.card_info_id)} // ✨ Changed to open modal
                 style={{
                   position: "absolute",
                   top: "10px",
@@ -171,6 +191,74 @@ export default function SavedCards() {
           <p className="no-cards">No saved cards found.</p>
         )}
       </div>
+
+      {/* ✨ Custom Confirmation Modal Overlay ✨ */}
+      {cardToDelete && (
+        <div
+          className="modal-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="modal-content"
+            style={{
+              background: "white",
+              padding: "24px",
+              borderRadius: "8px",
+              width: "90%",
+              maxWidth: "400px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              color: "#333",
+            }}
+          >
+            <h3 style={{ marginTop: 0, color: "#d9534f" }}>Remove Card?</h3>
+            <p style={{ fontSize: "14px", color: "#555" }}>
+              Are you sure you want to delete this payment method? This action cannot be undone.
+            </p>
+            
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "24px" }}>
+              <button
+                onClick={cancelDelete}
+                disabled={isDeleting}
+                style={{
+                  padding: "8px 16px",
+                  border: "1px solid #ccc",
+                  background: "transparent",
+                  borderRadius: "4px",
+                  cursor: isDeleting ? "not-allowed" : "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={isDeleting}
+                style={{
+                  padding: "8px 16px",
+                  border: "none",
+                  background: "#d9534f",
+                  color: "white",
+                  borderRadius: "4px",
+                  cursor: isDeleting ? "not-allowed" : "pointer",
+                  fontWeight: "bold"
+                }}
+              >
+                {isDeleting ? "Removing..." : "Remove"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
