@@ -32,6 +32,7 @@ const Header = () => {
             </span>
 
             <nav className="header-nav" aria-label="Main navigation">
+
               <div className="explore-wrapper">
                 <button type="button" className="explore-btn">
                   Explore
@@ -42,6 +43,13 @@ const Header = () => {
                 <ExploreDropdown />
               </div>
               <button type="button">My Learning</button>
+              <button
+                type="button"
+                onClick={() => navigate("/quiz-center")}
+              >
+              Quiz
+            </button>
+
               <button type="button">Degrees</button>
             </nav>
           </div>
