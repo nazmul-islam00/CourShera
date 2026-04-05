@@ -9,10 +9,14 @@ import {
   FaApple,
 } from "react-icons/fa";
 
-
 import "./Footer.css";
 
 export const Footer = () => {
+  // This prevents the default action of jumping to the top of the page when clicking href="#"
+  const handleLinkClick = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <footer className="global-footer">
       <div className="container footer-container">
@@ -21,59 +25,43 @@ export const Footer = () => {
             <h2>Coursera</h2>
             <ul>
               <li>
-                <a href="https://www.coursera.org/about">About</a>
+                <a href="#" onClick={handleLinkClick}>About</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/about/how-coursera-works/">
-                  What We Offer
-                </a>
+                <a href="#" onClick={handleLinkClick}>What We Offer</a>
               </li>
               <li>
-                <a href="https://blog.coursera.org/leadership/">Leadership</a>
+                <a href="#" onClick={handleLinkClick}>Leadership</a>
               </li>
               <li>
-                <a href="https://careers.coursera.com/homepage">Careers</a>
+                <a href="#" onClick={handleLinkClick}>Careers</a>
               </li>
               <li>
-                <a href="#">Catalog</a>
+                <a href="#" onClick={handleLinkClick}>Catalog</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/courseraplus">
-                  Coursera Plus
-                </a>
+                <a href="#" onClick={handleLinkClick}>Coursera Plus</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/professional-certificates">
-                  Professional Certificates
-                </a>
+                <a href="#" onClick={handleLinkClick}>Professional Certificates</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/mastertrack">
-                  MasterTrack® Certificates
-                </a>
+                <a href="#" onClick={handleLinkClick}>MasterTrack® Certificates</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/degrees">Degrees</a>
+                <a href="#" onClick={handleLinkClick}>Degrees</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/business?utm_campaign=website&utm_content=corp-to-home-footer-for-enterprise&utm_medium=coursera&utm_source=enterprise">
-                  For Enterprise
-                </a>
+                <a href="#" onClick={handleLinkClick}>For Enterprise</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/government?utm_campaign=website&utm_content=corp-to-home-footer-for-government&utm_medium=coursera&utm_source=enterprise">
-                  For Government
-                </a>
+                <a href="#" onClick={handleLinkClick}>For Government</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/campus?utm_campaign=website&utm_content=corp-to-home-footer-for-campus&utm_medium=coursera&utm_source=enterprise">
-                  For Campus
-                </a>
+                <a href="#" onClick={handleLinkClick}>For Campus</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/partnerships?utm_medium=coursera&utm_source=partnerships&utm_campaign=website&utm_content=corp-to-home-footer-become-a-partner">
-                  Become a Partner
-                </a>
+                <a href="#" onClick={handleLinkClick}>Become a Partner</a>
               </li>
             </ul>
           </div>
@@ -82,23 +70,19 @@ export const Footer = () => {
             <h2>Community</h2>
             <ul>
               <li>
-                <a href="https://www.coursera.support/s/community?language=en_US">
-                  Learners
-                </a>
+                <a href="#" onClick={handleLinkClick}>Learners</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/partners">Partners</a>
+                <a href="#" onClick={handleLinkClick}>Partners</a>
               </li>
               <li>
-                <a href="https://www.coursera.support/s/article/learner-000001137?language=en_US">
-                  Beta Testers
-                </a>
+                <a href="#" onClick={handleLinkClick}>Beta Testers</a>
               </li>
               <li>
-                <a href="https://blog.coursera.org">Blog</a>
+                <a href="#" onClick={handleLinkClick}>Blog</a>
               </li>
               <li>
-                <a href="https://medium.com/coursera-engineering">Tech Blog</a>
+                <a href="#" onClick={handleLinkClick}>Tech Blog</a>
               </li>
             </ul>
           </div>
@@ -107,42 +91,34 @@ export const Footer = () => {
             <h2>More</h2>
             <ul>
               <li>
-                <a href="https://www.coursera.org/about/press">Press</a>
+                <a href="#" onClick={handleLinkClick}>Press</a>
               </li>
               <li>
-                <a href="https://investor.coursera.com/overview/default.aspx">
-                  Investors
-                </a>
+                <a href="#" onClick={handleLinkClick}>Investors</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/about/terms">Terms</a>
+                <a href="#" onClick={handleLinkClick}>Terms</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/about/privacy">Privacy</a>
+                <a href="#" onClick={handleLinkClick}>Privacy</a>
               </li>
               <li>
-                <a href="https://www.coursera.support/s/learner-help-center?language=en_US">
-                  Help
-                </a>
+                <a href="#" onClick={handleLinkClick}>Help</a>
               </li>
               <li>
-                <a href="https://www.coursera.support/s/article/learner-000001052?language=en_US">
-                  Accessibility
-                </a>
+                <a href="#" onClick={handleLinkClick}>Accessibility</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/about/contact">Contact</a>
+                <a href="#" onClick={handleLinkClick}>Contact</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/articles">Articles</a>
+                <a href="#" onClick={handleLinkClick}>Articles</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/directory">Directory</a>
+                <a href="#" onClick={handleLinkClick}>Directory</a>
               </li>
               <li>
-                <a href="https://www.coursera.org/about/affiliates">
-                  Affiliates
-                </a>
+                <a href="#" onClick={handleLinkClick}>Affiliates</a>
               </li>
             </ul>
           </div>
@@ -151,7 +127,8 @@ export const Footer = () => {
             <h2>Learn Anywhere</h2>
             <div className="app-badges">
               <a
-                href="https://apps.apple.com/us/app/coursera-grow-your-career/id736535961"
+                href="#"
+                onClick={handleLinkClick}
                 className="store-badge"
               >
                 <FaApple className="store-icon" />
@@ -161,7 +138,8 @@ export const Footer = () => {
                 </div>
               </a>
               <a
-                href="https://play.google.com/store/apps/details?id=org.coursera.android"
+                href="#"
+                onClick={handleLinkClick}
                 className="store-badge"
               >
                 <FaGooglePlay className="store-icon" />
@@ -182,49 +160,43 @@ export const Footer = () => {
           <p className="copyright">© 2026 Coursera Inc. All rights reserved.</p>
           <div className="social-links">
             <a
-              href="https://www.facebook.com/Coursera"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
+              onClick={handleLinkClick}
               aria-label="Facebook"
             >
               <FaFacebookF />
             </a>
             <a
-              href="https://www.linkedin.com/company/coursera"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
+              onClick={handleLinkClick}
               aria-label="LinkedIn"
             >
               <FaLinkedinIn />
             </a>
             <a
-              href="https://x.com/coursera"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
+              onClick={handleLinkClick}
               aria-label="Twitter"
             >
               <FaTwitter />
             </a>
             <a
-              href="https://www.youtube.com/user/coursera"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
+              onClick={handleLinkClick}
               aria-label="YouTube"
             >
               <FaYoutube />
             </a>
             <a
-              href="https://www.instagram.com/coursera/"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
+              onClick={handleLinkClick}
               aria-label="Instagram"
             >
               <FaInstagram />
             </a>
             <a
-              href="https://www.tiktok.com/@coursera"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#"
+              onClick={handleLinkClick}
               aria-label="Tiktok"
             >
               <FaTiktok />

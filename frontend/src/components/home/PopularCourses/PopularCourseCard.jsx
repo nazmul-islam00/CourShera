@@ -2,12 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useCheckout } from "../../../context/checkout/CheckoutContext";
 import { Link } from "react-router-dom";
 
-function PopularCourseCard({ course
-  
- }) {
-  const image = course.image_url;
+function PopularCourseCard({ course }) {
+  const image =
+    course.image_url ||
+    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80";
   const navigate = useNavigate();
   const { setCourseForCheckout } = useCheckout();
+  const partnerName = course.partners?.name || "Coursera Partner";
 
   const handleEnroll = () => {
     setCourseForCheckout({
@@ -33,13 +34,17 @@ function PopularCourseCard({ course
       <div className="popular-card-content">
         <div className="provider-row">
           <span className="provider-avatar">
-            {(course.partner_id || "C")[0]}
+            {partnerName.charAt(0).toUpperCase()}
           </span>
-          <span>{course.partner_id || "Coursera Partner"}</span>
+          <span>{partnerName}</span>
+        </div>
+
+        <div className="course-type" style={{ fontSize: "12px", color: "#0056d2", fontWeight: "600", marginBottom: "4px" }}>
+          {course.category}
         </div>
 
         <Link to={`/course/${course.course_id}`}>
-          <h3>{course.title || "Untitled Course"}</h3>
+          <h3 style={{ marginTop: "4px" }}>{course.title || "Untitled Course"}</h3>
         </Link>
 
         <p className="description-clamp">
@@ -49,12 +54,12 @@ function PopularCourseCard({ course
         <div className="rating-row">
           <span className="rating-star">★</span>
           <span className="rating-value">{course.avg_rating ?? "0.0"}</span>
-          <span className="rating-count">Popular course</span>
+          <span className="rating-count">({course.enrolment_count || 0} enrolled)</span>
         </div>
 
         <p className="meta-row">
           {course.difficulty || "Beginner"} · {course.language || "English"} ·{" "}
-          {course.price ?? "Free"}
+          {course.price ? `৳${course.price}` : "Free"}
         </p>
 
         <button className="enroll-btn" onClick={handleEnroll}>

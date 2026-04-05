@@ -28,14 +28,7 @@ export const HeroSection = () => {
               Build in-demand skills with expert-led programs from Google,
               Microsoft, IBM, and more.
             </p>
-            <button
-              className="btn-primary"
-              onClick={() =>
-                window.open(
-                  "https://www.coursera.org/courseraplus/special/global-40-spring-2026",
-                )
-              }
-            >
+            <button className="btn-primary">
               Save on Coursera Plus <FaArrowRight />
             </button>
           </div>
@@ -54,14 +47,7 @@ export const HeroSection = () => {
               Join 3,700+ teams building skills with Coursera for Teams
               worldwide.
             </p>
-            <button
-              className="btn-primary btn-white"
-              onClick={() =>
-                window.open(
-                  "https://www.coursera.org/business/teams?promoCode=spring-promo-2026&utm_medium=coursera&utm_source=bluebanner&utm_campaign=2026-spring-promo&utm_content=promo-bar-cta",
-                )
-              }
-            >
+            <button className="btn-primary btn-white">
               Save 40% on Teams <FaArrowRight />
             </button>
           </div>

@@ -180,3 +180,20 @@ export const deleteSavedCard = async (cardId) => {
   if (!response.ok) throw new Error("Failed to delete card.");
   return response.json();
 };
+
+export const fetchRecommendedCourses = async (signal) => {
+  const response = await fetch(`${API_BASE}/courses/recommendations`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    signal: signal,
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch recommended courses");
+  }
+
+  return response.json();
+};

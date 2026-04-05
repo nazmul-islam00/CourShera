@@ -2,45 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { fetchInProgressCourses } from "../../../api/api";
 import "./InProgressCourses.css";
 
-const fallbackCourses = [
-  {
-    id: "course_fallback_1",
-    partner: "Google",
-    title: "Google UX Design",
-    type: "Professional Certificate",
-    progress: 45,
-    imageUrl: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=300&q=80",
-    partnerLogo: "G"
-  },
-  {
-    id: "course_fallback_2",
-    partner: "Stanford University",
-    title: "Machine Learning Specialization",
-    type: "Specialization",
-    progress: 12,
-    imageUrl: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=300&q=80",
-    partnerLogo: "S"
-  },
-  {
-    id: "course_fallback_3",
-    partner: "IBM",
-    title: "IBM Data Science",
-    type: "Professional Certificate",
-    progress: 80,
-    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=300&q=80",
-    partnerLogo: "I"
-  },
-  {
-    id: "course_fallback_4",
-    partner: "University of Michigan",
-    title: "Programming for Everybody (Getting Started with Python)",
-    type: "Course",
-    progress: 5,
-    imageUrl: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=300&q=80",
-    partnerLogo: "M"
-  }
-];
-
 export const InProgressCourses = () => {
   const trackRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -55,17 +16,19 @@ export const InProgressCourses = () => {
     const loadCourses = async () => {
       try {
         setIsLoading(true);
-        // Uncomment below to use backend, fallback for demo only
-        // const data = await fetchInProgressCourses(controller.signal);
-        // setCourses(data);
-        setCourses(fallbackCourses);
+        const data = await fetchInProgressCourses(controller.signal);
+        setCourses(data);
       } catch (err) {
-        setError(err.message);
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
       } finally {
         setIsLoading(false);
       }
     };
+    
     loadCourses();
+    
     return () => controller.abort();
   }, []);
 
@@ -124,7 +87,7 @@ export const InProgressCourses = () => {
               <div className="card-content">
                 <div className="partner-name">{course.partner}</div>
                 <h3 className="course-title">{course.title}</h3>
-                <div className="course-type">{course.type}</div>
+                <div className="course-type">{course.category}</div>
 
                 <div className="progress-container">
                   <div className="progress-bar-bg">
