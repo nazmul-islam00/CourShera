@@ -1,7 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { fetchCategories } from "../../api/api";
 
 const ExploreDropdown = () => {
+  const [categories, setCategories] = useState([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadCategories = async () => {
+      try {
+        const data = await fetchCategories(controller.signal);
+        setCategories(Array.isArray(data) ? data : []);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Failed to load categories:", error);
+          setCategories([]);
+        }
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+
+    loadCategories();
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   return (
     <div className="mega-menu-overlay">
       <div className="container mega-menu-content">
@@ -29,17 +57,17 @@ const ExploreDropdown = () => {
           <div className="mega-menu-section">
             <h3>Explore categories</h3>
             <ul className="mega-menu-list">
-              <li><Link to="#">Artificial Intelligence</Link></li>
-              <li><Link to="#">Business</Link></li>
-              <li><Link to="#">Data Science</Link></li>
-              <li><Link to="#">Information Technology</Link></li>
-              <li><Link to="#">Computer Science</Link></li>
-              <li><Link to="#">Healthcare</Link></li>
-              <li><Link to="#">Physical Science and Engineering</Link></li>
-              <li><Link to="#">Personal Development</Link></li>
-              <li><Link to="#">Social Sciences</Link></li>
-              <li><Link to="#">Language Learning</Link></li>
-              <li><Link to="#">Arts and Humanities</Link></li>
+              {isLoadingCategories ? (
+                <li><span>Loading categories...</span></li>
+              ) : categories.length > 0 ? (
+                categories.slice(0, 11).map((category) => (
+                  <li key={String(category.category_id)}>
+                    <Link to="#">{category.name}</Link>
+                  </li>
+                ))
+              ) : (
+                <li><span>No categories available</span></li>
+              )}
               <li><Link to="#" className="view-all-link">View all</Link></li>
             </ul>
           </div>

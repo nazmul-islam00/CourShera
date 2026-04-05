@@ -59,6 +59,14 @@ export async function fetchPopularCourses(signal) {
   return await response.json();
 }
 
+export async function fetchCategories(signal) {
+  const response = await fetch(`${API_BASE}/courses/categories`, { signal });
+  if (!response.ok) {
+    throw new Error(`Could not load categories (${response.status})`);
+  }
+  return await response.json();
+}
+
 // CourseOutlinePage fetches
 export async function fetchCourseFromFallbackList(courseId, signal) {
   const response = await fetch(`${API_BASE}/test-courses`, { signal });
