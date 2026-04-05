@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { fetchCourseLearn } from "../api/api";
-import { buildLearnModel } from "../utils/courseLearnModel";
+// import { buildLearnModel } from "../utils/courseLearnModel";
 import LearnSidebar from "../components/course-learn/LearnSidebar";
 import TopicSection from "../components/course-learn/TopicSection";
 import LearnProgressPanel from "../components/course-learn/LearnProgressPanel";
@@ -114,7 +114,8 @@ function CourseContentPage() {
         setLoading(true);
         setError("");
         const raw    = await fetchCourseLearn(courseId, controller.signal);
-        const mapped = buildLearnModel(raw);
+        // const mapped = buildLearnModel(raw);
+        const mapped = null;
         if (!mapped) { setError("Course not found"); return; }
         setLearn(mapped);
 
