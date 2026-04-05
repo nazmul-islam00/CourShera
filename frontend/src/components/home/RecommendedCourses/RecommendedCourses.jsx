@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { fetchRecommendedCourses } from "../../../api/api";
 
 
@@ -69,7 +70,7 @@ export const RecommendedCourses = () => {
 
         <div className="courses-track" ref={trackRef} onScroll={checkScroll}>
           {courses.map((course) => (
-            <div key={course.id} className="course-card">
+            <div key={course.course_id ?? course.id} className="course-card">
               <div className="card-image-container">
                 <img
                   src={course.imageUrl}
@@ -81,7 +82,12 @@ export const RecommendedCourses = () => {
 
               <div className="card-content">
                 <div className="partner-name">{course.partner}</div>
-                <h3 className="course-title">{course.title}</h3>
+                <Link
+                  to={`/course/${course.course_id ?? course.id}`}
+                  className="course-title-link"
+                >
+                  <h3 className="course-title">{course.title}</h3>
+                </Link>
                 <div className="course-type">{course.category}</div>
 
                 <div className="course-meta">

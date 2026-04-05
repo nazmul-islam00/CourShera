@@ -161,6 +161,11 @@
   overflow: hidden;
 }
 
+.course-title-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .course-card:hover .course-title {
   color: #0056d2;
 }
