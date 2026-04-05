@@ -351,6 +351,7 @@ router.post("/success", async (req, res) => {
     return res.redirect(`${CLIENT_URL}/payment/result?status=failed&tran_id=${tran_id ?? ""}`);
   }
 
+  console.log("Redirecting to client URL:", `${CLIENT_URL}/payment/result?status=success&tran_id=${tran_id}`);
   return res.redirect(`${CLIENT_URL}/payment/result?status=success&tran_id=${tran_id}`);
 });
 
