@@ -134,3 +134,31 @@ export const updateUserProfile = async (submitData) => {
 
   return response.json();
 };
+
+export const fetchSavedCards = async () => {
+  const response = await fetch(`${API_BASE}/me/saved-cards`, {
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to fetch cards.");
+  return response.json();
+};
+
+export const addSavedCard = async (payload) => {
+  const response = await fetch(`${API_BASE}/saved-cards`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error("Failed to add card.");
+  return response.json();
+};
+
+export const deleteSavedCard = async (cardId) => {
+  const response = await fetch(`${API_BASE}/saved-cards/${cardId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  if (!response.ok) throw new Error("Failed to delete card.");
+  return response.json();
+};

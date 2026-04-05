@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchUserProfile, updateUserProfile } from "./../api/api";
 import { getNames } from "country-list";
 import "./../styles/ProfilePage.css";
+import SavedCards from "../components/saved-cards/SavedCards";
 
 const COUNTRIES = getNames();
 
@@ -288,6 +289,8 @@ export default function ProfilePage() {
                 />
               </div>
             </div>
+
+            <SavedCards />
 
             <div
               className="profile-actions"

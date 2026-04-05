@@ -234,3 +234,51 @@
     gap: 0 !important;
   }
 }
+
+.cards-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.payment-card-item {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  position: relative;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.card-chip {
+  width: 40px;
+  height: 30px;
+  background: #fbbf24;
+  border-radius: 4px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.card-number-display {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.card-expiry {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.no-cards {
+  color: #666;
+  font-style: italic;
+}
