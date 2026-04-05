@@ -200,3 +200,14 @@ export const fetchRecommendedCourses = async (signal) => {
 
   return response.json();
 };
+
+
+// Search courses by title substring
+export async function fetchSearchCourses(query, signal) {
+  const url = `${API_BASE}/courses/search?q=${encodeURIComponent(query)}`;
+  const response = await fetch(url, { signal });
+  if (!response.ok) {
+    throw new Error(`Could not search courses (${response.status})`);
+  }
+  return await response.json();
+}

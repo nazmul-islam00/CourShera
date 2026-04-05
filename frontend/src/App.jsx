@@ -14,7 +14,7 @@ import QuizHomePage from "./pages/QuizHomePage";
 import QuizTakePage from "./pages/QuizTakePage";
 import QuizCertificatePage from "./pages/QuizCertificatePage";
 import PastQuizzesPage from "./pages/PastQuizzesPage";
-// import CourseContentPage from "./pages/CourseContentPage";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   const location = useLocation();
@@ -46,7 +46,7 @@ function App() {
         <Route path="/quiz/:quizId/take" element={<QuizTakePage />} />
         <Route path="/quiz/:quizId/certificate" element={<QuizCertificatePage />} />
         <Route path="/quiz/:quizId/attempts" element={<PastQuizzesPage />} />
-
+        <Route path="/search" element={<SearchPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

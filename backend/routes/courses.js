@@ -345,4 +345,33 @@ router.get("/popular", async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+
+
+// Search courses by title substring
+router.get("/search", async (req, res) => {
+  const { q } = req.query;
+  if (!q || typeof q !== "string" || !q.trim()) {
+    return res.status(400).json({ error: "Missing or invalid search query" });
+  }
+  try {
+    const courses = await prisma.courses.findMany({
+      where: {
+        title: {
+          contains: q,
+          mode: "insensitive"
+        }
+      }
+    });
+    res.json({ courses });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
