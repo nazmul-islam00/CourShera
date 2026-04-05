@@ -172,7 +172,7 @@ router.get("/in-progress", isAuthenticated, async (req, res) => {
         client_id: parseInt(clientId, 10),
         overall_status: { in: ["IN_PROGRESS", "NOT_STARTED"] },
       },
-      include: { courses: { include: { partners: true } } },
+      include: { courses: { include: { partners: true, categories: true } } },
       orderBy: { started_at: "desc" },
     });
 
@@ -184,7 +184,9 @@ router.get("/in-progress", isAuthenticated, async (req, res) => {
         id: record.course_id,
         partner: partner ? partner.name : "Coursera Partner",
         title: courseDetails?.title || "Unknown Course",
-        type: "Course",
+        category: courseDetails?.categories
+          ? courseDetails.categories.name
+          : "General",
         progress: Number(record.completion_percentage),
         imageUrl:
           courseDetails?.image_url ||
@@ -202,9 +204,9 @@ router.get("/in-progress", isAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/recommendations", async (req, res) => {
+router.get("/recommendations", isAuthenticated, async (req, res) => {
   try {
-    const clientId = req.user?.id;
+    const clientId = req.user?.client_id || req.user?.id;
     let recommendedCourses = [];
     let enrolledCourseIds = [];
 
@@ -215,42 +217,58 @@ router.get("/recommendations", async (req, res) => {
       });
 
       enrolledCourseIds = enrollments.map((enrollment) => enrollment.course_id);
-
       const userSkills = new Set();
+      const userCategories = new Set();
       enrollments.forEach((enrollment) => {
-        const skills = enrollment.courses?.skills;
-        if (Array.isArray(skills)) {
-          skills.forEach((skill) => userSkills.add(skill));
+        const course = enrollment.courses;
+        if (course) {
+          if (Array.isArray(course.skills)) {
+            course.skills.forEach((skill) => userSkills.add(skill));
+          }
+          if (course.category_id != null) {
+            userCategories.add(course.category_id.toString());
+          }
         }
       });
 
-      if (userSkills.size > 0) {
+      if (userSkills.size > 0 || userCategories.size > 0) {
         const skillArray = Array.from(userSkills);
-
+        const categoryArray = Array.from(userCategories);
         const potentialMatches = await prisma.courses.findMany({
           where: { course_id: { notIn: enrolledCourseIds } },
-          include: { partners: true },
-          orderBy: { avg_rating: "desc" },
+          include: {
+            partners: true,
+            categories: true,
+            reviews: { select: { rating: true } },
+          },
           take: 50,
         });
 
         recommendedCourses = potentialMatches
           .filter((course) => {
-            if (!Array.isArray(course.skills)) return false;
-            return course.skills.some((skill) => skillArray.includes(skill));
+            const hasMatchingCategory =
+              course.category_id != null &&
+              categoryArray.includes(course.category_id.toString());
+            const hasMatchingSkill =
+              Array.isArray(course.skills) &&
+              course.skills.some((skill) => skillArray.includes(skill));
+
+            return hasMatchingCategory || hasMatchingSkill;
           })
           .slice(0, 10);
       }
     }
-
     if (recommendedCourses.length === 0) {
       recommendedCourses = await prisma.courses.findMany({
         where:
           enrolledCourseIds.length > 0
             ? { course_id: { notIn: enrolledCourseIds } }
             : {},
-        include: { partners: true },
-        orderBy: { avg_rating: "desc" },
+        include: {
+          partners: true,
+          categories: true,
+          reviews: { select: { rating: true } },
+        },
         take: 10,
       });
     }
@@ -259,11 +277,12 @@ router.get("/recommendations", async (req, res) => {
       id: course.course_id,
       partner: course.partners ? course.partners.name : "Coursera Partner",
       title: course.title,
-      type: "Course",
-      rating: Number(course.avg_rating),
-      reviews: course.review_count,
+      category: course.categories ? course.categories.name : "General",
+      rating: Number(course.avg_rating || 0),
+      reviews: course.review_count || 0,
       difficulty: course.difficulty,
       imageUrl:
+        course.image_url ||
         "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
       partnerLogo: course.partners
         ? course.partners.name.charAt(0).toUpperCase()
@@ -284,6 +303,7 @@ router.get("/popular", async (req, res) => {
     const courses = await prisma.courses.findMany({
       include: {
         partners: true,
+        categories: true,
         _count: {
           select: { enrollments: true },
         },
@@ -307,6 +327,7 @@ router.get("/popular", async (req, res) => {
           ...course,
           enrolment_count: course._count.enrollments,
           avg_rating: avgRating.toFixed(2),
+          category: course.categories ? course.categories.name : "General",
         };
       })
       .sort((a, b) => {

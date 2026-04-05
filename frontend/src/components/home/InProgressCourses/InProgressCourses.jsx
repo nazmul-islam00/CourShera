@@ -87,7 +87,7 @@ export const InProgressCourses = () => {
               <div className="card-content">
                 <div className="partner-name">{course.partner}</div>
                 <h3 className="course-title">{course.title}</h3>
-                <div className="course-type">{course.type}</div>
+                <div className="course-type">{course.category}</div>
 
                 <div className="progress-container">
                   <div className="progress-bar-bg">
