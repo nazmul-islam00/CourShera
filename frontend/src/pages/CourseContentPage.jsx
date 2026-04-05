@@ -12,7 +12,7 @@ const getContentLabel = (content) => {
 };
 
 const getContentTitle = (content, index) => {
-  return content.content_id || `Content ${index + 1}`;
+  return `Lecture ${index + 1}`;
 };
 
 function CourseContentPage() {
