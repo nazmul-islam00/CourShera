@@ -17,6 +17,7 @@ import QuizCertificatePage from "./pages/QuizCertificatePage";
 import PastQuizzesPage from "./pages/PastQuizzesPage";
 import MyLearning from "./pages/MyLearning";
 import SearchPage from "./pages/SearchPage";
+import CourseContentPage from "./pages/CourseContentPage";
 
 function App() {
   const location = useLocation();
@@ -33,7 +34,6 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/browse/category/:categoryId" element={<CategoryPage />} />
         <Route path="/course/:courseId" element={<CourseOutlinePage />} />
-        {/* <Route path="/course/:courseId/content/" element={<CourseContentPage />} /> */}
         <Route path="/checkout" element={<Checkout />} />
 
         <Route path="/payment/result" element={<PaymentResult />} />
@@ -52,6 +52,15 @@ function App() {
           element={
             <ProtectedRoute>
               <MyLearning />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/course/:courseId/content"
+          element={
+            <ProtectedRoute>
+              <CourseContentPage />
             </ProtectedRoute>
           }
         />

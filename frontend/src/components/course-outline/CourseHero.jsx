@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Clock, Globe, Star, Users } from "lucide-react";
 import { useCheckout } from "../../context/checkout/CheckoutContext";
+import { fetchCourseEnrollmentStatus } from "../../api/api";
 
 const formatStudents = (count) => {
   if (!count || count < 1) {
@@ -20,8 +22,35 @@ const formatNumber = (value) => value.toLocaleString("en-US");
 function CourseHero({ outline }) {
   const navigate = useNavigate();
   const { setCourseForCheckout } = useCheckout();
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadEnrollmentStatus() {
+      try {
+        const data = await fetchCourseEnrollmentStatus(outline.courseId, controller.signal);
+        setIsEnrolled(Boolean(data?.enrolled));
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          setIsEnrolled(false);
+        }
+      }
+    }
+
+    if (outline?.courseId) {
+      loadEnrollmentStatus();
+    }
+
+    return () => controller.abort();
+  }, [outline?.courseId]);
 
   const handleEnroll = () => {
+    if (isEnrolled) {
+      navigate(`/course/${outline.courseId}/content`);
+      return;
+    }
+
     setCourseForCheckout({
       courseId: outline.courseId,
       title: outline.title || "Untitled Course",
@@ -59,7 +88,7 @@ function CourseHero({ outline }) {
 
         <div className="outline-cta-row">
           <button type="button" className="outline-btn-primary" onClick={handleEnroll}>
-            Enroll for Free
+            {isEnrolled ? "Go to Course" : "Enroll for Free"}
           </button>
           <button type="button" className="outline-btn-secondary">
             Try for Free
