@@ -1,0 +1,37 @@
+name: Post-Push Health Check
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  verify-endpoint:
+    name: Start Backend & Ping Health
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24' 
+
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Start Backend Server
+        working-directory: ./backend
+        run: node server.js & 
+
+      - name: Wait for server to start
+        run: sleep 5
+        env: 
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Ping Health Endpoint
+        run: |
+          curl --fail http://localhost:5000/test-courses || exit 1
+          echo "Endpoint is healthy!"
