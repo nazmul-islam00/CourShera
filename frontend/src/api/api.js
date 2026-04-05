@@ -23,9 +23,10 @@ export async function fetchTestCourses(signal) {
   return await response.json();
 }
 
-// Checkout payment
-export async function postPayment(payload) {
-  const response = await fetch(`${API_BASE}/payment`, {
+// Initiate a new SSLCommerz payment session.
+// Returns { gatewayUrl } on success — caller should redirect there.
+export async function initPayment(payload) {
+  const response = await fetch(`${API_BASE}/payment/init`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -137,10 +138,8 @@ export const fetchUserProfile = async () => {
   const response = await fetch(`${API_BASE}/me`, {
     credentials: "include",
   });
-
   if (response.status === 401) throw new Error("Unauthorized");
   if (!response.ok) throw new Error("Failed to fetch profile data.");
-
   return response.json();
 };
 
@@ -150,9 +149,7 @@ export const updateUserProfile = async (submitData) => {
     credentials: "include",
     body: submitData,
   });
-
   if (!response.ok) throw new Error("Failed to update profile.");
-
   return response.json();
 };
 
@@ -208,4 +205,14 @@ export const fetchMyLearning = async signal => {
   })
   if (!response.ok) throw new Error("Failed to fettch my learning data");
   return response.json();
+}
+
+// Search courses by title substring
+export async function fetchSearchCourses(query, signal) {
+  const url = `${API_BASE}/courses/search?q=${encodeURIComponent(query)}`;
+  const response = await fetch(url, { signal });
+  if (!response.ok) {
+    throw new Error(`Could not search courses (${response.status})`);
+  }
+  return await response.json();
 }

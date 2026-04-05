@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import CourseOutlinePage from "./pages/CourseOutlinePage";
 import Checkout from "./components/checkout/Checkout";
+import PaymentResult from "./components/payment-result/PaymentResult";
 import "./App.css";
 import { HomePage } from "./pages/HomePage";
 import Header from "./components/header/Header";
@@ -15,11 +16,14 @@ import QuizTakePage from "./pages/QuizTakePage";
 import QuizCertificatePage from "./pages/QuizCertificatePage";
 import PastQuizzesPage from "./pages/PastQuizzesPage";
 import MyLearning from "./pages/MyLearning";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   const location = useLocation();
 
-  const useQuizLayout = location.pathname.startsWith("/quiz") || location.pathname.startsWith("/quiz-center");
+  const useQuizLayout =
+    location.pathname.startsWith("/quiz") ||
+    location.pathname.startsWith("/quiz-center");
 
   return (
     <div className="app-container">
@@ -29,7 +33,10 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/browse/category/:categoryId" element={<CategoryPage />} />
         <Route path="/course/:courseId" element={<CourseOutlinePage />} />
+        {/* <Route path="/course/:courseId/content/" element={<CourseContentPage />} /> */}
         <Route path="/checkout" element={<Checkout />} />
+
+        <Route path="/payment/result" element={<PaymentResult />} />
 
         <Route
           path="/me"
@@ -54,7 +61,7 @@ function App() {
         <Route path="/quiz/:quizId/take" element={<QuizTakePage />} />
         <Route path="/quiz/:quizId/certificate" element={<QuizCertificatePage />} />
         <Route path="/quiz/:quizId/attempts" element={<PastQuizzesPage />} />
-
+        <Route path="/search" element={<SearchPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

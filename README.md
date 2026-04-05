@@ -20,3 +20,4 @@ To run whole application:
 ```sh
 docker-compose up --build
 ```
+Docker compose up is no longer supported

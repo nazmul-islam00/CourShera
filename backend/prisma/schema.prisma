@@ -76,6 +76,7 @@ model courses {
   curriculum            Json?             @default("[]")
   image_url             String?           @db.VarChar
   category_id           BigInt?
+  course_module         course_module[]
   course_progress       course_progress[]
   categories            categories?       @relation(fields: [category_id], references: [category_id], onUpdate: NoAction)
   partners              partners          @relation(fields: [partner_id], references: [partner_id], onUpdate: NoAction)
@@ -169,6 +170,55 @@ model categories {
   category_id BigInt    @id @default(autoincrement())
   name        String?   @unique @db.VarChar
   courses     courses[]
+}
+
+model content_table {
+  content_id    String          @id @db.VarChar
+  content_url   String?
+  transcript    String?
+  topic_content topic_content[]
+}
+
+model course_module {
+  course_id String  @db.VarChar
+  module_id String  @db.VarChar
+  courses   courses @relation(fields: [course_id], references: [course_id], onDelete: Cascade, onUpdate: NoAction)
+  modules   modules @relation(fields: [module_id], references: [module_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([course_id, module_id])
+}
+
+model module_topic {
+  module_id String  @db.VarChar
+  topic_id  String  @db.VarChar
+  modules   modules @relation(fields: [module_id], references: [module_id], onDelete: Cascade, onUpdate: NoAction)
+  topics    topics  @relation(fields: [topic_id], references: [topic_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([module_id, topic_id])
+}
+
+model modules {
+  module_id     String          @id @db.VarChar
+  title         String
+  description   String?         @default("hello world")
+  course_module course_module[]
+  module_topic  module_topic[]
+}
+
+model topic_content {
+  topic_id      String        @db.VarChar
+  content_id    String        @db.VarChar
+  content_table content_table @relation(fields: [content_id], references: [content_id], onDelete: Cascade, onUpdate: NoAction)
+  topics        topics        @relation(fields: [topic_id], references: [topic_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([topic_id, content_id])
+}
+
+model topics {
+  topic_id      String          @id @db.VarChar
+  title         String
+  module_topic  module_topic[]
+  topic_content topic_content[]
 }
 
 enum difficulty_level {

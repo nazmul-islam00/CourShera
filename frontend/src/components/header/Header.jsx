@@ -1,8 +1,38 @@
+import React, { useState } from "react";
 import { useAuth } from "../../context/auth/AuthContext";
 import { AuthButtons } from "./AuthButtons";
 import { UserDropdown } from "./UserDropdown";
 import { useNavigate } from "react-router-dom";
 import ExploreDropdown from "./ExploreDropDown";
+
+function HeaderSearch({ navigate }) {
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchText.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchText.trim())}`);
+    }
+  };
+
+  return (
+    <form
+      className="header-search"
+      role="search"
+      aria-label="Search courses"
+      onSubmit={handleSearch}
+    >
+      <input
+        type="text"
+        placeholder="Search"
+        aria-label="Search"
+        value={searchText}
+        onChange={e => setSearchText(e.target.value)}
+      />
+      <button type="submit">Search</button>
+    </form>
+  );
+}
 
 const Header = () => {
   const { user, isLoading } = useAuth();
@@ -53,14 +83,7 @@ const Header = () => {
             </nav>
           </div>
 
-          <div
-            className="header-search"
-            role="search"
-            aria-label="Search courses"
-          >
-            <input type="text" placeholder="Search" aria-label="Search" />
-            <button type="button">Search</button>
-          </div>
+          <HeaderSearch navigate={navigate} />
 
           <div className="header-actions">
             <button type="button" aria-label="Language">
