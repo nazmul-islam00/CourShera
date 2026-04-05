@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import CourseOutlinePage from "./pages/CourseOutlinePage";
 import Checkout from "./components/checkout/Checkout";
+import PaymentResult from "./components/payment-result/PaymentResult";
 import "./App.css";
 import { HomePage } from "./pages/HomePage";
 import Header from "./components/header/Header";
@@ -19,7 +20,9 @@ import SearchPage from "./pages/SearchPage";
 function App() {
   const location = useLocation();
 
-  const useQuizLayout = location.pathname.startsWith("/quiz") || location.pathname.startsWith("/quiz-center");
+  const useQuizLayout =
+    location.pathname.startsWith("/quiz") ||
+    location.pathname.startsWith("/quiz-center");
 
   return (
     <div className="app-container">
@@ -31,6 +34,8 @@ function App() {
         <Route path="/course/:courseId" element={<CourseOutlinePage />} />
         {/* <Route path="/course/:courseId/content/" element={<CourseContentPage />} /> */}
         <Route path="/checkout" element={<Checkout />} />
+
+        <Route path="/payment/result" element={<PaymentResult />} />
 
         <Route
           path="/me"
