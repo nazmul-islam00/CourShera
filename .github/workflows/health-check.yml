@@ -25,11 +25,11 @@ jobs:
       - name: Start Backend Server
         working-directory: ./backend
         run: node server.js & 
+        env: 
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Wait for server to start
         run: sleep 5
-        env: 
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Ping Health Endpoint
         run: |
