@@ -62,12 +62,6 @@ const Header = () => {
             </span>
 
             <nav className="header-nav" aria-label="Main navigation">
-              <button 
-                type="button" 
-                onClick={() => navigate("/my-learning")}
-              >
-                My Learning
-              </button>
               <div className="explore-wrapper">
                 <button type="button" className="explore-btn">
                   Explore
@@ -77,7 +71,12 @@ const Header = () => {
                 </button>
                 <ExploreDropdown />
               </div>
-              <button type="button">My Learning</button>
+              <button 
+                type="button" 
+                onClick={() => navigate("/my-learning")}
+              >
+                My Learning
+              </button>
 
               <button type="button">Degrees</button>
             </nav>

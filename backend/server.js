@@ -70,6 +70,11 @@ app.listen(process.env.PORT, () => {
   console.log(`Server has started running on port ${process.env.PORT}`);
 });
 
+app.get("/debug-env", (req, res) => {
+  res.json({
+    db_url_exists: process.env.CLIENT_URL
+  });
+});
 
 app.get("/test-courses", async (req, res) => {
   const courses = await prisma.courses.findMany();
