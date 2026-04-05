@@ -144,7 +144,7 @@ export const fetchSavedCards = async () => {
 };
 
 export const addSavedCard = async (payload) => {
-  const response = await fetch(`${API_BASE}/saved-cards`, {
+  const response = await fetch(`${API_BASE}/me/saved-cards`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -155,7 +155,7 @@ export const addSavedCard = async (payload) => {
 };
 
 export const deleteSavedCard = async (cardId) => {
-  const response = await fetch(`${API_BASE}/saved-cards/${cardId}`, {
+  const response = await fetch(`${API_BASE}/me/saved-cards/${cardId}`, {
     method: "DELETE",
     credentials: "include",
   });

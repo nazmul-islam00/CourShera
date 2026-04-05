@@ -290,8 +290,6 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <SavedCards />
-
             <div
               className="profile-actions"
               style={{
@@ -318,6 +316,9 @@ export default function ProfilePage() {
               </button>
             </div>
           </form>
+        </div>
+        <div style={{ marginTop: "30px" }}>
+          <SavedCards />
         </div>
       </div>
     </div>
