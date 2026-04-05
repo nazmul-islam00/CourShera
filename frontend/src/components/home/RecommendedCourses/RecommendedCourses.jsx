@@ -1,62 +1,33 @@
 import { useState, useRef, useEffect } from "react";
+import { fetchRecommendedCourses } from "../../../api/api";
 
-const recommendedData = [
-  {
-    id: "rec_1",
-    partner: "DeepLearning.AI",
-    title: "AI for Everyone",
-    type: "Course",
-    rating: 4.8,
-    reviews: "38K",
-    difficulty: "Beginner",
-    imageUrl:
-      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=300&q=80",
-    partnerLogo: "D",
-  },
-  {
-    id: "rec_2",
-    partner: "Meta",
-    title: "Meta Front-End Developer",
-    type: "Professional Certificate",
-    rating: 4.7,
-    reviews: "12K",
-    difficulty: "Beginner",
-    imageUrl:
-      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=300&q=80",
-    partnerLogo: "M",
-  },
-  {
-    id: "rec_3",
-    partner: "University of Pennsylvania",
-    title: "Business Foundations",
-    type: "Specialization",
-    rating: 4.9,
-    reviews: "22K",
-    difficulty: "Beginner",
-    imageUrl:
-      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=300&q=80",
-    partnerLogo: "P",
-  },
-  {
-    id: "rec_4",
-    partner: "Johns Hopkins University",
-    title: "Data Science",
-    type: "Specialization",
-    rating: 4.6,
-    reviews: "45K",
-    difficulty: "Intermediate",
-    imageUrl:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=300&q=80",
-    partnerLogo: "J",
-  },
-];
 
 export const RecommendedCourses = () => {
   const trackRef = useRef(null);
-  const [courses, setCourses] = useState(recommendedData);
-
+  const [courses, setCourses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadRecommendations = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchRecommendedCourses(controller.signal);
+        setCourses(data);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError(err.message || "Failed to load recommendations");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadRecommendations();
+    return () => controller.abort();
+  }, []);
 
   const checkScroll = () => {
     if (trackRef.current) {
@@ -74,9 +45,18 @@ export const RecommendedCourses = () => {
       window.removeEventListener("resize", checkScroll);
       clearTimeout(timeoutId);
     };
-  }, [courses]);
+  }, [courses, isLoading]);
 
-  if (courses.length === 0) return null;
+  if (isLoading) {
+    return (
+      <div className="courses-section-container">
+        <h2 className="section-title">Recommended for you</h2>
+        <p>Loading recommendations...</p>
+      </div>
+    );
+  }
+  
+  if (error || courses.length === 0) return null;
 
   return (
     <div className="courses-section-container">
@@ -102,7 +82,7 @@ export const RecommendedCourses = () => {
               <div className="card-content">
                 <div className="partner-name">{course.partner}</div>
                 <h3 className="course-title">{course.title}</h3>
-                <div className="course-type">{course.type}</div>
+                <div className="course-type">{course.category}</div>
 
                 <div className="course-meta">
                   <div className="rating-container">

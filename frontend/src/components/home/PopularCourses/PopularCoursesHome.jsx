@@ -10,6 +10,7 @@ const CSE_101 = {
   title: "Introduction to Computer Science",
   price: 1,
   currency: "BDT",
+  category: "Computer Science",
 };
 
 const PopularCoursesHome = () => {
@@ -68,7 +69,7 @@ const PopularCoursesHome = () => {
       <section className="featured-course-banner">
         <div className="container featured-inner">
           <div className="featured-text">
-            <span className="featured-label">Featured Course</span>
+            <span className="featured-label">Featured {CSE_101.category} Course</span>
             <h2>{CSE_101.title}</h2>
             <p>Start your journey into Computer Science. Beginner-friendly · English · {CSE_101.price}</p>
           </div>

@@ -139,6 +139,38 @@
   right: -20px;
 }
 
+.popular-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+}
+
+.popular-card-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; 
+}
+
+.rating-row {
+  margin-top: auto; 
+}
+
+.popular-card-content h3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.description-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
 
 @media (max-width: 768px) {
   .carousel-btn {
