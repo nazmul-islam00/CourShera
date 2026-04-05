@@ -161,8 +161,8 @@ const STORE_ID       = process.env.SSLCOMMERZ_STORE_ID;
 const STORE_PASSWORD = process.env.SSLCOMMERZ_STORE_PASSWORD;
 const IS_LIVE        = false; 
 
-const BACKEND_URL = process.env.BACKEND_URL || "https://courshera.onrender.com";
-const CLIENT_URL  = process.env.CLIENT_URL  || "http://localhost:5173";
+const BACKEND_URL = process.env.BACKEND_URL;
+const CLIENT_URL  = process.env.CLIENT_URL;
 
 async function resolveClient(req) {
   const googleEmail = req.user?.emails?.[0]?.value;
