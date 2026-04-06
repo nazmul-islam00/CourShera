@@ -86,6 +86,14 @@ function CourseHero({ outline, enrolled, onCancelSuccess }) {
               {/* Enrolled state — show badge + cancel button */}
               <span className="enrolled-badge">✓ Enrolled</span>
 
+              <button
+                type="button"
+                className="outline-btn-primary"
+                onClick={() => navigate(`/course/${outline.courseId}/content`)}
+              >
+                View Course
+              </button>
+
               {!showConfirm && (
                 <button
                   type="button"
