@@ -196,7 +196,13 @@ router.post("/init", async (req, res) => {
   }
 
   const existingEnrollment = await prisma.enrollments.findUnique({
-    where: { client_id_course_id: { client_id: client.client_id, course_id: courseId } },
+    where: {
+      client_id_course_id: {
+        client_id: client.client_id,
+        course_id: courseId,
+      },
+      status: "ACTIVE",
+    },
   });
   console.log("Client ID:", client.client_id);
   console.log("Course ID:", courseId);
@@ -342,26 +348,16 @@ async function validateAndEnroll(body) {
 }
 
 router.post("/success", async (req, res) => {
-  const { tran_id } = req.body;  
-  req.session = null; 
+  const { tran_id } = req.body;
 
   const result = await validateAndEnroll(req.body);
 
-  const cookieOptions = {
-    maxAge: 60000, 
-    httpOnly: false, 
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/", 
-  };
-
   if (!result.ok) {
     console.error("Payment success callback failed:", result.reason);
-    res.cookie("payment_notification", JSON.stringify({ status: "failed" }), { maxAge: 60000 });
-    return res.redirect(`${CLIENT_URL}`);
+    return res.redirect(`${CLIENT_URL}/payment/result?status=failed&tran_id=${tran_id ?? ""}`);
   }
   
-  res.cookie("payment_notification", JSON.stringify({ status: "success", tran_id }), { maxAge: 60000 });
+
   // return res.redirect(`${CLIENT_URL}/payment/result?status=success&tran_id=${tran_id}`);
   return res.redirect(`${CLIENT_URL}`);
 });
@@ -374,12 +370,10 @@ router.post("/fail", async (req, res) => {
       data:  { status: "FAILED" },
     });
   }
-  res.cookie("payment_notification", JSON.stringify({ status: "failed" }), { maxAge: 60000 });
   return res.redirect(`${CLIENT_URL}/payment/result?status=failed`);
 });
 
 router.post("/cancel", async (req, res) => {
-  res.cookie("payment_notification", JSON.stringify({ status: "cancelled" }), { maxAge: 60000 });
   return res.redirect(`${CLIENT_URL}/payment/result?status=cancelled`);
 });
 

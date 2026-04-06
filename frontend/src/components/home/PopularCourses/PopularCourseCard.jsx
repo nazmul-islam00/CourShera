@@ -4,13 +4,11 @@ import { Link } from "react-router-dom";
 
 function PopularCourseCard({ course }) {
   const image =
-    course.imageUrl || 
     course.image_url ||
     "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80";
   const navigate = useNavigate();
   const { setCourseForCheckout } = useCheckout();
-  const partnerName = course.partners?.name || course.partner || "Coursera Partner";
-  const courseId = course.course_id || course.id;
+  const partnerName = course.partners?.name || "Coursera Partner";
 
   const handleEnroll = () => {
     setCourseForCheckout({
@@ -30,7 +28,7 @@ function PopularCourseCard({ course }) {
           alt={course.title || "Course thumbnail"}
           loading="lazy"
         />
-          <span className="pill-badge">Popular</span>
+        <span className="pill-badge">Popular</span>
       </div>
 
       <div className="popular-card-content">
@@ -42,10 +40,10 @@ function PopularCourseCard({ course }) {
         </div>
 
         <div className="course-type" style={{ fontSize: "12px", color: "#0056d2", fontWeight: "600", marginBottom: "4px" }}>
-          {course.category || "General"}
+          {course.category}
         </div>
 
-        <Link to={`/course/${courseId}`}>
+        <Link to={`/course/${course.course_id}`}>
           <h3>{course.title || "Untitled Course"}</h3>
         </Link>
 
@@ -54,30 +52,19 @@ function PopularCourseCard({ course }) {
         </p>
 
         <div className="rating-row">
-          <span className="rating-star" style={{ color: "#eb8a00", marginRight: "4px" }}>★</span>
-          <span className="rating-value" style={{ fontWeight: "700", color: "#333" }}>
-            {course.rating || course.avg_rating || "0.0"}
-          </span>
-          <span className="rating-count" style={{ color: "#666", fontSize: "13px", marginLeft: "6px" }}>
-            ({course.reviews || 0} reviews)
-          </span>
-          {course.enrollment_count > 0 && (
-            <span className="enrollment-text" style={{ color: "#666", fontSize: "13px", marginLeft: "6px" }}>
-              · {course.enrollment_count} enrolled
-            </span>
-          )}
+          <span className="rating-star">★</span>
+          <span className="rating-value">{course.avg_rating ?? "0.0"}</span>
+          <span className="rating-count">({course.enrollment_count || 0} enrolled)</span>
         </div>
 
         <p className="meta-row">
-          <span style={{ textTransform: "capitalize" }}>{course.difficulty || "Beginner"}</span> · {course.language || "English"} ·{" "}
-          <strong style={{ color: "#333" }}>
-             {course.price ? `৳${course.price}` : "Free"}
-          </strong>
+          {course.difficulty || "Beginner"} · {course.language || "English"} ·{" "}
+          {course.price ? `৳${course.price}` : "Free"}
         </p>
 
-        <button className="enroll-btn" onClick={handleEnroll} style={{ marginTop: "12px" }}>
-           Enroll Now
-        </button>
+        {/* <button className="enroll-btn" onClick={handleEnroll}>
+          Enroll Now
+        </button> */}
       </div>
     </article>
   );

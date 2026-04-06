@@ -67,12 +67,10 @@ function CourseHero({ outline, enrolled, onCancelSuccess }) {
           <div className="outline-stat-block">
             <div className="outline-rating-wrap">
               <Star className="outline-icon-star" />
-              <span className="outline-rating-value">
-                {Number(outline.avgRating).toFixed(1)}
-              </span>
+              <span className="outline-rating-value">{outline.avgRating.toFixed(1)}</span>
             </div>
             <span className="outline-rating-meta">
-              ({outline.reviewCount.toLocaleString()} reviews)
+              ({formatNumber(outline.reviewCount)} reviews)
             </span>
           </div>
 
@@ -137,7 +135,7 @@ function CourseHero({ outline, enrolled, onCancelSuccess }) {
               <button type="button" className="outline-btn-primary" onClick={handleEnroll}>
                 Enroll Now
               </button>
-              <button type="button" className="outline-btn-secondary" onClick={handleEnroll}>
+              <button type="button" className="outline-btn-secondary">
                 Try for Free
               </button>
             </>
