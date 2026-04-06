@@ -135,7 +135,7 @@ function CourseHero({ outline, enrolled, onCancelSuccess }) {
               <button type="button" className="outline-btn-primary" onClick={handleEnroll}>
                 Enroll Now
               </button>
-              <button type="button" className="outline-btn-secondary">
+              <button type="button" className="outline-btn-secondary" onClick={handleEnroll}>
                 Try for Free
               </button>
             </>
