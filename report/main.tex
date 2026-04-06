@@ -1,0 +1,374 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage[draft]{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  pdftitle={CourShera Final Report},
+  pdfauthor={B2 Group 3}
+}
+
+\title{CourShera Final Report\\CSE 326: Information System Design Sessional}
+\author{B2 Group 3}
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\clearpage
+
+% =========================================================
+\chapter{Introduction}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Project Overview}
+CourShera is a web-based learning platform inspired by Coursera, developed as part of the CSE 326 ISD Sessional project. The system enables learners to browse courses by category, view course details, register/login (local and Google OAuth), manage profile information, enroll in courses through payment verification, and access quiz-related learning activities.
+
+The goal of the project is to design and implement an end-to-end educational platform that demonstrates complete software engineering workflow: requirements analysis, modeling, UI design, API design, implementation, and deployment readiness.
+
+\section{Problem Statement}
+Students and self-learners need a single, organized platform where they can:
+\begin{itemize}[leftmargin=*]
+  \item Discover relevant courses quickly.
+  \item Track progress in enrolled courses.
+  \item Complete secure enrollment/payment workflows.
+  \item Manage their learning profile and credentials.
+\end{itemize}
+
+Existing global platforms are feature-rich but not always tailored for local payment flows and academic project constraints. CourShera addresses this by combining core MOOC features with payment verification support suitable for local contexts.
+
+\section{Objectives}
+The key objectives of CourShera are:
+\begin{itemize}[leftmargin=*]
+  \item Build a responsive frontend for course discovery, learning flow, and profile management.
+  \item Build a backend API for authentication, course data retrieval, enrollment, payment, and user profile operations.
+  \item Use a relational database with clear schema design and data relationships.
+  \item Integrate third-party services where needed (Google OAuth, Supabase storage).
+  \item Containerize services for reproducible setup and deployment readiness.
+\end{itemize}
+
+\section{Scope of the Implemented System}
+The implemented system includes:
+\begin{itemize}[leftmargin=*]
+  \item User authentication: local registration/login and Google OAuth login.
+  \item Course services: popular courses, recommendations, categories, category-wise listing, and individual course detail.
+  \item Enrollment and payment flow: transaction verification and enrollment activation.
+  \item User services: profile retrieval/update and saved card management.
+  \item Quiz module pages: catalog, quiz home, taking quizzes, certificate, and past attempts.
+\end{itemize}
+
+\section{Updated Changes After Presentation Feedback}
+The following report-level updates were made based on presentation feedback:
+\begin{itemize}[leftmargin=*]
+  \item All modeling chapters now include explicit sections for \textit{"Changes Made After Feedback"}.
+  \item Screenshot placeholders were added for every diagram and mock UI chapter to ensure visual evidence in the final report.
+  \item API documentation chapter now includes a dedicated subsection to list corrections between the documented specification and implemented endpoints.
+  \item Feature Implementation chapter was expanded to include architecture, deployment, DevOps setup, and individual member contributions.
+\end{itemize}
+
+\clearpage
+
+% =========================================================
+\chapter{BPMN Diagram}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Final BPMN Diagram}
+\textbf{Insert screenshot below:}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{assets/bpmn-final.png}
+  \caption{Final BPMN Diagram}
+\end{figure}
+
+\section{Changes Made After Feedback}
+\begin{itemize}[leftmargin=*]
+  \item [Write what was changed in lanes, events, gateways, and error flows.]
+\end{itemize}
+
+\clearpage
+
+% =========================================================
+\chapter{Use Case Diagram}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Final Use Case Diagram}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{assets/use-case-final.png}
+  \caption{Final Use Case Diagram}
+\end{figure}
+
+\section{Changes Made After Feedback}
+\begin{itemize}[leftmargin=*]
+  \item [Write actor/use-case relation updates and include/extend corrections.]
+\end{itemize}
+
+\clearpage
+
+% =========================================================
+\chapter{Class Diagram}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Final Class Diagram}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{assets/class-diagram-final.png}
+  \caption{Final Class Diagram}
+\end{figure}
+
+\section{Changes Made After Feedback}
+\begin{itemize}[leftmargin=*]
+  \item [Write updates in class attributes, methods, cardinality, and associations.]
+\end{itemize}
+
+\clearpage
+
+% =========================================================
+\chapter{Mock UI}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Final Mock UI Screens}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.45\textwidth]{assets/mock-home-final.png}
+  \includegraphics[width=0.45\textwidth]{assets/mock-course-final.png}
+  \caption{Final Mock UI (Home and Course Details)}
+\end{figure}
+
+\section{Changes Made After Feedback}
+\begin{itemize}[leftmargin=*]
+  \item [Write updates made in navigation, hierarchy, consistency, and usability.] 
+\end{itemize}
+
+\clearpage
+
+% =========================================================
+\chapter{Collaboration Diagram}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Final Collaboration Diagram}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{assets/collaboration-final.png}
+  \caption{Final Collaboration Diagram}
+\end{figure}
+
+\section{Changes Made After Feedback}
+\begin{itemize}[leftmargin=*]
+  \item [Write numbering/interaction corrections and object role clarifications.]
+\end{itemize}
+
+\clearpage
+
+% =========================================================
+\chapter{Sequence Diagram}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Final Sequence Diagram}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{assets/sequence-final.png}
+  \caption{Final Sequence Diagram}
+\end{figure}
+
+\section{Changes Made After Feedback}
+\begin{itemize}[leftmargin=*]
+  \item [Write updates in lifelines, activation bars, alternate/exception flows.]
+\end{itemize}
+
+\clearpage
+
+% =========================================================
+\chapter{State Diagram}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Final State Diagram}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{assets/state-final.png}
+  \caption{Final State Diagram}
+\end{figure}
+
+\section{Changes Made After Feedback}
+\begin{itemize}[leftmargin=*]
+  \item [Write updates to state transitions, guards, and terminal states.]
+\end{itemize}
+
+\clearpage
+
+% =========================================================
+\chapter{API Documentation}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Final API Documentation Snapshot}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{assets/api-doc-final.png}
+  \caption{Final API Documentation Screenshot}
+\end{figure}
+
+\section{Changes Made After Feedback}
+\begin{itemize}[leftmargin=*]
+  \item [Document corrected base URL/environment details.] 
+  \item [Document endpoint path updates and request/response schema fixes.] 
+  \item [Document authentication and error-response clarifications.] 
+\end{itemize}
+
+\section{Reference File}
+OpenAPI specification file used in this project: \texttt{api\_docs.yaml}
+
+\clearpage
+
+% =========================================================
+\chapter{Feature Implementation}
+
+\textbf{Presented by:} [Member Name, Student ID]
+
+\section{Feature Name and Description}
+\textbf{Feature Name:} Integrated Course Discovery, Enrollment, and Learner Profile Management in CourShera.
+
+\textbf{Description:}
+This feature combines the main user journey of the system:
+\begin{itemize}[leftmargin=*]
+  \item Discovering courses using popular lists, recommendations, categories, and detailed course pages.
+  \item Authenticating users through local credentials or Google OAuth.
+  \item Completing enrollment through verified payment transaction matching.
+  \item Managing user profile data and saved card records.
+  \item Accessing quiz-center flows to support learning engagement.
+\end{itemize}
+
+\section{GitHub Repository Link(s)}
+\begin{itemize}[leftmargin=*]
+  \item Main repository: \url{[Add your GitHub repository URL here]}
+\end{itemize}
+
+\textit{Note: No git remote URL is currently configured in this local workspace, so the repository URL must be inserted manually.}
+
+\section{Hosted Website Link}
+\begin{itemize}[leftmargin=*]
+  \item Frontend URL: \url{[Add deployed frontend URL or write "Not deployed"]}
+  \item Backend API URL: \url{[Add deployed backend URL or write "Not deployed"]}
+\end{itemize}
+
+\section{Screenshots of Different Pages}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.48\textwidth]{assets/ss-home.png}
+  \includegraphics[width=0.48\textwidth]{assets/ss-category.png}
+  \caption{Home Page and Category Page}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.48\textwidth]{assets/ss-course-outline.png}
+  \includegraphics[width=0.48\textwidth]{assets/ss-checkout.png}
+  \caption{Course Outline and Checkout Page}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.48\textwidth]{assets/ss-profile.png}
+  \includegraphics[width=0.48\textwidth]{assets/ss-quiz-catalog.png}
+  \caption{Profile Page and Quiz Catalog Page}
+\end{figure}
+
+\section{System Architecture Overview}
+\subsection{Overall Architecture Used}
+The implementation follows a \textbf{layered monolithic architecture} with clear frontend-backend-database separation:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Presentation Layer:} React (Vite) single-page frontend.
+  \item \textbf{Application/Service Layer:} Express.js backend exposing REST endpoints.
+  \item \textbf{Data Access Layer:} Prisma ORM for PostgreSQL operations.
+  \item \textbf{Data Layer:} PostgreSQL database schema with entities such as clients, courses, enrollments, payments, reviews, and categories.
+\end{itemize}
+
+\subsection{Technologies and Frameworks}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Frontend:} React 19, React Router, Vite, CSS modules/styles.
+  \item \textbf{Backend:} Node.js, Express 5, Passport (Google OAuth + local strategy), cookie-session.
+  \item \textbf{Database:} PostgreSQL with Prisma ORM.
+  \item \textbf{Storage/External Service:} Supabase storage for user avatar uploads.
+  \item \textbf{Security/Utility:} bcrypt for password hashing, JSON/session-based auth flows.
+\end{itemize}
+
+\subsection{High-Level Runtime Flow}
+\begin{enumerate}[leftmargin=*]
+  \item User interacts with React frontend routes (home, category, course, checkout, profile, quiz pages).
+  \item Frontend calls backend REST APIs (e.g., /auth, /courses, /payment, /me).
+  \item Backend validates session/auth, executes business logic, and queries PostgreSQL through Prisma.
+  \item Response data is returned to frontend for rendering and user interaction.
+\end{enumerate}
+
+\section{Deployment Details}
+\subsection{Where Components Are Hosted}
+Current implementation is configured for \textbf{local and containerized deployment}:
+\begin{itemize}[leftmargin=*]
+  \item Frontend container maps to port 3000 (Nginx serving built app).
+  \item Backend container maps to port 5000.
+  \item Database uses PostgreSQL connection configured via environment variables (project setup indicates Supabase-hosted PostgreSQL in use for development).
+\end{itemize}
+
+\subsection{Cloud Platform Used}
+\begin{itemize}[leftmargin=*]
+  \item Database/Storage: Supabase services are integrated in the codebase.
+  \item Frontend/Backend public cloud deployment URL: \textit{Not finalized in this repository snapshot; add production/staging links here if available.}
+\end{itemize}
+
+\subsection{DevOps / Deployment Setup}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Containerization:} Dockerfiles exist for frontend and backend.
+  \item \textbf{Orchestration:} docker-compose configuration provided to run full stack.
+  \item \textbf{CI/CD:} No CI/CD pipeline configuration was found in this repository snapshot. Add GitHub Actions/GitLab CI details here if configured later.
+\end{itemize}
+
+\section{Contribution of Each Member}
+\begin{longtable}{|p{0.24\textwidth}|p{0.70\textwidth}|}
+\hline
+\textbf{Member (Name, ID)} & \textbf{Contribution in Feature Implementation} \\
+\hline
+[Member 1] & [Frontend module(s), pages/components, UI integration] \\
+\hline
+[Member 2] & [Backend routes/services, authentication/payment logic] \\
+\hline
+[Member 3] & [Database design, Prisma schema, API docs] \\
+\hline
+[Member 4] & [Testing, deployment, integration, documentation] \\
+\hline
+\end{longtable}
+
+\section{Implemented Endpoints and Modules (Summary)}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Auth Module:} local register/login, Google OAuth login success/failure/logout.
+  \item \textbf{Courses Module:} categories, category courses, in-progress courses, recommendations, popular courses, single-course detail.
+  \item \textbf{Payment Module:} transaction verification and enrollment activation.
+  \item \textbf{Profile Module:} profile fetch/update, saved cards add/list/delete.
+\end{itemize}
+
+\section{Changes Made After Presentation Feedback}
+\begin{itemize}[leftmargin=*]
+  \item Expanded this chapter to include architecture style, stack details, deployment notes, and DevOps setup.
+  \item Added explicit placeholders for repository links, hosted links, and page screenshots.
+  \item Added a structured contribution table to clearly show each member's implementation role.
+\end{itemize}
+
+\end{document}

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { fetchInProgressCourses } from "../../../api/api";
 import "./InProgressCourses.css";
 
@@ -86,7 +87,12 @@ export const InProgressCourses = () => {
 
               <div className="card-content">
                 <div className="partner-name">{course.partner}</div>
-                <h3 className="course-title">{course.title}</h3>
+                <Link
+                  to={`/course/${course.course_id ?? course.id}`}
+                  className="course-title-link"
+                >
+                  <h3 className="course-title">{course.title}</h3>
+                </Link>
                 <div className="course-type">{course.category}</div>
 
                 <div className="progress-container">
