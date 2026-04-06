@@ -67,10 +67,12 @@ function CourseHero({ outline, enrolled, onCancelSuccess }) {
           <div className="outline-stat-block">
             <div className="outline-rating-wrap">
               <Star className="outline-icon-star" />
-              <span className="outline-rating-value">{outline.avgRating.toFixed(1)}</span>
+              <span className="outline-rating-value">
+                {Number(outline.avgRating).toFixed(1)}
+              </span>
             </div>
             <span className="outline-rating-meta">
-              ({formatNumber(outline.reviewCount)} reviews)
+              ({outline.reviewCount.toLocaleString()} reviews)
             </span>
           </div>
 
