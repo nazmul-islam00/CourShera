@@ -348,17 +348,18 @@ async function validateAndEnroll(body) {
 }
 
 router.post("/success", async (req, res) => {
-  const { tran_id } = req.body;
-
-  if (req.session) {
-    if (typeof req.session.destroy === "function") {
-      req.session.destroy(); 
-    } else {
-      req.session = null; 
-    }
-  }
+  const { tran_id } = req.body;  
+  req.session = null; 
 
   const result = await validateAndEnroll(req.body);
+
+  const cookieOptions = {
+    maxAge: 60000, 
+    httpOnly: false, 
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/", 
+  };
 
   if (!result.ok) {
     console.error("Payment success callback failed:", result.reason);

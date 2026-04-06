@@ -21,21 +21,18 @@ export const HomePage = () => {
     const notificationStr = Cookies.get("payment_notification");
 
     if (notificationStr) {
-      try {
-        const notification = JSON.parse(notificationStr);
-
-        if (notification.status === "success") {
-          toast.success(`Enrollment successful! Transaction ID: ${notification.tran_id}`);
-        } else if (notification.status === "failed") {
-          toast.error("Payment failed or could not be verified. Please try again.");
-        }
-
-        Cookies.remove("payment_notification");
-      } catch (error) {
-        console.error("Failed to parse payment notification cookie:", error);
-        Cookies.remove("payment_notification");
+    try {
+      const notification = JSON.parse(notificationStr);
+      if (notification.status === "success") {
+        toast.success(`Enrollment successful! ID: ${notification.tran_id}`);
+      } else {
+        toast.error("Payment failed or cancelled.");
       }
+      Cookies.remove("payment_notification", { path: "/" });
+    } catch (e) {
+      Cookies.remove("payment_notification", { path: "/" });
     }
+  }
   }, []);
 
   return (

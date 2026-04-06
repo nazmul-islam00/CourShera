@@ -10,6 +10,7 @@ import coursesRoute from "./routes/courses.js";
 import paymentRoute from "./routes/payment.js";
 import meRoute from "./routes/me.js";
 import prisma from "./db.js";
+import cookieParser from "cookie-parser";
 
 // import { parseSms } from "./smsParser.js";
 
@@ -32,6 +33,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); 
+app.use(cookieParser());
 
 
 app.use(
