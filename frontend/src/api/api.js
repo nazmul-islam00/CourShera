@@ -36,6 +36,26 @@ export async function initPayment(payload) {
   return { response, data };
 }
 
+// Returns { enrolled: true/false } for the current logged-in user
+export async function fetchEnrollmentStatus(courseId, signal) {
+  const response = await fetch(`${API_BASE}/courses/${courseId}/enrollment-status`, {
+    credentials: "include",
+    signal,
+  });
+  if (!response.ok) return { enrolled: false };
+  return response.json();
+}
+ 
+// Cancels enrollment and initiates SSLCommerz refund
+export async function cancelEnrollment(courseId) {
+  const response = await fetch(`${API_BASE}/payment/enroll/${courseId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { response, data };
+}
+
 // InProgressCourses fetch
 export async function fetchInProgressCourses(signal) {
   const response = await fetch(`${API_BASE}/courses/in-progress`, {

@@ -380,6 +380,80 @@ router.post("/ipn", async (req, res) => {
   return res.status(200).json({ message: "IPN processed successfully." });
 });
 
+
+
+
+ 
+router.delete("/enroll/:courseId", async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "You must be logged in." });
+  }
+ 
+  const client = await resolveClient(req);
+  if (!client) {
+    return res.status(401).json({ message: "Account not found." });
+  }
+ 
+  const { courseId } = req.params;
+ 
+  const enrollment = await prisma.enrollments.findUnique({
+    where: {
+      client_id_course_id: {
+        client_id: client.client_id,
+        course_id: courseId,
+      },
+    },
+  });
+ 
+  if (!enrollment || enrollment.status !== "ACTIVE") {
+    return res.status(404).json({ message: "No active enrollment found for this course." });
+  }
+ 
+  const payment = await prisma.payments.findFirst({
+    where: {
+      client_id: client.client_id,
+      course_id: courseId,
+      status:    "COMPLETED",
+    },
+    orderBy: { processed_at: "desc" },
+  });
+ 
+  if (!payment || !payment.provider_transaction_id) {
+    return res.status(400).json({
+      message: "No completed payment found. Cannot process refund.",
+    });
+  }
+ 
+  // Initiate a refund through sslcommerz, we are assuming it will be done succesfully
+ 
+  await prisma.refunds.create({
+    data: {
+      refund_id:               `ref_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      original_transaction_id: payment.transaction_id,
+      amount_refunded:         payment.amount,
+      reason:                  "Student cancelled enrollment",
+      status:                  "REFUNDED",
+    },
+  });
+ 
+  await prisma.payments.update({
+    where: { transaction_id: payment.transaction_id },
+    data:  { status: "FAILED" },
+  });
+ 
+  await prisma.enrollments.update({
+    where: {
+      client_id_course_id: {
+        client_id: client.client_id,
+        course_id: courseId,
+      },
+    },
+    data: { status: "DROPPED" },
+  });
+ 
+  return res.status(200).json({ message: "Enrollment cancelled and refund initiated successfully." });
+});
+ 
 export default router;
 
 

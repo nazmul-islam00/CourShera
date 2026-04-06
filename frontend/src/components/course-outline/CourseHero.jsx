@@ -1,63 +1,58 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Clock, Globe, Star, Users } from "lucide-react";
 import { useCheckout } from "../../context/checkout/CheckoutContext";
-import { fetchCourseEnrollmentStatus } from "../../api/api";
+import { cancelEnrollment } from "../../api/api";
+import "./CourseHero.css";
 
 const formatStudents = (count) => {
-  if (!count || count < 1) {
-    return "New course";
-  }
-  if (count >= 1000000) {
-    return `${(count / 1000000).toFixed(1).replace(/\.0$/, "")}M+ students enrolled`;
-  }
-  if (count >= 1000) {
-    return `${Math.round(count / 1000)}K+ students enrolled`;
-  }
+  if (!count || count < 1) return "New course";
+  if (count >= 1000000) return `${(count / 1000000).toFixed(1).replace(/\.0$/, "")}M+ students enrolled`;
+  if (count >= 1000) return `${Math.round(count / 1000)}K+ students enrolled`;
   return `${count} students enrolled`;
 };
 
 const formatNumber = (value) => value.toLocaleString("en-US");
 
-function CourseHero({ outline }) {
+function CourseHero({ outline, enrolled, onCancelSuccess }) {
   const navigate = useNavigate();
   const { setCourseForCheckout } = useCheckout();
-  const [isEnrolled, setIsEnrolled] = useState(false);
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function loadEnrollmentStatus() {
-      try {
-        const data = await fetchCourseEnrollmentStatus(outline.courseId, controller.signal);
-        setIsEnrolled(Boolean(data?.enrolled));
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          setIsEnrolled(false);
-        }
-      }
-    }
-
-    if (outline?.courseId) {
-      loadEnrollmentStatus();
-    }
-
-    return () => controller.abort();
-  }, [outline?.courseId]);
+  const [cancelling, setCancelling]   = useState(false);
+  const [cancelError, setCancelError] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleEnroll = () => {
-    if (isEnrolled) {
-      navigate(`/course/${outline.courseId}/content`);
-      return;
-    }
-
     setCourseForCheckout({
       courseId: outline.courseId,
-      title: outline.title || "Untitled Course",
-      price: outline.price ?? 0,
+      title:    outline.title || "Untitled Course",
+      price:    outline.price ?? 0,
       currency: "BDT",
     });
     navigate("/checkout");
+  };
+
+  const handleCancelClick = () => {
+    // Show an inline confirmation instead of browser confirm()
+    setCancelError("");
+    setShowConfirm(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    setCancelling(true);
+    setCancelError("");
+    setShowConfirm(false);
+
+    const { response, data } = await cancelEnrollment(outline.courseId);
+
+    if (!response.ok) {
+      setCancelError(data?.message || "Could not cancel enrollment. Please try again.");
+      setCancelling(false);
+      return;
+    }
+
+    setCancelling(false);
+    onCancelSuccess(); // tells CourseOutlinePage to flip enrolled → false
   };
 
   return (
@@ -66,7 +61,6 @@ function CourseHero({ outline }) {
         <div className="outline-pill">COURSE</div>
 
         <h1 className="outline-title">{outline.title}</h1>
-
         <p className="outline-tagline">{outline.tagline}</p>
 
         <div className="outline-stats-row">
@@ -87,12 +81,57 @@ function CourseHero({ outline }) {
         </div>
 
         <div className="outline-cta-row">
-          <button type="button" className="outline-btn-primary" onClick={handleEnroll}>
-            {isEnrolled ? "Go to Course" : "Enroll for Free"}
-          </button>
-          <button type="button" className="outline-btn-secondary">
-            Try for Free
-          </button>
+          {enrolled ? (
+            <div className="cancel-enrollment-wrap">
+              {/* Enrolled state — show badge + cancel button */}
+              <span className="enrolled-badge">✓ Enrolled</span>
+
+              {!showConfirm && (
+                <button
+                  type="button"
+                  className="outline-btn-danger"
+                  onClick={handleCancelClick}
+                  disabled={cancelling}
+                >
+                  {cancelling ? "Cancelling…" : "Cancel Enrollment"}
+                </button>
+              )}
+
+              {/* Inline confirmation — avoids browser confirm() which is hard to style */}
+              {showConfirm && (
+                <div className="cancel-confirm-box">
+                  <p>Cancel enrollment and get a full refund?</p>
+                  <div className="cancel-confirm-actions">
+                    <button
+                      type="button"
+                      className="outline-btn-danger"
+                      onClick={handleConfirmCancel}
+                    >
+                      Yes, cancel &amp; refund
+                    </button>
+                    <button
+                      type="button"
+                      className="outline-btn-secondary"
+                      onClick={() => setShowConfirm(false)}
+                    >
+                      Keep enrollment
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {cancelError && <p className="cancel-error">{cancelError}</p>}
+            </div>
+          ) : (
+            <>
+              <button type="button" className="outline-btn-primary" onClick={handleEnroll}>
+                Enroll Now
+              </button>
+              <button type="button" className="outline-btn-secondary">
+                Try for Free
+              </button>
+            </>
+          )}
         </div>
 
         <div className="outline-meta-grid">
