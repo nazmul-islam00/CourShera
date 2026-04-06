@@ -196,7 +196,13 @@ router.post("/init", async (req, res) => {
   }
 
   const existingEnrollment = await prisma.enrollments.findUnique({
-    where: { client_id_course_id: { client_id: client.client_id, course_id: courseId } },
+    where: {
+      client_id_course_id: {
+        client_id: client.client_id,
+        course_id: courseId,
+      },
+      status: "ACTIVE",
+    },
   });
   console.log("Client ID:", client.client_id);
   console.log("Course ID:", courseId);
