@@ -10,9 +10,8 @@ import { ExploreRoles } from "../components/home/ExploreRoles/ExploreRoles";
 import { useAuth } from "../context/auth/AuthContext";
 
 import { useEffect } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Cookies from "js-cookie";
-import "react-toastify/dist/ReactToastify.css";
 
 export const HomePage = () => {
   const { user } = useAuth();
@@ -24,9 +23,13 @@ export const HomePage = () => {
     try {
       const notification = JSON.parse(notificationStr);
       if (notification.status === "success") {
-        toast.success(`Enrollment successful! ID: ${notification.tran_id}`);
+        toast.success(`Enrollment successful! ID: ${notification.tran_id}`, {
+          toastId: `payment-success-${notification.tran_id || "unknown"}`,
+        });
       } else {
-        toast.error("Payment failed or cancelled.");
+        toast.error("Payment failed or cancelled.", {
+          toastId: `payment-${notification.status || "failed"}`,
+        });
       }
       Cookies.remove("payment_notification", { path: "/" });
     } catch (e) {
@@ -37,7 +40,6 @@ export const HomePage = () => {
 
   return (
     <div className="home-page">
-      <ToastContainer position="top-right" autoClose={5000} />
       <main className="main-content">
         {user && (
           <>

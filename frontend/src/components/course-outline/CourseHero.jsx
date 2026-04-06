@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Clock, Globe, Star, Users } from "lucide-react";
 import { useCheckout } from "../../context/checkout/CheckoutContext";
 import { cancelEnrollment } from "../../api/api";
+import { toast } from "react-toastify";
 import "./CourseHero.css";
 
 const formatStudents = (count) => {
@@ -43,16 +44,27 @@ function CourseHero({ outline, enrolled, onCancelSuccess }) {
     setCancelError("");
     setShowConfirm(false);
 
-    const { response, data } = await cancelEnrollment(outline.courseId);
+    try {
+      const { response, data } = await cancelEnrollment(outline.courseId);
 
-    if (!response.ok) {
-      setCancelError(data?.message || "Could not cancel enrollment. Please try again.");
+      if (!response.ok) {
+        const message = data?.message || "Could not cancel enrollment. Please try again.";
+        setCancelError(message);
+        toast.error(message);
+        setCancelling(false);
+        return;
+      }
+
+      setCancelling(false);
+      toast.success("Enrollment cancelled and refund initiated.");
+      onCancelSuccess(); // tells CourseOutlinePage to flip enrolled -> false
+    } catch {
+      const message = "Could not cancel enrollment. Please try again.";
+      setCancelError(message);
+      toast.error(message);
       setCancelling(false);
       return;
     }
-
-    setCancelling(false);
-    onCancelSuccess(); // tells CourseOutlinePage to flip enrolled → false
   };
 
   return (
