@@ -358,8 +358,8 @@ router.post("/success", async (req, res) => {
   }
   
 
-  // return res.redirect(`${CLIENT_URL}/payment/result?status=success&tran_id=${tran_id}`);
-  return res.redirect(`${CLIENT_URL}`);
+  return res.redirect(`${CLIENT_URL}/payment/result?status=success&tran_id=${tran_id}`);
+  // return res.redirect(`${CLIENT_URL}`);
 });
 
 router.post("/fail", async (req, res) => {
