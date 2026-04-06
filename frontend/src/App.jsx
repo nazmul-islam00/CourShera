@@ -18,8 +18,6 @@ import PastQuizzesPage from "./pages/PastQuizzesPage";
 import MyLearning from "./pages/MyLearning";
 import SearchPage from "./pages/SearchPage";
 import CourseContentPage from "./pages/CourseContentPage";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const location = useLocation();
@@ -75,8 +73,6 @@ function App() {
         <Route path="/search" element={<SearchPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
-      <ToastContainer position="top-right" autoClose={5000} />
 
       {!useQuizLayout && <Footer />}
     </div>

@@ -363,24 +363,16 @@ router.post("/success", async (req, res) => {
 
   if (!result.ok) {
     console.error("Payment success callback failed:", result.reason);
-    res.cookie("payment_notification", JSON.stringify({ status: "failed" }), cookieOptions);
+    res.cookie("payment_notification", JSON.stringify({ status: "failed" }), { maxAge: 60000 });
     return res.redirect(`${CLIENT_URL}`);
   }
   
-  res.cookie("payment_notification", JSON.stringify({ status: "success", tran_id }), cookieOptions);
+  res.cookie("payment_notification", JSON.stringify({ status: "success", tran_id }), { maxAge: 60000 });
   // return res.redirect(`${CLIENT_URL}/payment/result?status=success&tran_id=${tran_id}`);
   return res.redirect(`${CLIENT_URL}`);
 });
 
 router.post("/fail", async (req, res) => {
-  const cookieOptions = {
-    maxAge: 60000,
-    httpOnly: false,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-  };
-
   const { tran_id } = req.body;
   if (tran_id) {
     await prisma.payments.updateMany({
@@ -388,20 +380,12 @@ router.post("/fail", async (req, res) => {
       data:  { status: "FAILED" },
     });
   }
-  res.cookie("payment_notification", JSON.stringify({ status: "failed" }), cookieOptions);
+  res.cookie("payment_notification", JSON.stringify({ status: "failed" }), { maxAge: 60000 });
   return res.redirect(`${CLIENT_URL}/payment/result?status=failed`);
 });
 
 router.post("/cancel", async (req, res) => {
-  const cookieOptions = {
-    maxAge: 60000,
-    httpOnly: false,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-  };
-
-  res.cookie("payment_notification", JSON.stringify({ status: "cancelled" }), cookieOptions);
+  res.cookie("payment_notification", JSON.stringify({ status: "cancelled" }), { maxAge: 60000 });
   return res.redirect(`${CLIENT_URL}/payment/result?status=cancelled`);
 });
 
