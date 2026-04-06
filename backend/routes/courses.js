@@ -445,20 +445,26 @@ router.get("/recommendations", isAuthenticated, async (req, res) => {
 
     const formattedRecommendations = recommendedCourses.map((course) => {
       const totalReviews = course.reviews?.length || 0;
-      const avgRating = totalReviews > 0
-        ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) / totalReviews
-        : 0;
+      const avgRating =
+        totalReviews > 0
+          ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) /
+            totalReviews
+          : 0;
 
       return {
         id: course.course_id,
         partner: course.partners ? course.partners.name : "Coursera Partner",
         title: course.title,
         category: course.categories ? course.categories.name : "General",
-        rating: avgRating.toFixed(1), 
-        reviews: totalReviews,        
+        rating: avgRating.toFixed(1),
+        reviews: totalReviews,
         difficulty: course.difficulty,
-        imageUrl: course.image_url || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
-        partnerLogo: course.partners ? course.partners.name.charAt(0).toUpperCase() : "C",
+        imageUrl:
+          course.image_url ||
+          "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
+        partnerLogo: course.partners
+          ? course.partners.name.charAt(0).toUpperCase()
+          : "C",
       };
     });
 
@@ -518,9 +524,11 @@ router.get("/popular", async (req, res) => {
 // Search courses by title substring
 router.get("/search", async (req, res) => {
   const { q } = req.query;
+
   if (!q || typeof q !== "string" || !q.trim()) {
     return res.status(400).json({ error: "Missing or invalid search query" });
   }
+
   try {
     const courses = await prisma.courses.findMany({
       where: {
@@ -529,10 +537,52 @@ router.get("/search", async (req, res) => {
           mode: "insensitive",
         },
       },
+      include: {
+        partners: true,
+        categories: true,
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
+        _count: {
+          select: { enrollments: true },
+        },
+      },
     });
-    res.json({ courses });
+
+    const normalizedCourses = courses.map((course) => {
+      // Calculate Average Rating
+      const totalReviews = course.reviews.length;
+      const avgRating =
+        totalReviews > 0
+          ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) /
+            totalReviews
+          : 0;
+
+      return {
+        id: course.course_id,
+        title: course.title,
+        price: course.price,
+        difficulty: course.difficulty,
+        imageUrl:
+          course.image_url ||
+          "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
+        category: course.categories ? course.categories.name : "General",
+        partner: course.partners ? course.partners.name : "Coursera Partner",
+        partnerLogo: course.partners
+          ? course.partners.name.charAt(0).toUpperCase()
+          : "C",
+        rating: Number(avgRating.toFixed(1)),
+        reviews: totalReviews,
+        enrollment_count: course._count.enrollments,
+      };
+    });
+
+    res.json({ courses: normalizedCourses });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Search error:", error);
+    res.status(500).json({ error: "Failed to perform search" });
   }
 });
 
