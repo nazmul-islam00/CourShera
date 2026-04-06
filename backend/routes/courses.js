@@ -308,16 +308,35 @@ router.get("/category/:categoryId", async (req, res) => {
 
 router.get("/in-progress", isAuthenticated, async (req, res) => {
   try {
-    const clientId = req.user?.client_id || req.user?.id;
-    if (!clientId) {
+    const rawClientId = req.user?.client_id || req.user?.id;
+    const clientId = parseInt(rawClientId, 10);
+
+    if (!Number.isInteger(clientId)) {
       return res.status(401).json({
         error: "Unauthorized: No user session found",
       });
     }
 
+    const activeEnrollments = await prisma.enrollments.findMany({
+      where: {
+        client_id: clientId,
+        status: "ACTIVE",
+      },
+      select: {
+        course_id: true,
+      },
+    });
+
+    const activeCourseIds = activeEnrollments.map((enrollment) => enrollment.course_id);
+
+    if (activeCourseIds.length === 0) {
+      return res.status(200).json([]);
+    }
+
     const progressRecords = await prisma.course_progress.findMany({
       where: {
-        client_id: parseInt(clientId, 10),
+        client_id: clientId,
+        course_id: { in: activeCourseIds },
         overall_status: { in: ["IN_PROGRESS", "NOT_STARTED"] },
       },
       include: { courses: { include: { partners: true, categories: true } } },
