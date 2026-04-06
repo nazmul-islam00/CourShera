@@ -4,6 +4,7 @@ import { fetchUserProfile, updateUserProfile } from "./../api/api";
 import { getNames } from "country-list";
 import "./../styles/ProfilePage.css";
 import SavedCards from "../components/saved-cards/SavedCards";
+import EnrollmentCard from "../components/enrollment-card/EnrollmentCard";
 
 const COUNTRIES = getNames();
 
@@ -317,8 +318,15 @@ export default function ProfilePage() {
             </div>
           </form>
         </div>
-        <div style={{ marginTop: "30px" }}>
-          <SavedCards />
+
+        <div className="profile-right-column">
+          <div style={{ marginTop: "0px" }}>
+            <SavedCards />
+          </div>
+
+          <div style={{ marginTop: "16px" }}>
+            <EnrollmentCard />
+          </div>
         </div>
       </div>
     </div>

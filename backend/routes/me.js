@@ -218,4 +218,64 @@ router.get("/my-learning", isAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/enrollments", isAuthenticated, async (req, res) => {
+  try {
+    const clientId = req.user?.client_id || req.user?.id;
+    if (!clientId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    // Get pagination parameters
+    const limit = Math.min(parseInt(req.query.limit, 10) || 10, 100); // Max 100
+    const offset = parseInt(req.query.offset, 10) || 0;
+
+    // Fetch total count of enrollments
+    const totalCount = await prisma.enrollments.count({
+      where: {
+        client_id: parseInt(clientId, 10),
+      },
+    });
+
+    // Fetch paginated enrollments with course details, ordered by enrolled_at descending
+    const enrollments = await prisma.enrollments.findMany({
+      where: {
+        client_id: parseInt(clientId, 10),
+      },
+      include: {
+        courses: {
+          select: {
+            course_id: true,
+            title: true,
+          },
+        },
+      },
+      orderBy: {
+        enrolled_at: "desc",
+      },
+      take: limit,
+      skip: offset,
+    });
+
+    // Format the response
+    const formattedEnrollments = enrollments.map((enrollment) => ({
+      enrollment_id: enrollment.enrollment_id,
+      course_id: enrollment.course_id,
+      course_title: enrollment.courses?.title || "Unknown Course",
+      status: enrollment.status,
+      enrolled_at: enrollment.enrolled_at,
+    }));
+
+    res.json({
+      success: true,
+      enrollments: formattedEnrollments,
+      total: totalCount,
+      limit,
+      offset,
+    });
+  } catch (error) {
+    console.error("Error fetching enrollments:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 export default router;

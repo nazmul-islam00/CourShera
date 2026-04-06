@@ -271,3 +271,27 @@ export async function fetchEnrolledCourseContent(courseId, signal) {
 
   return await response.json();
 }
+
+export const fetchEnrollments = async (limit = 10, offset = 0, signal) => {
+  try {
+    const response = await fetch(
+      `${API_BASE}/me/enrollments?limit=${limit}&offset=${offset}`,
+      {
+        credentials: "include",
+        signal,
+      }
+    );
+    if (!response.ok) {
+      // Fallback if endpoint doesn't exist yet
+      if (response.status === 404) {
+        return { success: false, enrollments: [], message: "Endpoint not available yet" };
+      }
+      throw new Error("Failed to fetch enrollments.");
+    }
+    return await response.json();
+  } catch (error) {
+    if (error.name === "AbortError") throw error;
+    // Return empty array gracefully if endpoint doesn't exist
+    return { success: false, enrollments: [], message: error.message };
+  }
+};
