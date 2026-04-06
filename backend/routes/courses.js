@@ -17,26 +17,34 @@ const getClientIdFromRequest = (req) => {
 };
 
 const normalizeCourseModules = (course) => {
-  const moduleEntries = Array.isArray(course?.course_module) ? course.course_module : [];
+  const moduleEntries = Array.isArray(course?.course_module)
+    ? course.course_module
+    : [];
 
   return moduleEntries
     .map((entry) => entry.modules)
     .filter(Boolean)
     .sort((a, b) => a.title.localeCompare(b.title))
     .map((module) => {
-      const topicEntries = Array.isArray(module.module_topic) ? module.module_topic : [];
+      const topicEntries = Array.isArray(module.module_topic)
+        ? module.module_topic
+        : [];
 
       const topics = topicEntries
         .map((entry) => entry.topics)
         .filter(Boolean)
         .sort((a, b) => a.title.localeCompare(b.title))
         .map((topic) => {
-          const contentEntries = Array.isArray(topic.topic_content) ? topic.topic_content : [];
+          const contentEntries = Array.isArray(topic.topic_content)
+            ? topic.topic_content
+            : [];
 
           const contents = contentEntries
             .map((entry) => entry.content_table)
             .filter(Boolean)
-            .sort((a, b) => (a.content_id || "").localeCompare(b.content_id || ""))
+            .sort((a, b) =>
+              (a.content_id || "").localeCompare(b.content_id || ""),
+            )
             .map((content) => ({
               content_id: content.content_id,
               content_url: content.content_url,
@@ -107,7 +115,9 @@ router.get("/:courseId/content", isAuthenticated, async (req, res) => {
     });
 
     if (!enrollment || enrollment.status !== "ACTIVE") {
-      return res.status(403).json({ error: "You are not enrolled in this course" });
+      return res
+        .status(403)
+        .json({ error: "You are not enrolled in this course" });
     }
 
     const course = await prisma.courses.findUnique({
@@ -312,62 +322,55 @@ router.get("/in-progress", isAuthenticated, async (req, res) => {
     const clientId = parseInt(rawClientId, 10);
 
     if (!Number.isInteger(clientId)) {
-      return res.status(401).json({
-        error: "Unauthorized: No user session found",
-      });
-    }
-
-    const activeEnrollments = await prisma.enrollments.findMany({
-      where: {
-        client_id: clientId,
-        status: "ACTIVE",
-      },
-      select: {
-        course_id: true,
-      },
-    });
-
-    const activeCourseIds = activeEnrollments.map((enrollment) => enrollment.course_id);
-
-    if (activeCourseIds.length === 0) {
-      return res.status(200).json([]);
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     const progressRecords = await prisma.course_progress.findMany({
       where: {
         client_id: clientId,
-        course_id: { in: activeCourseIds },
         overall_status: { in: ["IN_PROGRESS", "NOT_STARTED"] },
       },
-      include: { courses: { include: { partners: true, categories: true } } },
+      include: {
+        courses: {
+          include: {
+            partners: true,
+            categories: true,
+            reviews: { select: { rating: true } },
+          },
+        },
+      },
       orderBy: { started_at: "desc" },
     });
 
     const courses = progressRecords.map((record) => {
       const courseDetails = record.courses;
-      const partner = courseDetails?.partners;
+
+      const totalReviews = courseDetails?.reviews?.length || 0;
+      const avgRating =
+        totalReviews > 0
+          ? courseDetails.reviews.reduce(
+              (acc, rev) => acc + Number(rev.rating),
+              0,
+            ) / totalReviews
+          : 0;
 
       return {
         id: record.course_id,
-        partner: partner ? partner.name : "Coursera Partner",
+        partner: courseDetails?.partners?.name || "Coursera Partner",
         title: courseDetails?.title || "Unknown Course",
-        category: courseDetails?.categories
-          ? courseDetails.categories.name
-          : "General",
+        category: courseDetails?.categories?.name || "General",
         progress: Number(record.completion_percentage),
+        rating: avgRating.toFixed(1),
+        reviews: totalReviews,
         imageUrl:
           courseDetails?.image_url ||
           "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
-        partnerLogo: partner ? partner.name.charAt(0).toUpperCase() : "C",
       };
     });
 
     res.status(200).json(courses);
   } catch (error) {
-    console.error("Error fetching in-progress courses", error);
-    res.status(500).json({
-      error: "Failed to fetch course progress",
-    });
+    res.status(500).json({ error: "Failed to fetch course progress" });
   }
 });
 
@@ -440,28 +443,28 @@ router.get("/recommendations", isAuthenticated, async (req, res) => {
       });
     }
 
-    const formattedRecommendations = recommendedCourses.map((course) => ({
-      id: course.course_id,
-      partner: course.partners ? course.partners.name : "Coursera Partner",
-      title: course.title,
-      category: course.categories ? course.categories.name : "General",
-      rating: Number(course.avg_rating || 0),
-      reviews: course.review_count || 0,
-      difficulty: course.difficulty,
-      imageUrl:
-        course.image_url ||
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
-      partnerLogo: course.partners
-        ? course.partners.name.charAt(0).toUpperCase()
-        : "C",
-    }));
+    const formattedRecommendations = recommendedCourses.map((course) => {
+      const totalReviews = course.reviews?.length || 0;
+      const avgRating = totalReviews > 0
+        ? course.reviews.reduce((acc, rev) => acc + Number(rev.rating), 0) / totalReviews
+        : 0;
+
+      return {
+        id: course.course_id,
+        partner: course.partners ? course.partners.name : "Coursera Partner",
+        title: course.title,
+        category: course.categories ? course.categories.name : "General",
+        rating: avgRating.toFixed(1), 
+        reviews: totalReviews,        
+        difficulty: course.difficulty,
+        imageUrl: course.image_url || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80",
+        partnerLogo: course.partners ? course.partners.name.charAt(0).toUpperCase() : "C",
+      };
+    });
 
     res.status(200).json(formattedRecommendations);
   } catch (error) {
-    console.error("Error fetching recommendations:", error);
-    res.status(500).json({
-      error: "Failed to fetch recommended courses",
-    });
+    res.status(500).json({ error: "Failed to fetch recommended courses" });
   }
 });
 
@@ -512,14 +515,6 @@ router.get("/popular", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
 // Search courses by title substring
 router.get("/search", async (req, res) => {
   const { q } = req.query;
@@ -531,9 +526,9 @@ router.get("/search", async (req, res) => {
       where: {
         title: {
           contains: q,
-          mode: "insensitive"
-        }
-      }
+          mode: "insensitive",
+        },
+      },
     });
     res.json({ courses });
   } catch (error) {
@@ -542,6 +537,3 @@ router.get("/search", async (req, res) => {
 });
 
 export default router;
-
-
-
