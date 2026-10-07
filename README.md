@@ -408,7 +408,7 @@ It documents the intended API design for authentication, courses, enrollment, pa
 
 The application evolved during development, so the Express routes under `backend/` should currently be treated as the source of truth for implemented endpoints.
 
-## Current Implementation Notes
+## Implementation Notes
 
 * Authentication uses Passport.js sessions rather than a stateless frontend JWT flow.
 * Course data, enrollments, profiles, recommendations, payments, and learning progress are backed by PostgreSQL.
