@@ -1,10 +1,10 @@
 # CourShera
 
-CourShera is a full-stack online learning platform inspired by Coursera, developed as a **CSE-326 course project**. It provides a learner-focused experience for discovering courses, enrolling through online payment, accessing course material, tracking learning progress, managing a profile, and completing interactive quizzes.
+CourShera is a full-stack online learning platform developed for **CSE-326: Information System Design Sessional** at Bangladesh University of Engineering and Technology (BUET). It supports course discovery, authentication, enrollment, online payments, learning-progress tracking, quizzes, learner profiles, and personalized course recommendations.
 
-The project is built with **React**, **Vite**, **Express.js**, **Prisma**, and **PostgreSQL**, with integrations for **Google OAuth**, **Supabase Storage**, and **SSLCommerz**.
+The platform is built with **React**, **Vite**, **Express.js**, **Prisma**, and **PostgreSQL**, with integrations for **Google OAuth**, **Supabase Storage**, and **SSLCommerz**.
 
-> **Disclaimer:** CourShera is an academic project inspired by the functionality and user experience of Coursera. It is not affiliated with, endorsed by, or connected to Coursera.
+> **Disclaimer:** CourShera is an academic project inspired by Coursera. It is not affiliated with, endorsed by, or connected to Coursera.
 
 ## Features
 
@@ -35,6 +35,35 @@ The project is built with **React**, **Vite**, **Express.js**, **Prisma**, and *
 * Payment success, failure, and cancellation handling
 
 > The current integration uses the **SSLCommerz sandbox environment**.
+
+#### Enrollment & Payment Flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant FE as React Frontend
+    participant API as Express API
+    participant SSL as SSLCommerz
+    participant DB as PostgreSQL
+
+    User->>FE: Select course and proceed to checkout
+    FE->>API: Create payment request
+    API->>SSL: Initialize transaction
+    SSL-->>User: Payment interface
+    User->>SSL: Complete payment
+    SSL-->>API: Payment result
+    API->>SSL: Validate transaction
+    SSL-->>API: Validation response
+
+    alt Payment validated
+        API->>DB: Create course enrollment
+        API-->>FE: Enrollment successful
+        FE-->>User: Course access granted
+    else Payment failed or cancelled
+        API-->>FE: Payment unsuccessful
+        FE-->>User: Show failure/cancellation status
+    end
+```
 
 ### Learning Experience
 
@@ -85,6 +114,32 @@ Quiz drafts and attempts are currently stored in the browser using `localStorage
 | Payments           | SSLCommerz                                    |
 | API Documentation  | OpenAPI 3                                     |
 | Containerization   | Docker                                        |
+
+## Architecture
+
+```mermaid
+flowchart LR
+    U[User] --> FE[React + Vite Frontend]
+    FE --> API[Express.js API]
+
+    API --> AUTH[Authentication]
+    API --> COURSE[Course Management]
+    API --> ENROLL[Enrollment]
+    API --> PAY[Payments]
+    API --> PROFILE[User Profiles]
+
+    AUTH --> PRISMA[Prisma ORM]
+    COURSE --> PRISMA
+    ENROLL --> PRISMA
+    PAY --> PRISMA
+    PROFILE --> PRISMA
+
+    PRISMA --> DB[(PostgreSQL)]
+
+    AUTH --> GOOGLE[Google OAuth]
+    PROFILE --> SUPABASE[Supabase Storage]
+    PAY --> SSL[SSLCommerz]
+```
 
 ## Project Structure
 
@@ -343,15 +398,15 @@ The implemented Express backend is organized around four primary route groups:
 
 ## API Documentation
 
-An OpenAPI specification is included at:
+An OpenAPI specification is included in:
 
 ```text
 api_docs.yaml
 ```
 
-It documents the intended service design for authentication, courses, enrollment, payments, course content, quizzes, progress tracking, notes, and related functionality.
+It documents the intended API design for authentication, courses, enrollment, payments, course content, quizzes, progress tracking, and related functionality.
 
-The application has evolved since portions of this specification were written, so the Express routes in `backend/` should currently be treated as the source of truth for implemented endpoints.
+The application evolved during development, so the Express routes under `backend/` should currently be treated as the source of truth for implemented endpoints.
 
 ## Current Implementation Notes
 
@@ -372,7 +427,7 @@ The application has evolved since portions of this specification were written, s
 * Profile uploads are handled server-side through Supabase Storage.
 * Secrets and environment files should remain outside version control.
 
-This is an academic system and should receive a dedicated security review before any real-world production deployment or handling of real payment information.
+> **Note:** CourShera is an academic project. Additional security review and hardening would be required before using it in production with real payments or sensitive user information.
 
 ## License
 
@@ -382,19 +437,6 @@ See [`LICENSE`](LICENSE) for details.
 
 ## Academic Context
 
-CourShera was developed as part of **CSE-326** as a full-stack software engineering project demonstrating the design and implementation of an online learning platform.
+CourShera was developed for **CSE-326: Information System Design Sessional** at Bangladesh University of Engineering and Technology (BUET).
 
-The project covers several end-to-end software-system concerns, including:
-
-* authentication and session management
-* relational database design
-* course discovery
-* recommendation logic
-* enrollment and access control
-* third-party payment integration
-* user-profile management
-* learning-progress presentation
-* interactive assessments
-* external storage integration
-* REST-style backend APIs
-* containerized deployment
+The project explores several end-to-end software engineering concerns, including authentication and session management, relational database design, course discovery, recommendation logic, enrollment and access control, third-party payment integration, profile management, learning-progress tracking, interactive assessments, object storage, REST-style backend APIs, and containerized deployment.
